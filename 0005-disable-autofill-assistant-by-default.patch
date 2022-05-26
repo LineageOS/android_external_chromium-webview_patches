@@ -1,4 +1,4 @@
-From 8dd7026386b927beadeb179b19ae02c362014e17 Mon Sep 17 00:00:00 2001
+From 94471b0ea9d51635587a8e9ed397cd3af4cc1b63 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 02:43:37 -0500
 Subject: [PATCH 5/6] disable autofill assistant by default
@@ -22,7 +22,7 @@ index 834529ab0ae04..eff59a1e07269 100644
  
      /** Checks whether proactive help is enabled. */
 diff --git a/components/autofill_assistant/browser/features.cc b/components/autofill_assistant/browser/features.cc
-index bdf2155febd88..f9cddfd434eb7 100644
+index 49ba0b0c06d4f..66289715f15ae 100644
 --- a/components/autofill_assistant/browser/features.cc
 +++ b/components/autofill_assistant/browser/features.cc
 @@ -11,7 +11,7 @@ namespace features {

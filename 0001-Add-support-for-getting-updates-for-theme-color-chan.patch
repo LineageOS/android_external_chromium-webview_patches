@@ -1,4 +1,4 @@
-From af297273a0d760d24e821bf6cb1fa9504f5aa005 Mon Sep 17 00:00:00 2001
+From 71e48d319c67013852f0507290f181da920932ad Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
@@ -13,7 +13,7 @@ Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 88b46298719d5..b6565a3557587 100644
+index 42f4654cac34b..6e94198ddc55c 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -24,15 +24,15 @@ index 88b46298719d5..b6565a3557587 100644
  import android.graphics.Paint;
  import android.graphics.Picture;
  import android.graphics.Rect;
-@@ -71,6 +72,7 @@ import org.chromium.components.content_capture.OnscreenContentProvider;
- import org.chromium.components.embedder_support.application.ClassLoaderContextWrapperFactory;
+@@ -72,6 +73,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+ import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
 +import org.chromium.content_public.browser.WebContents;
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1169,6 +1171,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
+@@ -1170,6 +1172,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
          return mAwContents.getMostRecentProgress();
      }
  
@@ -113,10 +113,10 @@ index 06db715ed22f6..9920b3ce2dfc1 100644
          private AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index e5a7361648c45..1e19d6e917a49 100644
+index c8e9ed487f368..90a12fe250206 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-@@ -169,6 +169,8 @@ public abstract class AwContentsClient {
+@@ -170,6 +170,8 @@ public abstract class AwContentsClient {
  
      public abstract void onProgressChanged(int progress);
  

@@ -1,4 +1,4 @@
-From 25d2831bf98dc2a4b77840c781e32c27b815c458 Mon Sep 17 00:00:00 2001
+From 27686ca029f140d81eaf9ebe9720de479a956072 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 02:43:37 -0500
 Subject: [PATCH 5/6] disable autofill assistant by default
@@ -44,5 +44,5 @@ index 49ba0b0c06d4f..66289715f15ae 100644
  // Used to configure the start heuristics for
  // |kAutofillAssistantInCctTriggering| and/or
 -- 
-2.25.1
+2.34.1
 

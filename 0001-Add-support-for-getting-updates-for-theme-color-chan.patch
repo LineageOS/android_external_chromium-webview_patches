@@ -1,7 +1,8 @@
-From a37a3719a0533032fb1314ccc95ac7ab342f5b46 Mon Sep 17 00:00:00 2001
+From 431878a21d12cda60ff114703a2a1c379cfb2a6c Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
-Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
+Subject: [PATCH 01/11] Add support for getting updates for theme color
+ changes.
 
 ---
  .../webview/chromium/WebViewChromium.java     |  9 +++++
@@ -47,7 +48,7 @@ index e7882d03a01d1..6dca837aac95d 100644
      public int getContentHeight() {
          recordWebViewApiCall(ApiCall.GET_CONTENT_HEIGHT);
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 06db715ed22f6..9920b3ce2dfc1 100644
+index 72592908ea177..21fb608018aa9 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 @@ -56,6 +56,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
@@ -87,7 +88,7 @@ index 06db715ed22f6..9920b3ce2dfc1 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler = new Handler() {
                  @Override
-@@ -1035,6 +1051,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1037,6 +1053,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  

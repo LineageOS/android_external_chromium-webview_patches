@@ -1,4 +1,4 @@
-From faabce3e8a47e74cb8c9a57f7af731cf580181e3 Mon Sep 17 00:00:00 2001
+From d628ac4c6757eb429febf1569a0e2b2b06f88463 Mon Sep 17 00:00:00 2001
 From: "Torne (Richard Coles)" <torne@google.com>
 Date: Mon, 25 Jul 2022 16:39:37 +0000
 Subject: [PATCH 09/11] Suppress lints for Android T SDK update.
@@ -185,10 +185,10 @@ index 0c3fd9261946b..b707243ca0374 100644
              AssistantQrCodePermissionView.Delegate delegate,
              AssistantQrCodePermissionCallback permissionCallback) {
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index 0f1d798605538..9dd2034ba00a8 100644
+index a3ad867863bc8..76761902657e2 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -2098,7 +2098,8 @@ public class ExternalNavigationHandler {
+@@ -2101,7 +2101,8 @@ public class ExternalNavigationHandler {
          return OverrideUrlLoadingResult.forExternalIntent();
      }
  

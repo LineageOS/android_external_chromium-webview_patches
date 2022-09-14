@@ -1,4 +1,4 @@
-From eda13c924f804511dbe0cb35c3f5fe1174c28e97 Mon Sep 17 00:00:00 2001
+From 25b0dd8e6f88731258bedb0a7d6deebd837708b2 Mon Sep 17 00:00:00 2001
 From: "Torne (Richard Coles)" <torne@google.com>
 Date: Mon, 25 Jul 2022 18:59:55 +0000
 Subject: [PATCH 10/11] Suppress T SDK lints in Cronet.

@@ -1,4 +1,4 @@
-From ddc5bb2d50546a591b5e2308c429fc3f8105be47 Mon Sep 17 00:00:00 2001
+From 5ffea1274c5f3c870fc260228113576c05f036bc Mon Sep 17 00:00:00 2001
 From: "Torne (Richard Coles)" <torne@google.com>
 Date: Fri, 22 Jul 2022 21:59:58 +0000
 Subject: [PATCH 08/11] Suppress lint in DarkModeHelper for T SDK.

@@ -1,4 +1,4 @@
-From 9df54280c0f0f0b2498b60761f6098338d2177cc Mon Sep 17 00:00:00 2001
+From ddb91e8e78621a3c57875c0e8b24a1a37e2f2c4a Mon Sep 17 00:00:00 2001
 From: "Torne (Richard Coles)" <torne@google.com>
 Date: Tue, 26 Jul 2022 16:54:54 +0000
 Subject: [PATCH 11/11] Update to Android T SDK.
@@ -44,7 +44,7 @@ Cr-Commit-Position: refs/heads/main@{#1028316}
  create mode 100644 android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProviderForT.java
 
 diff --git a/DEPS b/DEPS
-index b468c055eca22..5cf0e49d1b875 100644
+index 3fdf6924ab931..0d3c37f70bba6 100644
 --- a/DEPS
 +++ b/DEPS
 @@ -384,11 +384,11 @@ vars = {

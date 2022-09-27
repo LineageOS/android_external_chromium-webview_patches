@@ -1,8 +1,7 @@
-From 55ba82724b5c0cd8ed8c027be4e0e86a4722b3b7 Mon Sep 17 00:00:00 2001
+From f0630155324ebcc4d531b7332b081a679e6ad1f1 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
-Subject: [PATCH 01/11] Add support for getting updates for theme color
- changes.
+Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
 
 ---
  .../webview/chromium/WebViewChromium.java     |  9 +++++

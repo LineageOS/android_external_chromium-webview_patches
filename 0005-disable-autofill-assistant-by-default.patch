@@ -1,7 +1,7 @@
-From 028ca6c7e549fddc50b2b3c61e1a852fc518f849 Mon Sep 17 00:00:00 2001
+From f9de40b032b9ce9251690048e226d8f44578470c Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 02:43:37 -0500
-Subject: [PATCH 05/11] disable autofill assistant by default
+Subject: [PATCH 5/6] disable autofill assistant by default
 
 ---
  .../autofill_assistant/AutofillAssistantPreferencesUtil.java  | 2 +-

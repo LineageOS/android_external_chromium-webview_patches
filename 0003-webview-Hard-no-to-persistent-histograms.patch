@@ -1,7 +1,7 @@
-From d7ddcf767293f887e67653600aa9db05da421297 Mon Sep 17 00:00:00 2001
+From a9a3283f8c88cacf8818cb71b284cedfc8881c6c Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sun, 27 Dec 2020 09:42:54 -0700
-Subject: [PATCH 03/11] webview: Hard no to persistent histograms
+Subject: [PATCH 3/6] webview: Hard no to persistent histograms
 
 * It's probably some kind of bug somewhere that these are never
   deleted, but they don't really add value to us in the first

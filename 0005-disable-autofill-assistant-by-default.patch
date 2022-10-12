@@ -1,4 +1,4 @@
-From f9de40b032b9ce9251690048e226d8f44578470c Mon Sep 17 00:00:00 2001
+From 6b3b1875c56a1e2c67f36cc6bea64c2b8f92bcb1 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 02:43:37 -0500
 Subject: [PATCH 5/6] disable autofill assistant by default

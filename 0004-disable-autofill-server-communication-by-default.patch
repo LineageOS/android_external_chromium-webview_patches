@@ -1,4 +1,4 @@
-From 48b4cd494c63d4db9981657e539db871797969c0 Mon Sep 17 00:00:00 2001
+From e6812c239d341beb8b5c4c0259bafb4a8184b4cf Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 1 Dec 2020 00:56:57 -0500
 Subject: [PATCH 4/6] disable autofill server communication by default

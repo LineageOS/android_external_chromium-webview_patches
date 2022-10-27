@@ -1,4 +1,4 @@
-From c391d717897d407cf542fad692ae2c0c0457241f Mon Sep 17 00:00:00 2001
+From 77425a20431c26354a0d5754589ce8fa63eb45d0 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
@@ -13,7 +13,7 @@ Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index e7882d03a01d1..6dca837aac95d 100644
+index b1e57217717d2..27bd7561c7299 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -47,7 +47,7 @@ index e7882d03a01d1..6dca837aac95d 100644
      public int getContentHeight() {
          recordWebViewApiCall(ApiCall.GET_CONTENT_HEIGHT);
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 72592908ea177..21fb608018aa9 100644
+index 4ee67428c5680..cbd0034005aea 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 @@ -56,6 +56,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
@@ -113,7 +113,7 @@ index 72592908ea177..21fb608018aa9 100644
          private AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index c8e9ed487f368..90a12fe250206 100644
+index 6487c9a3c1529..69dd210dc32ef 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 @@ -170,6 +170,8 @@ public abstract class AwContentsClient {
@@ -126,7 +126,7 @@ index c8e9ed487f368..90a12fe250206 100644
  
      public abstract boolean shouldOverrideKeyEvent(KeyEvent event);
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
-index 263050de539f6..6a19aa8c026f9 100644
+index 29ad12ad713be..6370748819511 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
 @@ -134,6 +134,9 @@ public class AwContentsClientCallbackHelper {
@@ -162,10 +162,10 @@ index 263050de539f6..6a19aa8c026f9 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index 6bec03bd5d587..337beb565c3a8 100644
+index 2348d3b4e1823..d6d34bd11d61f 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-@@ -167,12 +167,27 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -164,12 +164,27 @@ public class AwWebContentsObserver extends WebContentsObserver {
              });
          }
  
@@ -194,7 +194,7 @@ index 6bec03bd5d587..337beb565c3a8 100644
          return mCommittedNavigation;
      }
 diff --git a/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java b/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
-index fd3eb8a447c1c..804d326648da4 100644
+index 198ae543a6a66..5465d1438a4e4 100644
 --- a/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
 +++ b/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
 @@ -72,6 +72,10 @@ public class NullContentsClient extends AwContentsClient {

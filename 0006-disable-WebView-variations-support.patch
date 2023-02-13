@@ -1,0 +1,41 @@
+From 1668836b81ffe3829f8f564d6ccbbe4de4263aab Mon Sep 17 00:00:00 2001
+From: Daniel Micay <danielmicay@gmail.com>
+Date: Thu, 10 Dec 2020 10:09:18 -0500
+Subject: [PATCH 6/7] disable WebView variations support
+
+---
+ .../com/android/webview/chromium/WebViewChromiumAwInit.java   | 4 ----
+ .../webview/chromium/WebViewChromiumFactoryProvider.java      | 2 --
+ 2 files changed, 6 deletions(-)
+
+diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
+index bb0e8032a432a..1bab010279e1d 100644
+--- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
++++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
+@@ -202,10 +202,6 @@ public class WebViewChromiumAwInit {
+ 
+             AwBrowserProcess.configureChildProcessLauncher();
+ 
+-            // finishVariationsInitLocked() must precede native initialization so the seed is
+-            // available when AwFeatureListCreator::SetUpFieldTrials() runs.
+-            finishVariationsInitLocked();
+-
+             AwBrowserProcess.start();
+             AwBrowserProcess.handleMinidumpsAndSetMetricsConsent(true /* updateMetricsConsent */);
+ 
+diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
+index e82ab44d2d4f9..9715ccf2ff2a5 100644
+--- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
++++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
+@@ -479,8 +479,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+                 }
+             }
+ 
+-            mAwInit.startVariationsInit();
+-
+             mShouldDisableThreadChecking = shouldDisableThreadChecking(ctx);
+ 
+             setSingleton(this);
+-- 
+2.34.1
+

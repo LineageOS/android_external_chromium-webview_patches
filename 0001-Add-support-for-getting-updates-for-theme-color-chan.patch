@@ -1,7 +1,7 @@
-From cd954d03b91d1bc534affb3185f9120d0e440553 Mon Sep 17 00:00:00 2001
+From 3e05ba73552ac5422457e2c4a447fcca8bfb25f5 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
-Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
+Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
 
 ---
  .../webview/chromium/WebViewChromium.java     |  9 +++++
@@ -13,7 +13,7 @@ Subject: [PATCH 1/6] Add support for getting updates for theme color changes.
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index b1e57217717d2..27bd7561c7299 100644
+index 9b1a44d787a60..469ec28a0495e 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -32,7 +32,7 @@ index b1e57217717d2..27bd7561c7299 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1171,6 +1173,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
+@@ -1366,6 +1368,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
          return mAwContents.getMostRecentProgress();
      }
  

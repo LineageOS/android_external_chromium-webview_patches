@@ -1,7 +1,7 @@
-From 2c397e8b38b233c6b6aee63cacb1078c93279726 Mon Sep 17 00:00:00 2001
+From 3343583be2a2e30230b1c4621bb9a1f5fa367e5e Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Tue, 19 May 2020 17:21:42 -0600
-Subject: [PATCH 2/6] Add xxxhdpi icon_webview.png to BUILD.gn
+Subject: [PATCH 2/7] Add xxxhdpi icon_webview.png to BUILD.gn
 
 ---
  android_webview/nonembedded/BUILD.gn | 1 +

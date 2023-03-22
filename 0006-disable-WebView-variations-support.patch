@@ -1,4 +1,4 @@
-From 1668836b81ffe3829f8f564d6ccbbe4de4263aab Mon Sep 17 00:00:00 2001
+From 755b5ca2c6e7dcfdb17063ded9795c2c2673c2f5 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 6/7] disable WebView variations support

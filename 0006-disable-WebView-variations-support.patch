@@ -1,4 +1,4 @@
-From 755b5ca2c6e7dcfdb17063ded9795c2c2673c2f5 Mon Sep 17 00:00:00 2001
+From 4293d70fd6cef2864a3a410c24c03691e8bd9e55 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 6/7] disable WebView variations support
@@ -24,10 +24,10 @@ index bb0e8032a432a..1bab010279e1d 100644
              AwBrowserProcess.handleMinidumpsAndSetMetricsConsent(true /* updateMetricsConsent */);
  
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index e82ab44d2d4f9..9715ccf2ff2a5 100644
+index 171cfd7c23457..dd711e3c32999 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -479,8 +479,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -483,8 +483,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
                  }
              }
  
@@ -37,5 +37,5 @@ index e82ab44d2d4f9..9715ccf2ff2a5 100644
  
              setSingleton(this);
 -- 
-2.34.1
+2.40.0
 

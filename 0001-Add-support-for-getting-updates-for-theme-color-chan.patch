@@ -1,4 +1,4 @@
-From 2c0235db1aa7d37a03cf2066f2638601380ec8c8 Mon Sep 17 00:00:00 2001
+From 20a288e9d642d2009518682a17d82aba63551a0a Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
@@ -13,7 +13,7 @@ Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index f9b41623b92f8..f7328964c676f 100644
+index e7471941341f9..c1e0d7adc1456 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -24,7 +24,7 @@ index f9b41623b92f8..f7328964c676f 100644
  import android.graphics.Paint;
  import android.graphics.Picture;
  import android.graphics.Rect;
-@@ -73,6 +74,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -74,6 +75,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -32,7 +32,7 @@ index f9b41623b92f8..f7328964c676f 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1365,6 +1367,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
+@@ -1371,6 +1373,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
          return mAwContents.getMostRecentProgress();
      }
  
@@ -209,5 +209,5 @@ index 198ae543a6a66..5465d1438a4e4 100644
      public WebResourceResponseInfo shouldInterceptRequest(
              AwContentsClient.AwWebResourceRequest request) {
 -- 
-2.34.1
+2.40.0
 

@@ -1,4 +1,4 @@
-From e0c76d2fa07838695648f765007411563ee54728 Mon Sep 17 00:00:00 2001
+From 4969d52734cd7432b7eb4e0313efb85f2fe3c606 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
@@ -47,11 +47,11 @@ index e7471941341f9..c1e0d7adc1456 100644
      public int getContentHeight() {
          recordWebViewApiCall(ApiCall.GET_CONTENT_HEIGHT);
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 4ee67428c5680..cbd0034005aea 100644
+index befd4d1c29099..7a394d40a17bb 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-@@ -56,6 +56,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
- import org.chromium.content_public.browser.UiThreadTaskTraits;
+@@ -56,6 +56,8 @@ import org.chromium.base.task.TaskTraits;
+ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
  
  import java.lang.ref.WeakReference;
 +import java.lang.reflect.InvocationTargetException;
@@ -162,7 +162,7 @@ index 29ad12ad713be..6370748819511 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index 2348d3b4e1823..d6d34bd11d61f 100644
+index 6b6b16075b8b2..2e814fa3fa0df 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 @@ -164,12 +164,27 @@ public class AwWebContentsObserver extends WebContentsObserver {

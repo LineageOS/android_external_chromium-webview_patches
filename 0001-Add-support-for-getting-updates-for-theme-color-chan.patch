@@ -1,4 +1,4 @@
-From cf0af564a96368915fb15d343d0db957f5974eae Mon Sep 17 00:00:00 2001
+From 8be0e5579906506d47a356d672cfcc51827cfe5d Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
@@ -13,7 +13,7 @@ Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index cabbac81948c7..585b47adfbe3f 100644
+index 26b1ee980e7ad..62e40cb346fb4 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -32,7 +32,7 @@ index cabbac81948c7..585b47adfbe3f 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1499,6 +1501,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
+@@ -1516,6 +1518,13 @@ class WebViewChromium implements WebViewProvider, WebViewProvider.ScrollDelegate
          }
      }
  
@@ -47,7 +47,7 @@ index cabbac81948c7..585b47adfbe3f 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index ccd31b150887e..7fda877ad12fe 100644
+index c24d3de1cade0..0242f96f28435 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 @@ -58,6 +58,8 @@ import org.chromium.base.task.TaskTraits;
@@ -87,7 +87,7 @@ index ccd31b150887e..7fda877ad12fe 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler = new Handler() {
                  @Override
-@@ -959,6 +975,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -961,6 +977,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  

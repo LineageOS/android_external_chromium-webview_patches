@@ -1,4 +1,4 @@
-From ef012c165fb05d84b3bcd52736552fa5e75bc6c1 Mon Sep 17 00:00:00 2001
+From 67e31f122655194ffa2cf8d76f62090311b00e53 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sun, 27 Dec 2020 09:42:54 -0700
 Subject: [PATCH 3/7] webview: Hard no to persistent histograms
@@ -35,5 +35,5 @@ index ede1e7a3f2bc2..5a83018d17c18 100644
  
  // TODO(crbug.com/1453407): Consider to migrate all WebView feature overrides
 -- 
-2.42.1
+2.43.0
 

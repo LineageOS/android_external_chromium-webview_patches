@@ -1,4 +1,4 @@
-From caa89cd26266731a5b7d4cc2123b041293cebe5d Mon Sep 17 00:00:00 2001
+From 4fb82e8e8927adcfbdbb226f48688882b009fbde Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 1 Dec 2020 00:56:57 -0500
 Subject: [PATCH 4/7] disable autofill server communication by default
@@ -21,5 +21,5 @@ index fd8dcf0f7be0c..92736ec81d9d1 100644
  // Controls attaching the autofill type predictions to their respective
  // element in the DOM.
 -- 
-2.42.1
+2.43.0
 

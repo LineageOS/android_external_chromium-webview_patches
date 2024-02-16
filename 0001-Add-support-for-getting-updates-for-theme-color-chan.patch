@@ -1,4 +1,4 @@
-From 083dec811dbedd2639adf1b2bc7c3dc103d88758 Mon Sep 17 00:00:00 2001
+From ab879b16137b17e303b473ee38a97a477fdfb856 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
@@ -13,7 +13,7 @@ Subject: [PATCH 1/7] Add support for getting updates for theme color changes.
  6 files changed, 76 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 18e6e50d6ba05..756452839c390 100644
+index b62c950bbea9d..b4e78558c1eaf 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -24,7 +24,7 @@ index 18e6e50d6ba05..756452839c390 100644
  import android.graphics.Paint;
  import android.graphics.Picture;
  import android.graphics.Rect;
-@@ -80,6 +81,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -81,6 +82,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -32,7 +32,7 @@ index 18e6e50d6ba05..756452839c390 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1808,6 +1810,13 @@ class WebViewChromium
+@@ -1807,6 +1809,13 @@ class WebViewChromium
          }
      }
  
@@ -47,10 +47,10 @@ index 18e6e50d6ba05..756452839c390 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 5a711575f9a96..14bc271689a20 100644
+index 31c0f814dade5..93647f2a0aaf3 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-@@ -58,6 +58,8 @@ import org.chromium.base.task.TaskTraits;
+@@ -59,6 +59,8 @@ import org.chromium.base.task.TaskTraits;
  import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
  
  import java.lang.ref.WeakReference;
@@ -59,7 +59,7 @@ index 5a711575f9a96..14bc271689a20 100644
  import java.security.Principal;
  import java.security.PrivateKey;
  import java.security.cert.X509Certificate;
-@@ -101,6 +103,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -102,6 +104,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
      private WeakHashMap<AwPermissionRequest, WeakReference<PermissionRequestAdapter>>
              mOngoingPermissionRequests;
  
@@ -69,7 +69,7 @@ index 5a711575f9a96..14bc271689a20 100644
      /**
       * Adapter constructor.
       *
-@@ -112,6 +117,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -113,6 +118,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          super(webView, webViewDelegate, context);
          try (ScopedSysTraceEvent event =
                  ScopedSysTraceEvent.scoped("WebView.APICallback.WebViewClient.constructor")) {
@@ -87,7 +87,7 @@ index 5a711575f9a96..14bc271689a20 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler =
                      new Handler() {
-@@ -1032,6 +1048,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1046,6 +1062,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  
@@ -210,5 +210,5 @@ index be8f554e3930e..7e2e11de7b3db 100644
      public WebResourceResponseInfo shouldInterceptRequest(
              AwContentsClient.AwWebResourceRequest request) {
 -- 
-2.43.0
+2.44.0
 

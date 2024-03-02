@@ -38,4 +38,6 @@ LOCAL_PREBUILT_JNI_LIBS_arm64 := @lib/arm64-v8a/libwebviewchromium.so
 LOCAL_PREBUILT_JNI_LIBS_x86 := @lib/x86/libwebviewchromium.so
 LOCAL_PREBUILT_JNI_LIBS_x86_64 := @lib/x86_64/libwebviewchromium.so
 
+LOCAL_OPTIONAL_USES_LIBRARIES := android.ext.adservices
+
 include $(BUILD_PREBUILT)

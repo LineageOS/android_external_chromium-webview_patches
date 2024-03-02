@@ -1,7 +1,7 @@
 From 332c3e62b00b393cfb2e087c38c07f0a696ce9f3 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
-Subject: [PATCH 6/7] disable WebView variations support
+Subject: [PATCH 06/12] disable WebView variations support
 
 ---
  .../com/android/webview/chromium/WebViewChromiumAwInit.java | 6 ------

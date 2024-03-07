@@ -1,4 +1,4 @@
-From 043e872c8bb44b2c38587781f91d729ac6da7132 Mon Sep 17 00:00:00 2001
+From e35bd4982035848bb6a1b20a9e9a027958fad0ef Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sun, 27 Dec 2020 09:42:54 -0700
 Subject: [PATCH 03/12] webview: Hard no to persistent histograms

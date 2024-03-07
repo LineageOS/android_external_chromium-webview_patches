@@ -1,4 +1,4 @@
-From 840ffda96bc2542963b3587e04debf2e2d43686e Mon Sep 17 00:00:00 2001
+From 70ff8813e39efa6375f9fa23e91b6086510909e0 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
 Subject: [PATCH 12/12] Disable conversion measurement api
@@ -269,7 +269,7 @@ index e102676234a2a..ca0a8497383e0 100644
      "//third_party/blink/public/common:common_java",
      "//third_party/blink/public/mojom:android_mojo_bindings_java",
 diff --git a/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java b/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java
-index e440bc3661241..cbf3c2bb1dac0 100644
+index f33c6a694f52d..e996da0208115 100644
 --- a/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java
 @@ -12,17 +12,6 @@ import android.os.Process;
@@ -308,7 +308,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      private static @OperationResult int convertToOperationResult(Throwable thrown) {
-@@ -180,22 +171,7 @@ public class AttributionOsLevelManager {
+@@ -181,22 +172,7 @@ public class AttributionOsLevelManager {
      }
  
      private MeasurementManagerFutures getManager() {
@@ -332,7 +332,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      private void onRegistrationCompleted(
-@@ -209,28 +185,6 @@ public class AttributionOsLevelManager {
+@@ -210,28 +186,6 @@ public class AttributionOsLevelManager {
          }
      }
  
@@ -361,7 +361,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      /**
       * Registers a web attribution source with native, see `registerWebSourceAsync()`:
       * https://developer.android.com/reference/androidx/privacysandbox/ads/adservices/java/measurement/MeasurementManagerFutures.
-@@ -249,25 +203,6 @@ public class AttributionOsLevelManager {
+@@ -250,25 +204,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -387,7 +387,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      /**
-@@ -283,15 +218,6 @@ public class AttributionOsLevelManager {
+@@ -284,15 +219,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -403,7 +403,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      /**
-@@ -308,22 +234,6 @@ public class AttributionOsLevelManager {
+@@ -309,22 +235,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -426,7 +426,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      /**
-@@ -339,15 +249,6 @@ public class AttributionOsLevelManager {
+@@ -340,15 +250,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -442,7 +442,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      private void onDataDeletionCompleted(int requestId) {
-@@ -382,96 +283,7 @@ public class AttributionOsLevelManager {
+@@ -383,96 +284,7 @@ public class AttributionOsLevelManager {
              onDataDeletionCompleted(requestId);
              return;
          }
@@ -540,7 +540,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
      }
  
      private static void onMeasurementStateReturned(int status, @OperationResult int result) {
-@@ -487,6 +299,10 @@ public class AttributionOsLevelManager {
+@@ -488,6 +300,10 @@ public class AttributionOsLevelManager {
      private static void getMeasurementApiStatus() {
          ThreadUtils.assertOnBackgroundThread();
  
@@ -551,7 +551,7 @@ index e440bc3661241..cbf3c2bb1dac0 100644
          if (sManagerForTesting != null) {
              AttributionOsLevelManagerJni.get().onMeasurementStateReturned(1);
              return;
-@@ -506,49 +322,6 @@ public class AttributionOsLevelManager {
+@@ -507,49 +323,6 @@ public class AttributionOsLevelManager {
              onMeasurementStateReturned(/* status= */ 0, OperationResult.ERROR_PERMISSION_UNGRANTED);
              return;
          }

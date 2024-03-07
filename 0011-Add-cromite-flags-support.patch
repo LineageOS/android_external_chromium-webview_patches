@@ -1,4 +1,4 @@
-From 4df5ec193b2e1cbd4f59f183849aadb58a51680d Mon Sep 17 00:00:00 2001
+From 05bddb7e9fcdc9bb2cbfe4a950abb1263079ecf9 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 18 Nov 2023 09:41:28 +0000
 Subject: [PATCH 11/12] Add cromite flags support
@@ -600,10 +600,10 @@ index f2e18f08e36c0..1f05dc37baba9 100644
    sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
    sources += [
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
-index d6e72770ab44a..0bc53017e383c 100644
+index cb868ced6af92..0303dbb0350d5 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1001,5 +1001,6 @@ BASE_FEATURE(kWebApkBackupAndRestoreBackend,
+@@ -996,5 +996,6 @@ BASE_FEATURE(kWebApkBackupAndRestoreBackend,
               "WebApkBackupAndRestoreBackend",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -611,10 +611,10 @@ index d6e72770ab44a..0bc53017e383c 100644
  }  // namespace android
  }  // namespace chrome
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
-index b5df228c13b77..f47d7b74215c4 100644
+index 0966aff5f544d..44404f877e787 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -196,6 +196,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
+@@ -195,6 +195,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
      "auxiliary_search_max_donation_tab",
      100);
  
@@ -623,7 +623,7 @@ index b5df228c13b77..f47d7b74215c4 100644
  }  // namespace chrome
  
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-index 92358154d2e4d..abc9a381e65ed 100644
+index 1d588122502cc..c8c407a146d13 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 @@ -13,6 +13,10 @@ import org.chromium.base.cached_flags.DoubleCachedFieldTrialParameter;
@@ -637,7 +637,7 @@ index 92358154d2e4d..abc9a381e65ed 100644
  import java.util.List;
  import java.util.Map;
  
-@@ -649,7 +653,7 @@ public abstract class ChromeFeatureList {
+@@ -648,7 +652,7 @@ public abstract class ChromeFeatureList {
      public static final CachedFlag sVerticalAutomotiveBackButtonToolbar =
              newCachedFlag(VERTICAL_AUTOMOTIVE_BACK_BUTTON_TOOLBAR, false);
  
@@ -646,7 +646,7 @@ index 92358154d2e4d..abc9a381e65ed 100644
              List.of(
                      sAndroidAppIntegration,
                      sAndroidElegantTextHeight,
-@@ -727,6 +731,13 @@ public abstract class ChromeFeatureList {
+@@ -726,6 +730,13 @@ public abstract class ChromeFeatureList {
                      sUseLibunwindstackNativeUnwinderAndroid,
                      sVerticalAutomotiveBackButtonToolbar);
  

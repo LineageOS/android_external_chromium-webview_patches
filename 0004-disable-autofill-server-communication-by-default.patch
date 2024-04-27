@@ -1,17 +1,17 @@
-From 8422301b2d3485cea0f15c6f408780a014c4d1f8 Mon Sep 17 00:00:00 2001
+From a9058350ef484cbba510b8d100a7a97729fc6209 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 1 Dec 2020 00:56:57 -0500
-Subject: [PATCH 04/12] disable autofill server communication by default
+Subject: [PATCH 04/11] disable autofill server communication by default
 
 ---
  components/autofill/core/common/autofill_features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
-index ee46598ca07ae..bf32adb005688 100644
+index 37f895d80e89a..be4ca4499cd0c 100644
 --- a/components/autofill/core/common/autofill_features.cc
 +++ b/components/autofill/core/common/autofill_features.cc
-@@ -778,7 +778,7 @@ const base::FeatureParam<std::string>
+@@ -786,7 +786,7 @@ const base::FeatureParam<std::string>
  // i.e., https://other.autofill.server:port/tbproxy/af/
  BASE_FEATURE(kAutofillServerCommunication,
               "AutofillServerCommunication",

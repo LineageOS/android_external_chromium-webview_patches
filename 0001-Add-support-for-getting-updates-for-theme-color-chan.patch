@@ -1,7 +1,7 @@
-From 8fb84c48b9a122095fc9eb0e4a88edcc03d75865 Mon Sep 17 00:00:00 2001
+From 02dd0809865eef0081dae553f9ee633321b9a715 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
-Subject: [PATCH 01/12] Add support for getting updates for theme color
+Subject: [PATCH 01/11] Add support for getting updates for theme color
  changes.
 
 ---
@@ -48,10 +48,10 @@ index b62c950bbea9d..b4e78558c1eaf 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 31c0f814dade5..93647f2a0aaf3 100644
+index 2161f4945c32e..7e3949c4a4e99 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-@@ -59,6 +59,8 @@ import org.chromium.base.task.TaskTraits;
+@@ -61,6 +61,8 @@ import org.chromium.base.task.TaskTraits;
  import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
  
  import java.lang.ref.WeakReference;
@@ -60,9 +60,9 @@ index 31c0f814dade5..93647f2a0aaf3 100644
  import java.security.Principal;
  import java.security.PrivateKey;
  import java.security.cert.X509Certificate;
-@@ -102,6 +104,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
-     private WeakHashMap<AwPermissionRequest, WeakReference<PermissionRequestAdapter>>
-             mOngoingPermissionRequests;
+@@ -110,6 +112,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+     private static final Pattern FILE_ANDROID_ASSET_PATTERN =
+             Pattern.compile("^file:/*android_(asset|res).*");
  
 +    private static Method sWebChromeClientThemeColorMethod;
 +    private static boolean sWebChromeClientThemeColorMethodInitialized;
@@ -70,7 +70,7 @@ index 31c0f814dade5..93647f2a0aaf3 100644
      /**
       * Adapter constructor.
       *
-@@ -113,6 +118,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -121,6 +126,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          super(webView, webViewDelegate, context);
          try (ScopedSysTraceEvent event =
                  ScopedSysTraceEvent.scoped("WebView.APICallback.WebViewClient.constructor")) {
@@ -88,7 +88,7 @@ index 31c0f814dade5..93647f2a0aaf3 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler =
                      new Handler() {
-@@ -1046,6 +1062,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1079,6 +1095,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  
@@ -114,10 +114,10 @@ index 31c0f814dade5..93647f2a0aaf3 100644
          private AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index b5b105e831bf4..6dad70bfc9a1b 100644
+index 62dea874c029d..c3ff92f59ddd5 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-@@ -177,6 +177,8 @@ public abstract class AwContentsClient {
+@@ -178,6 +178,8 @@ public abstract class AwContentsClient {
  
      public abstract void onProgressChanged(int progress);
  

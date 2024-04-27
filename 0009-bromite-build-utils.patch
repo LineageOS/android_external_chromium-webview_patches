@@ -1,7 +1,7 @@
-From 48ae1f7bdea3a1d088a643d2a30d029c0f0a0904 Mon Sep 17 00:00:00 2001
+From 82066a85e875fd1cc35fcf54345c05a38f2293a0 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
-Subject: [PATCH 10/12] bromite build utils
+Subject: [PATCH 09/11] bromite build utils
 
 Change-Id: I341ca819f305782864b36de15b42e2da3849897d
 ---
@@ -433,10 +433,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 8b8cf6bc8f8a4..dbdb8ffdbf30c 100644
+index 26a23e459a62d..329ed243afca5 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -652,6 +652,7 @@ set_defaults("component") {
+@@ -715,6 +715,7 @@ set_defaults("component") {
    configs = default_component_configs
  }
  
@@ -445,7 +445,7 @@ index 8b8cf6bc8f8a4..dbdb8ffdbf30c 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index bc9ec9848e4a9..dea670485a207 100644
+index 0929028a119b6..983b564e5736d 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -214,7 +214,7 @@ if (enable_java_templates && is_android) {
@@ -469,10 +469,10 @@ index bc9ec9848e4a9..dea670485a207 100644
      }
    }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index e64c079f39f16..31f0a8d78ef07 100644
+index 69cfc1ea44f49..89cf50ec65786 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -23,6 +23,11 @@ import org.chromium.components.browser_ui.site_settings.SiteSettingsCategory;
+@@ -10,6 +10,11 @@ import org.chromium.components.browser_ui.accessibility.AccessibilitySettingsDel
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
@@ -483,7 +483,7 @@ index e64c079f39f16..31f0a8d78ef07 100644
 +
  /** The Chrome implementation of AccessibilitySettingsDelegate. */
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
-     private static class ReaderForAccessibilityDelegate implements BooleanPreferenceDelegate {
+     private static class TextSizeContrastAccessibilityDelegate
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 index 03c8eb2950a53..f2e18f08e36c0 100644
 --- a/chrome/browser/flags/BUILD.gn

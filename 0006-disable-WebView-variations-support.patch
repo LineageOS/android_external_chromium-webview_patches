@@ -1,4 +1,4 @@
-From 9db4d72a0a8fb95649b68e53743d34840f7c3255 Mon Sep 17 00:00:00 2001
+From 5a30658ce17fab1050bc1cd9d98b45404a13d257 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/11] disable WebView variations support
@@ -41,5 +41,5 @@ index 8f5130d20f2a7..486affcd7629d 100644
  
              setSingleton(this);
 -- 
-2.44.0
+2.45.0
 

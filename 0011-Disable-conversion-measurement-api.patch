@@ -1,4 +1,4 @@
-From 907ef3e5a63b58eca239cf5e90385101f580bacc Mon Sep 17 00:00:00 2001
+From d32d4dec462bafedf6f6afa7e7849a45fdd17829 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
 Subject: [PATCH 11/11] Disable conversion measurement api
@@ -47,10 +47,10 @@ Change-Id: I5d97fd708d050e505b451705ca0d95d61b1c76a5
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
-index 71b3dd63709f4..22b3a5a5a1f53 100644
+index 96a11918372aa..0e6cf58986342 100644
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
-@@ -1178,6 +1178,7 @@ network::mojom::AttributionSupport
+@@ -1249,6 +1249,7 @@ network::mojom::AttributionSupport
  AwContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -58,7 +58,7 @@ index 71b3dd63709f4..22b3a5a5a1f53 100644
    // WebView only supports OS-level attribution and not web-attribution.
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
-@@ -1196,6 +1197,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -1267,6 +1268,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -90,7 +90,7 @@ index 0aa0e3ff1d7e5..9d757e165835c 100644
              }
          }
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
-index 18390bd98a13a..bf3d9ee99bea8 100644
+index 632b6fcfa2c68..0ff1263d37d84 100644
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
 @@ -39,7 +39,6 @@ by a child template that "extends" this file.
@@ -101,7 +101,7 @@ index 18390bd98a13a..bf3d9ee99bea8 100644
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_CONNECT"/>
      <!--
-@@ -1194,9 +1193,6 @@ by a child template that "extends" this file.
+@@ -1195,9 +1194,6 @@ by a child template that "extends" this file.
              android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mcc|mnc|screenLayout|smallestScreenSize" >
          </activity>
  
@@ -134,10 +134,10 @@ index 6d74cf593c5f6..ca78bbd4ab589 100644
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurementAPIAlternativeUsage);
  }  // namespace embedder_support
 diff --git a/components/renderer_context_menu/render_view_context_menu_base.cc b/components/renderer_context_menu/render_view_context_menu_base.cc
-index c49b49d76d7cc..e0e71107914e5 100644
+index 8e45cecb17039..166ef0e22c9bc 100644
 --- a/components/renderer_context_menu/render_view_context_menu_base.cc
 +++ b/components/renderer_context_menu/render_view_context_menu_base.cc
-@@ -502,9 +502,6 @@ RenderViewContextMenuBase::GetOpenURLParamsWithExtraHeaders(
+@@ -503,9 +503,6 @@ RenderViewContextMenuBase::GetOpenURLParamsWithExtraHeaders(
  
    open_url_params.source_site_instance = site_instance_;
  
@@ -148,10 +148,10 @@ index c49b49d76d7cc..e0e71107914e5 100644
  }
  
 diff --git a/content/browser/aggregation_service/aggregatable_report_sender.cc b/content/browser/aggregation_service/aggregatable_report_sender.cc
-index cfd9151b4e2e9..c896f72d6de03 100644
+index 9e0daf04de142..bdb5dcf1a7169 100644
 --- a/content/browser/aggregation_service/aggregatable_report_sender.cc
 +++ b/content/browser/aggregation_service/aggregatable_report_sender.cc
-@@ -137,19 +137,18 @@ void AggregatableReportSender::SendReport(const GURL& url,
+@@ -138,19 +138,18 @@ void AggregatableReportSender::SendReport(const GURL& url,
    // Allow bodies of non-2xx responses to be returned.
    simple_url_loader_ptr->SetAllowHttpErrorResults(true);
  
@@ -189,13 +189,13 @@ index 223bf3d24c210..f6699b86b1257 100644
 +SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAggregationService);
  }  // namespace content
 diff --git a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-index 52dc0f01b7c6b..7ee2bd1692871 100644
+index 45a8d14391ab5..e9f13d930ced7 100644
 --- a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
 +++ b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-@@ -1041,6 +1041,7 @@ void AttributionDataHostManagerImpl::ParseHeader(
+@@ -1100,6 +1100,7 @@ void AttributionDataHostManagerImpl::ParseHeader(
      HeaderPendingDecode pending_decode,
      Registrar registrar) {
-   DCHECK(it != registrations_.end());
+   CHECK(it != registrations_.end());
 +  if ((true)) return;
  
    switch (it->eligibility()) {
@@ -213,14 +213,14 @@ index f64a0a11d26fd..fd8d06bf9a2b2 100644
        AttributionManager::FromWebContents(web_contents());
    DCHECK(attribution_manager);
 diff --git a/content/browser/attribution_reporting/attribution_os_level_manager.cc b/content/browser/attribution_reporting/attribution_os_level_manager.cc
-index e0acb9cc764ea..e2b59f8ef2500 100644
+index 7fa1c3bf54f41..ab8ccdd6cb8e2 100644
 --- a/content/browser/attribution_reporting/attribution_os_level_manager.cc
 +++ b/content/browser/attribution_reporting/attribution_os_level_manager.cc
 @@ -29,6 +29,8 @@ using ScopedApiStateForTesting =
  
  using ApiState = AttributionOsLevelManager::ApiState;
  
-+using AttributionReportingOsReportType = ContentBrowserClient::AttributionReportingOsReportType;
++using AttributionReportingOsRegistrar = ContentBrowserClient::AttributionReportingOsRegistrar;
 +
  #if DCHECK_IS_ON()
  const base::SequenceChecker& GetSequenceChecker() {
@@ -235,11 +235,11 @@ index e0acb9cc764ea..e2b59f8ef2500 100644
  
  // static
 @@ -81,6 +83,7 @@ void AttributionOsLevelManager::SetApiState(std::optional<ApiState> state) {
- ContentBrowserClient::AttributionReportingOsReportTypes
- AttributionOsLevelManager::GetAttributionReportingOsReportTypes(
+ ContentBrowserClient::AttributionReportingOsRegistrars
+ AttributionOsLevelManager::GetAttributionReportingOsRegistrars(
      WebContents* web_contents) {
-+  if ((true)) return {AttributionReportingOsReportType::kDisabled, AttributionReportingOsReportType::kDisabled};
-   return GetContentClient()->browser()->GetAttributionReportingOsReportTypes(
++  if ((true)) return {AttributionReportingOsRegistrar::kDisabled, AttributionReportingOsRegistrar::kDisabled};
+   return GetContentClient()->browser()->GetAttributionReportingOsRegistrars(
        web_contents);
  }
 diff --git a/content/browser/attribution_reporting/attribution_report_network_sender.cc b/content/browser/attribution_reporting/attribution_report_network_sender.cc
@@ -270,10 +270,10 @@ index 93048effd8ef4..17ae2517084f6 100644
  
    // Consider a non-200 HTTP code as a non-internal error.
 diff --git a/content/browser/attribution_reporting/attribution_storage_sql.cc b/content/browser/attribution_reporting/attribution_storage_sql.cc
-index e46a35828e952..14391c2f862dc 100644
+index 59596b3fefa2a..7713c66478a1a 100644
 --- a/content/browser/attribution_reporting/attribution_storage_sql.cc
 +++ b/content/browser/attribution_reporting/attribution_storage_sql.cc
-@@ -459,14 +459,16 @@ base::FilePath DatabasePath(const base::FilePath& user_data_directory) {
+@@ -461,14 +461,16 @@ base::FilePath DatabasePath(const base::FilePath& user_data_directory) {
    return user_data_directory.Append(kDatabasePath);
  }
  
@@ -294,10 +294,10 @@ index e46a35828e952..14391c2f862dc 100644
        delegate_(std::move(delegate)),
        rate_limit_table_(delegate_.get()) {
 diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
-index 733ac0ebce185..b8d8ff186089b 100644
+index edada1997789f..94df4424a83a5 100644
 --- a/content/browser/storage_partition_impl.cc
 +++ b/content/browser/storage_partition_impl.cc
-@@ -1451,15 +1451,6 @@ void StoragePartitionImpl::Initialize(
+@@ -1452,15 +1452,6 @@ void StoragePartitionImpl::Initialize(
  
    bucket_manager_ = std::make_unique<BucketManager>(this);
  
@@ -327,7 +327,7 @@ index e8362c311d08b..2fe9f9c6049fd 100644
      "//third_party/blink/public:blink_headers_java",
      "//third_party/blink/public/common:common_java",
 diff --git a/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java b/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java
-index 84002b3036dc8..143896ed2caff 100644
+index 6cfd8da88cc36..7fb15fe27c1ad 100644
 --- a/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/AttributionOsLevelManager.java
 @@ -13,18 +13,6 @@ import android.view.MotionEvent;
@@ -349,7 +349,7 @@ index 84002b3036dc8..143896ed2caff 100644
  
  import org.jni_zero.CalledByNative;
  import org.jni_zero.JNINamespace;
-@@ -54,6 +42,10 @@ import java.util.concurrent.TimeoutException;
+@@ -55,6 +43,10 @@ import java.util.concurrent.TimeoutException;
   */
  @JNINamespace("content")
  public class AttributionOsLevelManager {
@@ -360,7 +360,7 @@ index 84002b3036dc8..143896ed2caff 100644
      private static final String TAG = "AttributionManager";
      // TODO: replace with constant in android.Manifest.permission once it becomes available in U.
      private static final String PERMISSION_ACCESS_ADSERVICES_ATTRIBUTION =
-@@ -118,63 +110,11 @@ public class AttributionOsLevelManager {
+@@ -119,63 +111,11 @@ public class AttributionOsLevelManager {
      }
  
      private static boolean supportsAttribution() {
@@ -425,7 +425,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      @CalledByNative
-@@ -183,22 +123,7 @@ public class AttributionOsLevelManager {
+@@ -184,22 +124,7 @@ public class AttributionOsLevelManager {
      }
  
      private MeasurementManagerFutures getManager() {
@@ -449,7 +449,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      private void onRegistrationCompleted(
-@@ -212,28 +137,6 @@ public class AttributionOsLevelManager {
+@@ -213,28 +138,6 @@ public class AttributionOsLevelManager {
          }
      }
  
@@ -478,7 +478,7 @@ index 84002b3036dc8..143896ed2caff 100644
      @CalledByNative
      private static List<WebSourceParams> createWebSourceParamsList(int size) {
          if (!supportsAttribution()) {
-@@ -248,7 +151,6 @@ public class AttributionOsLevelManager {
+@@ -249,7 +152,6 @@ public class AttributionOsLevelManager {
          if (!supportsAttribution()) {
              return;
          }
@@ -486,7 +486,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      /**
-@@ -265,32 +167,12 @@ public class AttributionOsLevelManager {
+@@ -266,32 +168,12 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -518,8 +518,8 @@ index 84002b3036dc8..143896ed2caff 100644
 -                            .RegisterSourceOptIn.class)
      @CalledByNative
      private void registerAttributionSource(
-             int requestId, GURL[] registrationUrls, MotionEvent event) {
-@@ -301,37 +183,16 @@ public class AttributionOsLevelManager {
+             int requestId, @JniType("std::vector") GURL[] registrationUrls, MotionEvent event) {
+@@ -302,37 +184,16 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -558,7 +558,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      /**
-@@ -348,18 +209,6 @@ public class AttributionOsLevelManager {
+@@ -349,18 +210,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -577,7 +577,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      /**
-@@ -375,15 +224,6 @@ public class AttributionOsLevelManager {
+@@ -376,15 +225,6 @@ public class AttributionOsLevelManager {
                      OperationResult.ERROR_VERSION_UNSUPPORTED);
              return;
          }
@@ -593,7 +593,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      private void onDataDeletionCompleted(int requestId) {
-@@ -418,96 +258,7 @@ public class AttributionOsLevelManager {
+@@ -419,96 +259,7 @@ public class AttributionOsLevelManager {
              onDataDeletionCompleted(requestId);
              return;
          }
@@ -691,7 +691,7 @@ index 84002b3036dc8..143896ed2caff 100644
      }
  
      private static void onMeasurementStateReturned(int status, @OperationResult int result) {
-@@ -523,6 +274,10 @@ public class AttributionOsLevelManager {
+@@ -524,6 +275,10 @@ public class AttributionOsLevelManager {
      private static void getMeasurementApiStatus() {
          ThreadUtils.assertOnBackgroundThread();
  
@@ -702,7 +702,7 @@ index 84002b3036dc8..143896ed2caff 100644
          if (sManagerForTesting != null) {
              AttributionOsLevelManagerJni.get().onMeasurementStateReturned(1);
              return;
-@@ -542,49 +297,6 @@ public class AttributionOsLevelManager {
+@@ -543,49 +298,6 @@ public class AttributionOsLevelManager {
              onMeasurementStateReturned(/* status= */ 0, OperationResult.ERROR_PERMISSION_UNGRANTED);
              return;
          }
@@ -753,10 +753,10 @@ index 84002b3036dc8..143896ed2caff 100644
  
      @CalledByNative
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index 465de2f945f3a..f885eaaa31814 100644
+index d2975a6c36e2c..fb07a03670253 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -539,6 +539,7 @@ void ContentBrowserClient::OnAuctionComplete(
+@@ -544,6 +544,7 @@ void ContentBrowserClient::OnAuctionComplete(
  network::mojom::AttributionSupport ContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -764,7 +764,7 @@ index 465de2f945f3a..f885eaaa31814 100644
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
        return network::mojom::AttributionSupport::kWeb;
-@@ -556,7 +557,7 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -561,7 +562,7 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -772,8 +772,8 @@ index 465de2f945f3a..f885eaaa31814 100644
 +  return false;
  }
  
- ContentBrowserClient::AttributionReportingOsReportTypes
-@@ -570,7 +571,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
+ ContentBrowserClient::AttributionReportingOsRegistrars
+@@ -575,7 +576,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
      content::RenderFrameHost* rfh,
      const url::Origin& context_origin,
      const url::Origin& reporting_origin) {
@@ -863,10 +863,10 @@ index bb0e5a0aa81e2..4574744bcaf6b 100644
      case mojom::AttributionSupport::kWeb:
      case mojom::AttributionSupport::kWebAndOs:
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
-index 7748fef84abb7..9ef3daa0fb914 100644
+index 15c986333a9ee..ff98fc6cf0541 100644
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -1383,7 +1383,7 @@ void Page::UpdateBrowsingContextGroup(
+@@ -1412,7 +1412,7 @@ void Page::UpdateBrowsingContextGroup(
  
  void Page::SetAttributionSupport(
      network::mojom::AttributionSupport attribution_support) {
@@ -893,5 +893,5 @@ index c962b29117f30..eed0e4049b4c3 100644
  }
  
 -- 
-2.44.0
+2.45.1
 

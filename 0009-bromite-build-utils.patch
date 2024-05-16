@@ -1,4 +1,4 @@
-From 82066a85e875fd1cc35fcf54345c05a38f2293a0 Mon Sep 17 00:00:00 2001
+From 1cfda0497de5bc62ae7397372408c8a7931bf4d5 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/11] bromite build utils
@@ -433,10 +433,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 26a23e459a62d..329ed243afca5 100644
+index 26fad5adf994a..a7cc9985c4d2c 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -715,6 +715,7 @@ set_defaults("component") {
+@@ -721,6 +721,7 @@ set_defaults("component") {
    configs = default_component_configs
  }
  
@@ -445,10 +445,10 @@ index 26a23e459a62d..329ed243afca5 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 0929028a119b6..983b564e5736d 100644
+index a65ed430f2cbe..65afebc36413b 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -214,7 +214,7 @@ if (enable_java_templates && is_android) {
+@@ -209,7 +209,7 @@ if (is_robolectric) {
    #   }
    template("java_cpp_enum") {
      action_with_pydeps(target_name) {
@@ -457,7 +457,7 @@ index 0929028a119b6..983b564e5736d 100644
  
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
-@@ -225,6 +225,10 @@ if (enable_java_templates && is_android) {
+@@ -220,6 +220,10 @@ if (is_robolectric) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -485,7 +485,7 @@ index 69cfc1ea44f49..89cf50ec65786 100644
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
      private static class TextSizeContrastAccessibilityDelegate
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 03c8eb2950a53..f2e18f08e36c0 100644
+index f9510952f325e..908db42b13788 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -6,7 +6,8 @@ import("//build/config/android/rules.gni")
@@ -734,5 +734,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.44.0
+2.45.1
 

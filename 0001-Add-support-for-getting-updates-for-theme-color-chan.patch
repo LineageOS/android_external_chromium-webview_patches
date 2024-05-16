@@ -1,4 +1,4 @@
-From 02dd0809865eef0081dae553f9ee633321b9a715 Mon Sep 17 00:00:00 2001
+From bcdcf977db4825cfc5fda078164d081641d66060 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/11] Add support for getting updates for theme color
@@ -211,5 +211,5 @@ index be8f554e3930e..7e2e11de7b3db 100644
      public WebResourceResponseInfo shouldInterceptRequest(
              AwContentsClient.AwWebResourceRequest request) {
 -- 
-2.44.0
+2.45.0
 

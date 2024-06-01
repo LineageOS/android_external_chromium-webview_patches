@@ -1,4 +1,4 @@
-From 1cfda0497de5bc62ae7397372408c8a7931bf4d5 Mon Sep 17 00:00:00 2001
+From 76e60ec7bfd8e057165d7eae20d52a26563a4b85 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/11] bromite build utils
@@ -734,5 +734,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.45.1
+2.45.2
 

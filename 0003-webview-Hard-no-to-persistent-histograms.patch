@@ -1,4 +1,4 @@
-From 4e440075b254657e25a394c68fcdca71ddde2717 Mon Sep 17 00:00:00 2001
+From 8492cac6a5f87657a7438b8eed088565a575b152 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sun, 27 Dec 2020 09:42:54 -0700
 Subject: [PATCH 03/11] webview: Hard no to persistent histograms
@@ -15,7 +15,7 @@ Subject: [PATCH 03/11] webview: Hard no to persistent histograms
  1 file changed, 2 insertions(+)
 
 diff --git a/android_webview/browser/aw_field_trials.cc b/android_webview/browser/aw_field_trials.cc
-index ed2af2114c97e..51caa6e6a5f9e 100644
+index e66386c6b813b..126168fbac6bf 100644
 --- a/android_webview/browser/aw_field_trials.cc
 +++ b/android_webview/browser/aw_field_trials.cc
 @@ -60,6 +60,7 @@ class AwFeatureOverrides {
@@ -33,7 +33,7 @@ index ed2af2114c97e..51caa6e6a5f9e 100644
 +#endif
  }
  
- // TODO(crbug.com/1453407): Consider to migrate all WebView feature overrides
+ // TODO(crbug.com/40271903): Consider to migrate all WebView feature overrides
 -- 
 2.45.2
 

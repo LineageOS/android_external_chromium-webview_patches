@@ -1,4 +1,4 @@
-From 0663f4040714179626bcac1cf7fdab1023bf2b96 Mon Sep 17 00:00:00 2001
+From 8943cebae9b973360318a2286a49706feba459cc Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/11] disable WebView variations support
@@ -9,10 +9,10 @@ Subject: [PATCH 06/11] disable WebView variations support
  2 files changed, 10 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index c4c9b6060ee57..deb85a6afada9 100644
+index f8fca3ff457ee..9e2191c8560d0 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -215,12 +215,6 @@ public class WebViewChromiumAwInit {
+@@ -248,12 +248,6 @@ public class WebViewChromiumAwInit {
  
              AwBrowserProcess.configureChildProcessLauncher();
  
@@ -23,13 +23,13 @@ index c4c9b6060ee57..deb85a6afada9 100644
 -            }
 -
              AwBrowserProcess.start();
-             AwBrowserProcess.handleMinidumpsAndSetMetricsConsent(/* updateMetricsConsent= */ true);
-             doNetworkInitializations(context);
+ 
+             // TODO(crbug.com/332706093): See if this can be moved before loading native.
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index f4d1a3e4ea20e..e62a6f0b5d284 100644
+index 724325b335a29..ba01cc68e672d 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -460,10 +460,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -518,10 +518,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
                  }
              }
  
@@ -41,5 +41,5 @@ index f4d1a3e4ea20e..e62a6f0b5d284 100644
  
              setSingleton(this);
 -- 
-2.45.2
+2.46.0
 

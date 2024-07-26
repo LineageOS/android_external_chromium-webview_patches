@@ -1,4 +1,4 @@
-From da6a2a73abc4c29d0d55c75985ca10d73346088c Mon Sep 17 00:00:00 2001
+From b7dce51a850a6b0e87c4aa02d25e078bca76b790 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/11] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/11] Add support for getting updates for theme color
  6 files changed, 76 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index b62c950bbea9d..b4e78558c1eaf 100644
+index a25dceee51a40..d54142963c36f 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -33,7 +33,7 @@ index b62c950bbea9d..b4e78558c1eaf 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1807,6 +1809,13 @@ class WebViewChromium
+@@ -1823,6 +1825,13 @@ class WebViewChromium
          }
      }
  
@@ -48,11 +48,11 @@ index b62c950bbea9d..b4e78558c1eaf 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 2161f4945c32e..7e3949c4a4e99 100644
+index 55845a75d7c67..edf77de8e00de 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-@@ -61,6 +61,8 @@ import org.chromium.base.task.TaskTraits;
- import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
+@@ -62,6 +62,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
+ import org.chromium.content_public.browser.util.DialogTypeRecorder;
  
  import java.lang.ref.WeakReference;
 +import java.lang.reflect.InvocationTargetException;
@@ -60,7 +60,7 @@ index 2161f4945c32e..7e3949c4a4e99 100644
  import java.security.Principal;
  import java.security.PrivateKey;
  import java.security.cert.X509Certificate;
-@@ -110,6 +112,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -111,6 +113,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
      private static final Pattern FILE_ANDROID_ASSET_PATTERN =
              Pattern.compile("^file:/*android_(asset|res).*");
  
@@ -70,7 +70,7 @@ index 2161f4945c32e..7e3949c4a4e99 100644
      /**
       * Adapter constructor.
       *
-@@ -121,6 +126,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -122,6 +127,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          super(webView, webViewDelegate, context);
          try (ScopedSysTraceEvent event =
                  ScopedSysTraceEvent.scoped("WebView.APICallback.WebViewClient.constructor")) {
@@ -88,7 +88,7 @@ index 2161f4945c32e..7e3949c4a4e99 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler =
                      new Handler() {
-@@ -1079,6 +1095,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1081,6 +1097,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  
@@ -211,5 +211,5 @@ index be8f554e3930e..7e2e11de7b3db 100644
      public WebResourceResponseInfo shouldInterceptRequest(
              AwContentsClient.AwWebResourceRequest request) {
 -- 
-2.45.2
+2.46.0
 

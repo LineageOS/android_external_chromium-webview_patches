@@ -1,4 +1,4 @@
-From 27182d002c2fb578c620613d1548d4ba198e3948 Mon Sep 17 00:00:00 2001
+From 476dad893077b5c0367a35f836ce5b7c6a8f947d Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Tue, 28 Sep 2021 08:43:01 -0600
 Subject: [PATCH 05/11] webview: Disable autofill metadata uploads by default
@@ -10,7 +10,7 @@ Subject: [PATCH 05/11] webview: Disable autofill metadata uploads by default
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/components/autofill/core/browser/randomized_encoder.cc b/components/autofill/core/browser/randomized_encoder.cc
-index d99f1a8a846b3..58d85d6065379 100644
+index 201ecfe1eaa3b..f49a7bc22e8ae 100644
 --- a/components/autofill/core/browser/randomized_encoder.cc
 +++ b/components/autofill/core/browser/randomized_encoder.cc
 @@ -188,7 +188,7 @@ const char RandomizedEncoder::kUrlKeyedAnonymizedDataCollectionEnabled[] =
@@ -23,5 +23,5 @@ index d99f1a8a846b3..58d85d6065379 100644
    }
  
 -- 
-2.45.2
+2.46.0
 

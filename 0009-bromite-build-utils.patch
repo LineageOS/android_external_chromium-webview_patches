@@ -1,4 +1,4 @@
-From 3764402edf04d2ec65479b2301b230256cc645f8 Mon Sep 17 00:00:00 2001
+From 29597d0234f63728028ea665f213f66ef098eee5 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/11] bromite build utils
@@ -10,18 +10,19 @@ Change-Id: I341ca819f305782864b36de15b42e2da3849897d
  build/bromite/bromite_utils.gni               |  79 +++++++++++++
  build/bromite/gyp/cpp_bromite_include.py      |  35 ++++++
  build/bromite/gyp/cpp_bromite_include.pydeps  |   9 ++
- build/bromite/gyp/java_bromite_impl.py        | 108 ++++++++++++++++++
+ build/bromite/gyp/java_bromite_impl.py        | 107 ++++++++++++++++++
  build/bromite/gyp/java_bromite_impl.pydeps    |   9 ++
  build/config/BUILDCONFIG.gn                   |   1 +
  build/config/android/rules.gni                |   6 +-
  .../ChromeAccessibilitySettingsDelegate.java  |   5 +
  chrome/browser/flags/BUILD.gn                 |  10 +-
- .../flags/android/cromite_native_utils.cc     |  41 +++++++
+ .../flags/android/cromite_native_utils.cc     |  43 +++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
  .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
+ mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 16 files changed, 467 insertions(+), 16 deletions(-)
+ 17 files changed, 487 insertions(+), 19 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -305,10 +306,10 @@ index 0000000000000..b5adeb538b32d
 +cpp_bromite_include.py
 diff --git a/build/bromite/gyp/java_bromite_impl.py b/build/bromite/gyp/java_bromite_impl.py
 new file mode 100644
-index 0000000000000..8b214728d62aa
+index 0000000000000..5fe190870e2c7
 --- /dev/null
 +++ b/build/bromite/gyp/java_bromite_impl.py
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,107 @@
 +#!/usr/bin/env python3
 +
 +import argparse
@@ -345,8 +346,7 @@ index 0000000000000..8b214728d62aa
 +
 +  import_clause = '\n'.join(
 +      ['import ' + namespace + '.' + f + ';' for f in strings])
-+  print(namespace)
-+  print(static_classes)
++
 +  if static_classes:
 +    add_clause = '\n\t'.join(['\tadd(' + f + '.getInstance());' for f in strings])
 +  else:
@@ -433,10 +433,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 29625fa7af1c8..d82cc5534b94e 100644
+index d1a665482c989..1f50d474948f1 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -726,6 +726,7 @@ set_defaults("component") {
+@@ -727,6 +727,7 @@ set_defaults("component") {
    configs = default_component_configs
  }
  
@@ -445,7 +445,7 @@ index 29625fa7af1c8..d82cc5534b94e 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 2ed5851e0d170..f02627ee43d99 100644
+index 80f918a81859c..5cfafafa54e64 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -207,7 +207,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -521,10 +521,10 @@ index f9510952f325e..908db42b13788 100644
    ]
 diff --git a/chrome/browser/flags/android/cromite_native_utils.cc b/chrome/browser/flags/android/cromite_native_utils.cc
 new file mode 100755
-index 0000000000000..8118246dcae77
+index 0000000000000..c16d3605d043c
 --- /dev/null
 +++ b/chrome/browser/flags/android/cromite_native_utils.cc
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,43 @@
 +#include "chrome/browser/flags/android/cromite_native_utils.h"
 +
 +#include "chrome/browser/browser_process.h"
@@ -548,6 +548,8 @@ index 0000000000000..8118246dcae77
 +
 +  if (isEnabled)
 +    entries.insert(internal_name + "@1");
++  else
++    entries.insert(internal_name + "@2");
 +
 +  flags_storage.SetFlags(entries);
 +  flags_storage.CommitPendingWrites();
@@ -588,15 +590,15 @@ index 0000000000000..db44defd1ecb8
 +#endif  // CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 new file mode 100755
-index 0000000000000..bae5d699db571
+index 0000000000000..d01ecbc5428f7
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 @@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
++import org.chromium.base.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
-+import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
++import org.chromium.base.cached_flags.CachedFlagsSharedPreferences;
 +
 +import org.jni_zero.CalledByNative;
 +import org.jni_zero.NativeMethods;
@@ -623,7 +625,7 @@ index 0000000000000..bae5d699db571
 +            CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
 +            String preferenceName = cachedFlag.getSharedPreferenceKey();
 +
-+            ChromeSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
++            CachedFlagsSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
 +            cachedFlag.setValueReturnedOverride(newValue);
 +        }
 +    }
@@ -638,6 +640,56 @@ index 0000000000000..bae5d699db571
 +        boolean isFlagEnabled(String featureName);
 +    }
 +}
+diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/mojom_parser.py
+index 039c7464268f0..0ddfb753b92d6 100755
+--- a/mojo/public/tools/mojom/mojom_parser.py
++++ b/mojo/public/tools/mojom/mojom_parser.py
+@@ -21,6 +21,7 @@ import os
+ import os.path
+ import sys
+ import traceback
++import re
+ from collections import defaultdict
+ 
+ from mojom.generate import module
+@@ -176,11 +177,26 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
+   collect(build_metadata_filename)
+   return allowed_imports
+ 
++def _ResolveInclude(mojom_abspath, input_root_paths):
++  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, input_root_paths)
++  with codecs.open(mojom_abspath, encoding='utf-8') as f:
++    src = f.read()
++
++    lines = src.splitlines();
++    for idx, i in enumerate(lines):
++      if i.startswith("#include"):
++        include_file = re.findall(r'"([^"]*)"', i)[0]
++        if include_file.startswith("../../"):
++          include_file = include_file[6::]
++        lines[idx] = _ResolveInclude(include_file, input_root_paths)
++
++  return "\n".join(lines)
+ 
+ # multiprocessing helper.
+-def _ParseAstHelper(mojom_abspath, enabled_features):
++def _ParseAstHelper(mojom_abspath, enabled_features, input_root_paths):
+   with codecs.open(mojom_abspath, encoding='utf-8') as f:
+-    ast = parser.Parse(f.read(), mojom_abspath)
++    src = _ResolveInclude(mojom_abspath, input_root_paths)
++    ast = parser.Parse(src, mojom_abspath)
+     conditional_features.RemoveDisabledDefinitions(ast, enabled_features)
+     return mojom_abspath, ast
+ 
+@@ -300,7 +316,7 @@ def _ParseMojoms(mojom_files,
+       (path, abs_path) for abs_path, path in mojom_files_to_parse.items())
+ 
+   logging.info('Parsing %d .mojom into ASTs', len(mojom_files_to_parse))
+-  map_args = ((mojom_abspath, enabled_features)
++  map_args = ((mojom_abspath, enabled_features, input_root_paths)
+               for mojom_abspath in mojom_files_to_parse)
+   for mojom_abspath, ast in _Shard(_ParseAstHelper, map_args):
+     loaded_mojom_asts[mojom_abspath] = ast
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 index 99ed30f12c15c..0d887bda059c8 100755
 --- a/tools/grit/grit/grd_reader.py

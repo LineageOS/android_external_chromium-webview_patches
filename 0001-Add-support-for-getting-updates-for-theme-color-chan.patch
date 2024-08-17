@@ -1,4 +1,4 @@
-From b7dce51a850a6b0e87c4aa02d25e078bca76b790 Mon Sep 17 00:00:00 2001
+From 67681a96b6074e1c10169827d52304e8eb015920 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/11] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/11] Add support for getting updates for theme color
  6 files changed, 76 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index a25dceee51a40..d54142963c36f 100644
+index d5bba2951a379..ba1833cb940fb 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -33,7 +33,7 @@ index a25dceee51a40..d54142963c36f 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1823,6 +1825,13 @@ class WebViewChromium
+@@ -1851,6 +1853,13 @@ class WebViewChromium
          }
      }
  
@@ -48,7 +48,7 @@ index a25dceee51a40..d54142963c36f 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index 55845a75d7c67..edf77de8e00de 100644
+index a02f8d1c28ed2..f6aa487879929 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 @@ -62,6 +62,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
@@ -88,7 +88,7 @@ index 55845a75d7c67..edf77de8e00de 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler =
                      new Handler() {
-@@ -1081,6 +1097,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1087,6 +1103,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  
@@ -164,10 +164,10 @@ index fe29c88d38009..625ac490c2db0 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index c6546b76d7c18..d45e8c54f976d 100644
+index 1df145fd2c699..cb28b2a0f7745 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-@@ -176,12 +176,27 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -184,12 +184,27 @@ public class AwWebContentsObserver extends WebContentsObserver {
                      });
          }
  

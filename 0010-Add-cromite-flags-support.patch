@@ -1,4 +1,4 @@
-From a1b2fb3c18b49482a01cffdc79597e3d5226730b Mon Sep 17 00:00:00 2001
+From 1c68fadd90b97a451b28e9c1636f7c581e33bb86 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 18 Nov 2023 09:41:28 +0000
 Subject: [PATCH 10/11] Add cromite flags support
@@ -10,54 +10,60 @@ Allows flags to be defined in separate files.
 Activates a new cromite tab in chrome://flags with only the flags
 added and changed. In android added chrome://flags/cromite
 in the setting ui.
-Currently in wip
 
 Need: bromite-build-utils.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
+
 Change-Id: Idff60cba408b3a031e0c01940b52cebb836787a5
 ---
  base/BUILD.gn                                 |   4 +-
  base/android/feature_map.cc                   |   5 +
- .../base/cached_flags/CachedFlag.java         |   6 +
- base/feature_list.cc                          |  80 ++++++++++
- base/feature_list.h                           |  72 ++++++++-
+ .../base/cached_flags/CachedFlag.java         |   8 +-
+ base/feature_list.cc                          |  76 ++++++++
+ base/feature_list.h                           |  72 +++++++-
  build/android/gyp/java_cpp_features.py        |  17 ++
  chrome/android/java/res/values/values.xml     |   3 +
  .../java/res/xml/privacy_preferences.xml      |   4 +
+ .../settings/AccessibilitySettings.java       |   5 +-
+ .../homepage/settings/HomepageSettings.java   |   2 +-
  .../privacy/settings/PrivacySettings.java     |   2 +-
- .../browser/settings/SettingsActivity.java    |  36 +++++
- chrome/browser/about_flags.cc                 |   7 +
+ .../browser/settings/SettingsActivity.java    |  36 ++++
+ chrome/browser/about_flags.cc                 |  11 ++
  chrome/browser/browser_features.cc            |   1 +
- chrome/browser/flags/BUILD.gn                 |  12 ++
+ chrome/browser/flags/BUILD.gn                 |  13 ++
  .../flags/android/chrome_feature_list.cc      |   1 +
  .../flags/android/chrome_feature_list.h       |   1 +
  .../browser/flags/ChromeFeatureList.java      |  13 +-
- .../browser/flags/CromiteNativeUtils.java     |   5 +-
  .../flags/cromite/include_all_directory.java  |   1 +
- .../java_template/CromiteCachedFlag.java.tmpl |  47 ++++++
+ .../java_template/CromiteCachedFlag.java.tmpl |  47 +++++
  chrome/browser/settings/BUILD.gn              |   1 +
- .../settings/ChromeBaseSettingsFragment.java  |  47 ++++++
+ .../settings/ChromeBaseSettingsFragment.java  |  47 +++++
  .../strings/android_chrome_strings.grd        |   1 +
+ .../Add-cromite-flags-support.grdp            |   9 +
  .../placeholder.txt                           |   1 +
  chrome/browser/ui/ui_features.cc              |   1 +
  chrome/common/chrome_features.cc              |   1 +
+ .../res/xml/accessibility_preferences.xml     |   3 +-
  .../android/java/res/values/attrs.xml         |   4 +
  .../settings/ChromeSwitchPreference.java      |  20 +++
+ components/components_strings.grd             |   1 +
  .../content_settings/core/common/features.cc  |   1 +
- components/flags_ui/flags_state.cc            |  56 ++++++-
- components/flags_ui/resources/app.html        |  42 ++++-
+ .../placeholder.txt                           |   1 +
+ components/flags_ui/flags_state.cc            |  54 ++++++
+ components/flags_ui/resources/app.html        |  40 +++++
  components/flags_ui/resources/app.ts          |  41 ++++-
  components/flags_ui/resources/experiment.html |   7 +-
  components/flags_ui/resources/experiment.ts   |  16 ++
  .../flags_ui/resources/flags_browser_proxy.ts |   5 +
  .../core/offline_page_feature.cc              |   1 +
  .../offline_pages/core/offline_page_feature.h |   1 +
+ .../browser/features/password_features.cc     |   1 +
  components/permissions/features.cc            |   1 +
  .../version_ui/version_handler_helper.cc      |   2 +-
  content/common/features.cc                    |   1 +
  content/public/common/content_features.cc     |   1 +
  content/public/common/content_features.h      |   1 +
- cromite_flags/BUILD.gn                        | 150 ++++++++++++++++++
+ cromite_flags/BUILD.gn                        | 168 ++++++++++++++++++
  .../browser/about_flags_cc/placeholder.txt    |   1 +
  .../browser_features_cc/placeholder.txt       |   1 +
  .../chrome_feature_list_cc/placeholder.txt    |   1 +
@@ -68,6 +74,7 @@ Change-Id: Idff60cba408b3a031e0c01940b52cebb836787a5
  .../core/common/features_cc/placeholder.txt   |   1 +
  .../offline_page_feature_cc/placeholder.txt   |   1 +
  .../offline_page_feature_h/placeholder.txt    |   1 +
+ .../password_features_cc/placeholder.txt      |   1 +
  .../permissions/features_cc/placeholder.txt   |   1 +
  .../common/features_cc/placeholder.txt        |   1 +
  .../content_features_cc/placeholder.txt       |   1 +
@@ -80,6 +87,8 @@ Change-Id: Idff60cba408b3a031e0c01940b52cebb836787a5
  .../public/cpp/features_h/placeholder.txt     |   1 +
  .../blink/common/features_cc/placeholder.txt  |   1 +
  .../blink/common/features_h/placeholder.txt   |   1 +
+ .../ui/base/features_cc/placeholder.txt       |   1 +
+ .../ui/base/features_h/placeholder.txt        |   1 +
  media/base/media_switches.cc                  |   2 +-
  media/base/media_switches.h                   |   2 +-
  net/base/features.cc                          |   1 +
@@ -88,10 +97,14 @@ Change-Id: Idff60cba408b3a031e0c01940b52cebb836787a5
  services/network/public/cpp/features.h        |   1 +
  third_party/blink/common/features.cc          |   1 +
  third_party/blink/public/common/features.h    |   1 +
- 72 files changed, 733 insertions(+), 18 deletions(-)
+ ui/base/ui_base_features.cc                   |   1 +
+ ui/base/ui_base_features.h                    |   1 +
+ 83 files changed, 770 insertions(+), 20 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
+ create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
+ create mode 100644 components/cromite_components_strings_grd/placeholder.txt
  create mode 100755 cromite_flags/BUILD.gn
  create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
  create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
@@ -103,6 +116,7 @@ Change-Id: Idff60cba408b3a031e0c01940b52cebb836787a5
  create mode 100755 cromite_flags/components/content_settings/core/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/components/offline_pages/core/offline_page_feature_cc/placeholder.txt
  create mode 100755 cromite_flags/components/offline_pages/core/offline_page_feature_h/placeholder.txt
+ create mode 100755 cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
  create mode 100755 cromite_flags/components/permissions/features_cc/placeholder.txt
  create mode 100755 cromite_flags/content/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/content/public/common/content_features_cc/placeholder.txt
@@ -115,12 +129,14 @@ Change-Id: Idff60cba408b3a031e0c01940b52cebb836787a5
  create mode 100755 cromite_flags/services/network/public/cpp/features_h/placeholder.txt
  create mode 100755 cromite_flags/third_party/blink/common/features_cc/placeholder.txt
  create mode 100755 cromite_flags/third_party/blink/common/features_h/placeholder.txt
+ create mode 100755 cromite_flags/ui/base/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/ui/base/features_h/placeholder.txt
 
 diff --git a/base/BUILD.gn b/base/BUILD.gn
-index 4ae52e5351615..01dbf5e77b4dc 100644
+index 59f1502704eac..adb24e50a18da 100644
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
-@@ -202,6 +202,8 @@ buildflag_header("message_pump_buildflags") {
+@@ -196,6 +196,8 @@ buildflag_header("message_pump_buildflags") {
  # This does not include test code (test support and anything in the test
  # directory) which should use source_set as is recommended for GN targets).
  component("base") {
@@ -129,7 +145,7 @@ index 4ae52e5351615..01dbf5e77b4dc 100644
    sources = [
      "allocator/allocator_check.cc",
      "allocator/allocator_check.h",
-@@ -1054,7 +1056,7 @@ component("base") {
+@@ -1050,7 +1052,7 @@ component("base") {
      "//build/config/compiler:wglobal_constructors",
    ]
  
@@ -155,9 +171,18 @@ index 7ad83122d2c55..abf997d8c4714 100644
    const base::Feature* feature =
        feature_map->FindFeatureExposedToJava(feature_name);
 diff --git a/base/android/java/src/org/chromium/base/cached_flags/CachedFlag.java b/base/android/java/src/org/chromium/base/cached_flags/CachedFlag.java
-index 165bbb4251f60..7845a8ed74a0b 100644
+index 165bbb4251f60..a07f22abe0c22 100644
 --- a/base/android/java/src/org/chromium/base/cached_flags/CachedFlag.java
 +++ b/base/android/java/src/org/chromium/base/cached_flags/CachedFlag.java
+@@ -142,7 +142,7 @@ public class CachedFlag extends Flag {
+         editor.putBoolean(getSharedPreferenceKey(), isEnabledInNative);
+     }
+ 
+-    String getSharedPreferenceKey() {
++    public String getSharedPreferenceKey() {
+         // Create the key only once to avoid String concatenation every flag check.
+         if (mPreferenceKey == null) {
+             mPreferenceKey = CachedFlagsSharedPreferences.FLAGS_CACHED.createKey(mFeatureName);
 @@ -169,6 +169,12 @@ public class CachedFlag extends Flag {
          }
      }
@@ -172,14 +197,13 @@ index 165bbb4251f60..7845a8ed74a0b 100644
      public static Map<String, CachedFlag> createCachedFlagMap(
              List<List<CachedFlag>> allCachedFlagsLists) {
 diff --git a/base/feature_list.cc b/base/feature_list.cc
-index 895b710fdf144..175a8411db24e 100644
+index 895b710fdf144..836941b538b57 100644
 --- a/base/feature_list.cc
 +++ b/base/feature_list.cc
-@@ -41,6 +41,33 @@
- #include "base/feature_visitor.h"
- #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
+@@ -43,6 +43,31 @@
  
-+namespace base {
+ namespace base {
+ 
 +namespace internal {
 +
 +using DefaultStateOverrides =
@@ -204,12 +228,11 @@ index 895b710fdf144..175a8411db24e 100644
 +}
 +
 +} // namespace internal
-+} // namespace base
 +
- namespace base {
- 
  namespace {
-@@ -472,6 +499,48 @@ bool FeatureList::IsEnabled(const Feature& feature) {
+ 
+ // Pointer to the FeatureList instance singleton that was set via
+@@ -472,6 +497,46 @@ bool FeatureList::IsEnabled(const Feature& feature) {
    return g_feature_list_instance->IsFeatureEnabled(feature);
  }
  
@@ -230,8 +253,7 @@ index 895b710fdf144..175a8411db24e 100644
 +      return key;
 +    }
 +  }
-+  NOTREACHED();
-+  return nullptr;
++  NOTREACHED_NORETURN();
 +}
 +
 +// static
@@ -251,14 +273,13 @@ index 895b710fdf144..175a8411db24e 100644
 +      return value == base::FEATURE_ENABLED_BY_DEFAULT;
 +    }
 +  }
-+  NOTREACHED();
-+  return false;
++  NOTREACHED_NORETURN();
 +}
 +
  // static
  bool FeatureList::IsValidFeatureOrFieldTrialName(std::string_view name) {
    return IsStringASCII(name) && name.find_first_of(",<*") == std::string::npos;
-@@ -718,6 +787,17 @@ void FeatureList::VisitFeaturesAndParams(FeatureVisitor& visitor) {
+@@ -718,6 +783,17 @@ void FeatureList::VisitFeaturesAndParams(FeatureVisitor& visitor) {
  
  void FeatureList::FinalizeInitialization() {
    DCHECK(!initialized_);
@@ -277,7 +298,7 @@ index 895b710fdf144..175a8411db24e 100644
    field_trial_list_ = FieldTrialList::GetInstance();
    initialized_ = true;
 diff --git a/base/feature_list.h b/base/feature_list.h
-index da311dd0e6800..0cab5f3e8c208 100644
+index 125a50d28f334..763d6baeef28e 100644
 --- a/base/feature_list.h
 +++ b/base/feature_list.h
 @@ -108,8 +108,10 @@ enum class FeatureMacroHandshake { kSecret };
@@ -337,7 +358,7 @@ index da311dd0e6800..0cab5f3e8c208 100644
 +}  // namespace base
 +
 +#define CROMITE_FEATURE(feature, name, default_state) \
-+  constinit const base::Feature feature(name, default_state, true, true); \
++  constinit const base::Feature feature(name, default_state, base::internal::FeatureMacroHandshake::kSecret, true, true); \
 +  _Pragma("clang diagnostic push")                              \
 +  _Pragma("clang diagnostic ignored \"-Wglobal-constructors\"") \
 +  static const ::base::internal::FeatureDefaultStateOverrider   \
@@ -411,17 +432,19 @@ index 10639a54895f1..eb69b11976960 100755
  
    def ExtractValue(self, line):
 diff --git a/chrome/android/java/res/values/values.xml b/chrome/android/java/res/values/values.xml
-index ff31f0f2db984..6acc9223605c8 100644
+index ff31f0f2db984..ad9290a7d29d9 100644
 --- a/chrome/android/java/res/values/values.xml
 +++ b/chrome/android/java/res/values/values.xml
-@@ -25,4 +25,7 @@ found in the LICENSE file.
-     <integer name="download_infobar_bar_start_offset">800</integer>
-     <integer name="download_infobar_bar_fill_in_delay">400</integer>
-     <integer name="download_infobar_bar_fill_out_delay">200</integer>
-+
+@@ -9,6 +9,9 @@ found in the LICENSE file.
+     xmlns:tools="http://schemas.android.com/tools"
+     tools:ignore="MissingTranslation">
+ 
 +    <string name="cromite_flags_title">Open Cromite flags list</string>
 +    <string name="cromite_flags_url">chrome://flags/cromite</string>
- </resources>
++
+     <!-- Full Screen Constants -->
+     <!-- These constants were chosen empirically for their visually pleasant behavior.
+          Contact tedchoc@chromium.org or dtrainor@chromium.org for questions about
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 index 66a7ae7b15384..004bca72142ea 100644
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
@@ -437,8 +460,51 @@ index 66a7ae7b15384..004bca72142ea 100644
      <Preference
          android:key="preload_pages"
          android:title="@string/preload_pages_title"
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
+index 67621d7582d53..2e56267d35b94 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/AccessibilitySettings.java
+@@ -16,6 +16,7 @@ import org.chromium.chrome.R;
+ import org.chromium.chrome.browser.image_descriptions.ImageDescriptionsController;
+ import org.chromium.chrome.browser.preferences.Pref;
+ import org.chromium.chrome.browser.settings.SettingsLauncherImpl;
++import org.chromium.chrome.browser.settings.ChromeBaseSettingsFragment;
+ import org.chromium.components.browser_ui.accessibility.AccessibilitySettingsDelegate;
+ import org.chromium.components.browser_ui.accessibility.FontSizePrefs;
+ import org.chromium.components.browser_ui.accessibility.FontSizePrefs.FontSizePrefsObserver;
+@@ -33,7 +34,7 @@ import org.chromium.content_public.browser.ContentFeatureList;
+ import org.chromium.content_public.browser.ContentFeatureMap;
+ 
+ /** Fragment to keep track of all the accessibility related preferences. */
+-public class AccessibilitySettings extends PreferenceFragmentCompat
++public class AccessibilitySettings extends ChromeBaseSettingsFragment
+         implements Preference.OnPreferenceChangeListener {
+     public static final String PREF_TEXT_SCALE = "text_scale";
+     public static final String PREF_PAGE_ZOOM_DEFAULT_ZOOM = "page_zoom_default_zoom";
+@@ -92,7 +93,7 @@ public class AccessibilitySettings extends PreferenceFragmentCompat
+     }
+ 
+     @Override
+-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
++    public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
+         SettingsUtils.addPreferencesFromResource(this, R.xml.accessibility_preferences);
+ 
+         mTextScalePref = (TextScalePreference) findPreference(PREF_TEXT_SCALE);
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
+index 420ea587460c8..a89c6fd2d345c 100644
+--- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/homepage/settings/HomepageSettings.java
+@@ -34,7 +34,7 @@ public class HomepageSettings extends ChromeBaseSettingsFragment {
+     private RadioButtonGroupHomepagePreference mRadioButtons;
+ 
+     @Override
+-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
++    public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
+         mHomepageManager = HomepageManager.getInstance();
+ 
+         getActivity().setTitle(R.string.options_homepage_title);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-index 4d8fa0f5ce030..754463c8c28e9 100644
+index 147443ec7a77f..8074171bb041d 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 @@ -78,7 +78,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
@@ -451,7 +517,7 @@ index 4d8fa0f5ce030..754463c8c28e9 100644
  
          SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
-index 9463661eced0e..eecdce473041b 100644
+index aa76c33fbae2a..caf594869874d 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 @@ -4,6 +4,7 @@
@@ -507,24 +573,35 @@ index 9463661eced0e..eecdce473041b 100644
      @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
      public static final String EXTRA_SHOW_FRAGMENT = "show_fragment";
  
-@@ -385,6 +417,10 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
-         if (fragment instanceof SafetyHubBaseFragment) {
-             ((SafetyHubBaseFragment) fragment).setSnackbarManager(mSnackbarManager);
+@@ -371,6 +403,10 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+             ((PrivacySandboxSettingsBaseFragment) fragment)
+                     .setSnackbarManager(getSnackbarManager());
          }
 +        if (fragment instanceof ChromeBaseSettingsFragment) {
 +            ((ChromeBaseSettingsFragment)fragment).setRequestRestartDelegate(
 +                new RequestRestartDelegate(mSnackbarManager, this));
 +        }
-         initBackPressHandler();
-     }
- 
+         if (fragment instanceof AccountManagementFragment) {
+             ((AccountManagementFragment) fragment).setSnackbarManager(mSnackbarManager);
+         }
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index ff1ed1a98cbfe..956c34bf99ad0 100644
+index 96370d4ac35a9..9971e5bdd62d2 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -4089,6 +4089,10 @@ const FeatureEntry::FeatureVariation kAutofillUpstreamUpdatedUiOptions[] = {
-      kAutofillUpstreamUpdatedUi_Education_Animated,
-      std::size(kAutofillUpstreamUpdatedUi_Education_Animated), nullptr}};
+@@ -375,6 +375,10 @@ using flags_ui::kOsLinux;
+ using flags_ui::kOsMac;
+ using flags_ui::kOsWin;
+ 
++#define ABOUT_FLAG_INCLUDE_SECTION
++#include "cromite_flags/chrome_browser_about_flags_cc.inc"
++#undef ABOUT_FLAG_INCLUDE_SECTION
++
+ namespace about_flags {
+ 
+ namespace {
+@@ -4162,6 +4166,10 @@ const FeatureEntry::FeatureVariation
+          nullptr}};
+ #endif  // BUILDFLAG(ENABLE_EXTENSIONS)
  
 +#define FEATURE_PARAM_SECTION
 +#include "cromite_flags/chrome_browser_about_flags_cc.inc"
@@ -533,7 +610,7 @@ index ff1ed1a98cbfe..956c34bf99ad0 100644
  // RECORDING USER METRICS FOR FLAGS:
  // -----------------------------------------------------------------------------
  // The first line of the entry is the internal name.
-@@ -4115,6 +4119,9 @@ const FeatureEntry::FeatureVariation kAutofillUpstreamUpdatedUiOptions[] = {
+@@ -4188,6 +4196,9 @@ const FeatureEntry::FeatureVariation
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -544,20 +621,20 @@ index ff1ed1a98cbfe..956c34bf99ad0 100644
  #include "chrome/browser/unexpire_flags_gen.inc"
      {variations::switches::kEnableBenchmarking,
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
-index 473602db4a0ce..98f0e24dd9cdd 100644
+index 3cfc6c7066d36..545ef3fa8b56d 100644
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
-@@ -401,4 +401,5 @@ BASE_FEATURE(kBrowserDynamicCodeDisabled,
+@@ -378,4 +378,5 @@ BASE_FEATURE(kBrowserDynamicCodeDisabled,
               base::FEATURE_DISABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_WIN)
  
 +#include "cromite_flags/chrome_browser_browser_features_cc.inc"
  }  // namespace features
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 908db42b13788..7c2ccf03288f6 100644
+index 908db42b13788..396b9865138f4 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -12,8 +12,12 @@ android_library("java") {
+@@ -12,9 +12,14 @@ android_library("java") {
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
@@ -568,9 +645,11 @@ index 908db42b13788..7c2ccf03288f6 100644
    deps = [
 +    ":java_cromite_cached_flags",
      "//base:base_java",
++    "//base:base_cached_flags_java",
      "//base/version_info/android:version_constants_java",
      "//build:chromeos_buildflags",
-@@ -24,12 +28,20 @@ android_library("java") {
+     "//build/android:build_java",
+@@ -24,12 +29,20 @@ android_library("java") {
      "//third_party/jni_zero:jni_zero_java",
    ]
    srcjar_deps = [
@@ -592,10 +671,10 @@ index 908db42b13788..7c2ccf03288f6 100644
    sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
    sources += [
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
-index f48a370d94034..102a492e7ebf6 100644
+index b90d719c6c53a..6acbb3133ecb0 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1018,5 +1018,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
+@@ -1052,5 +1052,6 @@ BASE_FEATURE(kWebApkAllowIconUpdate,
               "WebApkAllowIconUpdate",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -603,19 +682,19 @@ index f48a370d94034..102a492e7ebf6 100644
  }  // namespace android
  }  // namespace chrome
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
-index cfbf7aa11c97e..c87bda5634e2a 100644
+index b60e64833e203..a45b20307a7b2 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -193,6 +193,7 @@ constexpr base::FeatureParam<int> kAuxiliarySearchMaxTabsCountParam(
-     "auxiliary_search_max_donation_tab",
-     100);
+@@ -204,6 +204,7 @@ constexpr base::FeatureParam<std::string> kQuickDeleteAndroidSurveyTriggerId(
+     "trigger_id",
+     /*default_value=*/"");
  
 +#include "cromite_flags/chrome_browser_flags_android_chrome_feature_list_h.inc"
  }  // namespace android
  }  // namespace chrome
  
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-index 27d7f3a82a10f..02aa9d093ad27 100644
+index 277300635390a..feb505bdda5d3 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 @@ -15,6 +15,10 @@ import org.chromium.base.cached_flags.DoubleCachedFieldTrialParameter;
@@ -629,18 +708,18 @@ index 27d7f3a82a10f..02aa9d093ad27 100644
  import java.util.List;
  import java.util.Map;
  
-@@ -695,7 +699,7 @@ public abstract class ChromeFeatureList {
-     public static final CachedFlag sVerticalAutomotiveBackButtonToolbar =
-             newCachedFlag(VERTICAL_AUTOMOTIVE_BACK_BUTTON_TOOLBAR, true);
+@@ -721,7 +725,7 @@ public abstract class ChromeFeatureList {
+     public static final CachedFlag sWebApkMinShellApkVersion =
+             newCachedFlag(WEB_APK_MIN_SHELL_APK_VERSION, true);
  
 -    public static final List<CachedFlag> sFlagsCachedFullBrowser =
 +    public static final List<CachedFlag> sFlagsCachedFullBrowserChromium =
              List.of(
                      sAccountReauthenticationRecentTimeWindow,
                      sAndroidAppIntegration,
-@@ -788,6 +792,13 @@ public abstract class ChromeFeatureList {
-                     sUseLibunwindstackNativeUnwinderAndroid,
-                     sVerticalAutomotiveBackButtonToolbar);
+@@ -817,6 +821,13 @@ public abstract class ChromeFeatureList {
+                     sVerticalAutomotiveBackButtonToolbar,
+                     sWebApkMinShellApkVersion);
  
 +    private static <T> List<T> concatenateLists(List<T>... collections) {
 +        return Arrays.stream(collections).flatMap(x -> x.stream()).collect(Collectors.toList());
@@ -652,28 +731,6 @@ index 27d7f3a82a10f..02aa9d093ad27 100644
      public static final List<CachedFlag> sFlagsCachedInMinimalBrowser =
              List.of(sExperimentsForAgsa);
  
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
-index bae5d699db571..7db34ea8cc223 100755
---- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
-@@ -1,5 +1,7 @@
- package org.chromium.chrome.browser.flags;
- 
-+import org.chromium.base.cached_flags.CachedFlag;
-+import org.chromium.base.cached_flags.CachedFlagsSharedPreferences;
- import org.chromium.chrome.browser.flags.ChromeFeatureList;
- import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
- import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
-@@ -27,7 +29,8 @@ public class CromiteNativeUtils {
- 
-         if (!featureName.isEmpty()) {
-             CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
--            String preferenceName = cachedFlag.getSharedPreferenceKey();
-+            String preferenceName =
-+                    CachedFlagsSharedPreferences.FLAGS_CACHED.createKey(featureName);
- 
-             ChromeSharedPreferences.getInstance().writeBoolean(preferenceName, newValue);
-             cachedFlag.setValueReturnedOverride(newValue);
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
 new file mode 100644
 index 0000000000000..5174b09c2273b
@@ -735,10 +792,10 @@ index 0000000000000..b939ed78c9bf1
 +
 +}}
 diff --git a/chrome/browser/settings/BUILD.gn b/chrome/browser/settings/BUILD.gn
-index 3027af6882e94..588035aefe111 100644
+index f00efc4ef4457..d1c62e5a19e50 100644
 --- a/chrome/browser/settings/BUILD.gn
 +++ b/chrome/browser/settings/BUILD.gn
-@@ -14,6 +14,7 @@ android_library("java") {
+@@ -32,6 +32,7 @@ android_library("java") {
    deps = [
      "//base:base_java",
      "//chrome/browser/feedback/android:java",
@@ -812,7 +869,7 @@ index 5186c5fbcbea9..fb345888b5e70 100644
      public Profile getProfile() {
          assert mProfile != null : "Attempting to use the profile before initialization.";
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-index ed3b19c740bd8..9abf74692a39b 100644
+index 6ab1da50cb863..f06dff4333b66 100644
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 @@ -202,6 +202,7 @@ CHAR_LIMIT guidelines:
@@ -823,6 +880,21 @@ index ed3b19c740bd8..9abf74692a39b 100644
        <!-- NOTE: Generic strings used across multiple features belong in //components/browser_ui/strings/android. -->
  
         <!-- Cookie Controls -->
+diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
+new file mode 100644
+index 0000000000000..df7c8ced94718
+--- /dev/null
++++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="utf-8"?>
++<grit-part>
++    <message name="IDS_RELAUNCH" desc="Relaunch message">
++        Relaunch
++    </message>
++    <message name="IDS_UI_RELAUNCH_NOTICE" desc="Summary for relaunch message">
++        Your changes will take effect the next time you relaunch Cromite.
++    </message>
++</grit-part>
 diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
 new file mode 100644
 index 0000000000000..5174b09c2273b
@@ -831,25 +903,39 @@ index 0000000000000..5174b09c2273b
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index 097362cfceb53..ff285624dfc33 100644
+index 703fc03b7e6cc..e9d8e51dcdc4c 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -517,4 +517,5 @@ BASE_FEATURE(kStopLoadingAnimationForHiddenWindow,
-              "StopLoadingAnimationForHiddenWindow",
+@@ -463,4 +463,5 @@ BASE_FEATURE(kUsePortalAccentColor,
               base::FEATURE_ENABLED_BY_DEFAULT);
+ #endif
  
 +#include "cromite_flags/chrome_browser_ui_ui_features_cc.inc"
  }  // namespace features
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
-index 998fcf6ac5b69..2e2d2ecc770e8 100644
+index f3224987d31d6..cd4c1411a8041 100644
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -1674,4 +1674,5 @@ BASE_FEATURE(kEventBasedLogUpload,
+@@ -1744,4 +1744,5 @@ BASE_FEATURE(kPeriodicLogUploadMigration,
               base::FEATURE_DISABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_CHROMEOS_ASH)
  
 +#include "cromite_flags/chrome_common_chrome_features_cc.inc"
  }  // namespace features
+diff --git a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
+index 932b5546a872d..7bd48b75ded31 100644
+--- a/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
++++ b/components/browser_ui/accessibility/android/java/res/xml/accessibility_preferences.xml
+@@ -5,7 +5,8 @@ Use of this source code is governed by a BSD-style license that can be
+ found in the LICENSE file.
+ -->
+ 
+-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
++<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
++                  xmlns:app="http://schemas.android.com/apk/res-auto">
+ 
+     <org.chromium.chrome.browser.accessibility.settings.TextScalePreference
+         android:key="text_scale"
 diff --git a/components/browser_ui/settings/android/java/res/values/attrs.xml b/components/browser_ui/settings/android/java/res/values/attrs.xml
 index 335867416771a..312f6b731e63e 100644
 --- a/components/browser_ui/settings/android/java/res/values/attrs.xml
@@ -866,7 +952,7 @@ index 335867416771a..312f6b731e63e 100644
          <attr name="iconTint" format="color" />
          <!-- Name of a user action that will be logged when this preference is clicked -->
 diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium/components/browser_ui/settings/ChromeSwitchPreference.java b/components/browser_ui/settings/android/widget/java/src/org/chromium/components/browser_ui/settings/ChromeSwitchPreference.java
-index 07d593742f535..07dd2f699088c 100644
+index 07d593742f535..388c1bbd59627 100644
 --- a/components/browser_ui/settings/android/widget/java/src/org/chromium/components/browser_ui/settings/ChromeSwitchPreference.java
 +++ b/components/browser_ui/settings/android/widget/java/src/org/chromium/components/browser_ui/settings/ChromeSwitchPreference.java
 @@ -12,6 +12,9 @@ import android.view.accessibility.AccessibilityEvent;
@@ -879,18 +965,18 @@ index 07d593742f535..07dd2f699088c 100644
  import androidx.annotation.ColorInt;
  import androidx.annotation.Nullable;
  import androidx.annotation.VisibleForTesting;
-@@ -41,6 +44,11 @@ public class ChromeSwitchPreference extends SwitchPreferenceCompat {
- 
-     private boolean mUseSummaryAsTitle;
+@@ -31,6 +34,11 @@ public class ChromeSwitchPreference extends SwitchPreferenceCompat {
+     /** Indicates if the preference uses a custom layout. */
+     private final boolean mHasCustomLayout;
  
 +    @Nullable
 +    private String mFeatureName;
 +
 +    private final boolean mNeedRestart;
 +
-     public ChromeSwitchPreference(Context context) {
-         this(context, null);
-     }
+     // TOOD(crbug.com/1451550): This is an interim solution. In the long-term, we should migrate
+     // away from a switch with dynamically changing summaries onto a radio group.
+     /**
 @@ -50,6 +58,18 @@ public class ChromeSwitchPreference extends SwitchPreferenceCompat {
  
          mHasCustomLayout = ManagedPreferencesUtils.isCustomLayoutApplied(context, attrs);
@@ -910,6 +996,18 @@ index 07d593742f535..07dd2f699088c 100644
      }
  
      /**
+diff --git a/components/components_strings.grd b/components/components_strings.grd
+index a27e37e25fc68..b5c7f5abb8fe1 100644
+--- a/components/components_strings.grd
++++ b/components/components_strings.grd
+@@ -281,6 +281,7 @@
+   </translations>
+   <release seq="1">
+     <messages fallback_to_english="true">
++      <part file="cromite_components_strings_grd/placeholder.txt"/>
+       <part file="arc_strings.grdp" />
+       <part file="autofill_payments_strings.grdp" />
+       <part file="autofill_strings.grdp" />
 diff --git a/components/content_settings/core/common/features.cc b/components/content_settings/core/common/features.cc
 index c1340623701ba..60799b95d5046 100644
 --- a/components/content_settings/core/common/features.cc
@@ -921,15 +1019,21 @@ index c1340623701ba..60799b95d5046 100644
 +#include "cromite_flags/components_content_settings_core_common_features_cc.inc"
  }  // namespace features
  }  // namespace content_settings
+diff --git a/components/cromite_components_strings_grd/placeholder.txt b/components/cromite_components_strings_grd/placeholder.txt
+new file mode 100644
+index 0000000000000..5174b09c2273b
+--- /dev/null
++++ b/components/cromite_components_strings_grd/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
 diff --git a/components/flags_ui/flags_state.cc b/components/flags_ui/flags_state.cc
-index 795cd1f419b3c..017c23f4fe15b 100644
+index 019113d8cf380..414f7c70cabb5 100644
 --- a/components/flags_ui/flags_state.cc
 +++ b/components/flags_ui/flags_state.cc
-@@ -359,7 +359,22 @@ void FlagsState::GetSwitchesAndFeaturesFromFlags(
+@@ -360,6 +360,21 @@ void FlagsState::GetSwitchesAndFeaturesFromFlags(
  
    for (const std::string& entry_name : enabled_entries) {
      const auto& entry_it = name_to_switch_map.find(entry_name);
--    DCHECK(entry_it != name_to_switch_map.end());
 +    if (entry_it == name_to_switch_map.end()) {
 +      // check if is a cromite feature
 +      std::string::size_type pos = entry_name.find('@');
@@ -943,13 +1047,12 @@ index 795cd1f419b3c..017c23f4fe15b 100644
 +          continue;
 +        }
 +      }
-+      NOTREACHED();
-+      continue;
++      NOTREACHED_NORETURN();
 +    }
+     CHECK(entry_it != name_to_switch_map.end(), base::NotFatalUntil::M130);
  
      const SwitchEntry& entry = entry_it->second;
-     if (!entry.switch_name.empty())
-@@ -676,6 +691,27 @@ void FlagsState::GetFlagFeatureEntries(
+@@ -677,6 +692,27 @@ void FlagsState::GetFlagFeatureEntries(
        data.Set("links", std::move(links));
      }
  
@@ -977,7 +1080,7 @@ index 795cd1f419b3c..017c23f4fe15b 100644
      switch (entry.type) {
        case FeatureEntry::SINGLE_VALUE:
        case FeatureEntry::SINGLE_DISABLE_VALUE:
-@@ -804,6 +840,16 @@ void FlagsState::AddSwitchesToCommandLine(
+@@ -805,6 +841,16 @@ void FlagsState::AddSwitchesToCommandLine(
    for (const std::string& entry_name : enabled_entries) {
      const auto& entry_it = name_to_switch_map.find(entry_name);
      if (entry_it == name_to_switch_map.end()) {
@@ -994,7 +1097,7 @@ index 795cd1f419b3c..017c23f4fe15b 100644
        NOTREACHED_IN_MIGRATION();
        continue;
      }
-@@ -1056,6 +1102,14 @@ const FeatureEntry* FlagsState::FindFeatureEntryByName(
+@@ -1057,6 +1103,14 @@ const FeatureEntry* FlagsState::FindFeatureEntryByName(
  bool FlagsState::IsSupportedFeature(const FlagsStorage* storage,
                                      const std::string& name,
                                      int platform_mask) const {
@@ -1010,7 +1113,7 @@ index 795cd1f419b3c..017c23f4fe15b 100644
      DCHECK(entry.IsValid());
      if (!(entry.supported_platforms & platform_mask))
 diff --git a/components/flags_ui/resources/app.html b/components/flags_ui/resources/app.html
-index 27dccbe2ae6d0..bcf0a02eabc65 100644
+index f492bd37c38be..83cd62b740cad 100644
 --- a/components/flags_ui/resources/app.html
 +++ b/components/flags_ui/resources/app.html
 @@ -473,7 +473,32 @@
@@ -1046,9 +1149,9 @@ index 27dccbe2ae6d0..bcf0a02eabc65 100644
  <div id="header">
    <div class="flex-container">
      <div class="flex search-container">
-@@ -545,6 +570,11 @@
-           aria-selected="false" aria-controls="panel2"
-           tabindex="-1">$i18n{unavailable}</a>
+@@ -540,6 +565,11 @@
+         $i18n{unavailable}
+       </a>
  </if>
 +      <a href="#tab-content-cromite" id="tab-cromite" class="tab"
 +          role="tab"
@@ -1058,7 +1161,7 @@ index 27dccbe2ae6d0..bcf0a02eabc65 100644
      </div>
      <div id="tabpanels">
        <div id="tab-content-available" class="tab-content selected"
-@@ -564,6 +594,14 @@
+@@ -559,6 +589,14 @@
          </div>
        </div>
  </if>
@@ -1073,17 +1176,14 @@ index 27dccbe2ae6d0..bcf0a02eabc65 100644
      </div>
      <div id="needs-restart">
        <div class="flex-container">
-@@ -578,4 +616,6 @@
-       </div>
+@@ -574,3 +612,5 @@
      </div>
    </div>
--</div>
-\ No newline at end of file
-+</div>
+ </div>
 +
 +</div>
 diff --git a/components/flags_ui/resources/app.ts b/components/flags_ui/resources/app.ts
-index 687cae7a8dacd..0e3eca50c82ad 100644
+index c9814c9e05797..4ac55b797ad6e 100644
 --- a/components/flags_ui/resources/app.ts
 +++ b/components/flags_ui/resources/app.ts
 @@ -194,6 +194,7 @@ export class FlagsAppElement extends CustomElement {
@@ -1105,18 +1205,18 @@ index 687cae7a8dacd..0e3eca50c82ad 100644
      {
        tabEl: this.getRequiredElement('#tab-available'),
        panelEl: this.getRequiredElement('#tab-content-available'),
-@@ -228,6 +233,11 @@ export class FlagsAppElement extends CustomElement {
-         ['/deprecated', '/deprecated/test_loader.html'].includes(pathname);
-     // </if>
+@@ -222,6 +227,11 @@ export class FlagsAppElement extends CustomElement {
+   ];
  
+   connectedCallback() {
 +    if (location.pathname == '/cromite') {
 +      this.onlyCromiteFlags = true;
 +      this.getRequiredElement("#appcontainer").classList.add('cromite');
 +      document.title = "Cromite Flags List";
 +    }
-     // Get and display the data upon loading.
-     this.requestExperimentalFeaturesData();
-     // There is no restart button on iOS.
+     // <if expr="not is_ios">
+     const pathname = new URL(window.location.href).pathname;
+     this.isFlagsDeprecatedUrl_ =
 @@ -306,20 +316,29 @@ export class FlagsAppElement extends CustomElement {
      const defaultFeatures: Feature[] = [];
      const nonDefaultFeatures: Feature[] = [];
@@ -1192,7 +1292,7 @@ index 687cae7a8dacd..0e3eca50c82ad 100644
  
    /**
 diff --git a/components/flags_ui/resources/experiment.html b/components/flags_ui/resources/experiment.html
-index 4c4af6b0be976..7eaed811766bd 100644
+index 87b13928af20f..9b7f7c7749481 100644
 --- a/components/flags_ui/resources/experiment.html
 +++ b/components/flags_ui/resources/experiment.html
 @@ -119,6 +119,11 @@
@@ -1320,11 +1420,21 @@ index 4ba9bc80778ab..8d5198dea6d79 100644
  }  // namespace offline_pages
  
  #endif  // COMPONENTS_OFFLINE_PAGES_CORE_OFFLINE_PAGE_FEATURE_H_
+diff --git a/components/password_manager/core/browser/features/password_features.cc b/components/password_manager/core/browser/features/password_features.cc
+index e52c8dad7765f..67510ce59a2b9 100644
+--- a/components/password_manager/core/browser/features/password_features.cc
++++ b/components/password_manager/core/browser/features/password_features.cc
+@@ -192,4 +192,5 @@ BASE_FEATURE(kUseAsyncOsCryptInLoginDatabase,
+              "UseAsyncOsCryptInLoginDatabase",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
++#include "cromite_flags/components_password_manager_core_browser_features_password_features_cc.inc"
+ }  // namespace password_manager::features
 diff --git a/components/permissions/features.cc b/components/permissions/features.cc
-index 283c30b63554c..ad0e0df6c1efc 100644
+index 1da2bee1a1b82..4ba067ae0bf79 100644
 --- a/components/permissions/features.cc
 +++ b/components/permissions/features.cc
-@@ -149,6 +149,7 @@ BASE_FEATURE(kCpssQuietChipTextUpdate,
+@@ -150,6 +150,7 @@ BASE_FEATURE(kCpssQuietChipTextUpdate,
               "CpssQuietChipTextUpdate",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1346,30 +1456,30 @@ index 7f8cdf2d07c04..b1c18d112e328 100644
    const std::string kNonBreakingHyphenUTF8String(
        reinterpret_cast<const char*>(kNonBreakingHyphenUTF8));
 diff --git a/content/common/features.cc b/content/common/features.cc
-index d5bdac2d31b3c..ce80399e72b5d 100644
+index 147e050dbb8fa..3f95c06faf69d 100644
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
-@@ -584,4 +584,5 @@ BASE_FEATURE(kScrollBubblingFix,
+@@ -607,4 +607,5 @@ BASE_FEATURE(kScrollBubblingFix,
  
  // Please keep features in alphabetical order.
  
 +#include "cromite_flags/content_common_features_cc.inc"
  }  // namespace features
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
-index 75b2720edef81..ad2cba36391aa 100644
+index a0ac946fc64b4..2a04eefe169ef 100644
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1295,4 +1295,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
+@@ -1334,4 +1334,5 @@ bool IsVideoCaptureServiceEnabledForBrowserProcess() {
           VideoCaptureServiceConfiguration::kEnabledForBrowserProcess;
  }
  
 +#include "cromite_flags/content_public_common_content_features_cc.inc"
  }  // namespace features
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
-index 1fa204cfba806..e92cb19c6339a 100644
+index dedf417ae2593..05022e6178f99 100644
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -286,6 +286,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebRtcPipeWireCapturer);
+@@ -292,6 +292,7 @@ CONTENT_EXPORT BASE_DECLARE_FEATURE(kWebRtcPipeWireCapturer);
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForOutOfProcess();
  CONTENT_EXPORT bool IsVideoCaptureServiceEnabledForBrowserProcess();
  
@@ -1379,10 +1489,10 @@ index 1fa204cfba806..e92cb19c6339a 100644
  #endif  // CONTENT_PUBLIC_COMMON_CONTENT_FEATURES_H_
 diff --git a/cromite_flags/BUILD.gn b/cromite_flags/BUILD.gn
 new file mode 100755
-index 0000000000000..f6f889555d9a8
+index 0000000000000..56b794ade5f56
 --- /dev/null
 +++ b/cromite_flags/BUILD.gn
-@@ -0,0 +1,150 @@
+@@ -0,0 +1,168 @@
 +# This file is part of Bromite.
 +
 +# Bromite is free software: you can redistribute it and/or modify
@@ -1508,6 +1618,21 @@ index 0000000000000..f6f889555d9a8
 +  output_file = "services_network_public_cpp_features_h.inc"
 +}
 +
++cpp_bromite_include("ui_base_features_cc") {
++  inputs = [ "//cromite_flags/ui/base/features_cc/placeholder.txt" ]
++  output_file = "ui_base_features_cc.inc"
++}
++
++cpp_bromite_include("ui_base_features_h") {
++  inputs = [ "//cromite_flags/ui/base/features_h/placeholder.txt" ]
++  output_file = "ui_base_features_h.inc"
++}
++
++cpp_bromite_include("components_password_manager_core_browser_features_password_features_cc") {
++  inputs = [ "//cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt" ]
++  output_file = "components_password_manager_core_browser_features_password_features_cc.inc"
++}
++
 +component("cromite_flags") {
 +  deps = [
 +    ":content_common_features_cc",
@@ -1517,6 +1642,7 @@ index 0000000000000..f6f889555d9a8
 +    ":components_permissions_features_cc",
 +    ":components_offline_pages_core_offline_page_feature_cc",
 +    ":components_offline_pages_core_offline_page_feature_h",
++    ":components_password_manager_core_browser_features_password_features_cc",
 +    ":media_base_media_switches_cc",
 +    ":media_base_media_switches_h",
 +    ":net_base_features_cc",
@@ -1531,6 +1657,8 @@ index 0000000000000..f6f889555d9a8
 +    ":services_network_public_cpp_features_h",
 +    ":third_party_blink_common_features_cc",
 +    ":third_party_blink_common_features_h",
++    ":ui_base_features_cc",
++    ":ui_base_features_h",
 +  ]
 +}
 diff --git a/cromite_flags/chrome/browser/about_flags_cc/placeholder.txt b/cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
@@ -1601,6 +1729,13 @@ new file mode 100755
 index 0000000000000..5174b09c2273b
 --- /dev/null
 +++ b/cromite_flags/components/offline_pages/core/offline_page_feature_h/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt b/cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
+new file mode 100755
+index 0000000000000..5174b09c2273b
+--- /dev/null
++++ b/cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/cromite_flags/components/permissions/features_cc/placeholder.txt b/cromite_flags/components/permissions/features_cc/placeholder.txt
@@ -1687,11 +1822,25 @@ index 0000000000000..5174b09c2273b
 +++ b/cromite_flags/third_party/blink/common/features_h/placeholder.txt
 @@ -0,0 +1 @@
 +this file is intentionally empty
+diff --git a/cromite_flags/ui/base/features_cc/placeholder.txt b/cromite_flags/ui/base/features_cc/placeholder.txt
+new file mode 100755
+index 0000000000000..5174b09c2273b
+--- /dev/null
++++ b/cromite_flags/ui/base/features_cc/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
+diff --git a/cromite_flags/ui/base/features_h/placeholder.txt b/cromite_flags/ui/base/features_h/placeholder.txt
+new file mode 100755
+index 0000000000000..5174b09c2273b
+--- /dev/null
++++ b/cromite_flags/ui/base/features_h/placeholder.txt
+@@ -0,0 +1 @@
++this file is intentionally empty
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
-index cf95df196df99..68ed61d5177a0 100644
+index c1033de7b245d..d6e8f5bbb0fbc 100644
 --- a/media/base/media_switches.cc
 +++ b/media/base/media_switches.cc
-@@ -1904,5 +1904,5 @@ uint32_t GetPassthroughAudioFormats() {
+@@ -1917,5 +1917,5 @@ uint32_t GetPassthroughAudioFormats() {
    return 0;
  #endif  // BUILDFLAG(ENABLE_PASSTHROUGH_AUDIO_CODECS)
  }
@@ -1699,10 +1848,10 @@ index cf95df196df99..68ed61d5177a0 100644
 +#include "cromite_flags/media_base_media_switches_cc.inc"
  }  // namespace media
 diff --git a/media/base/media_switches.h b/media/base/media_switches.h
-index a66d808a3e85a..24570f45ff68a 100644
+index e95d90d84d515..5110084ea69e3 100644
 --- a/media/base/media_switches.h
 +++ b/media/base/media_switches.h
-@@ -576,5 +576,5 @@ MEDIA_EXPORT OOPVDMode GetOutOfProcessVideoDecodingMode();
+@@ -583,5 +583,5 @@ MEDIA_EXPORT OOPVDMode GetOutOfProcessVideoDecodingMode();
  MEDIA_EXPORT uint32_t GetPassthroughAudioFormats();
  
  }  // namespace media
@@ -1710,42 +1859,42 @@ index a66d808a3e85a..24570f45ff68a 100644
 +#include "cromite_flags/media_base_media_switches_h.inc"
  #endif  // MEDIA_BASE_MEDIA_SWITCHES_H_
 diff --git a/net/base/features.cc b/net/base/features.cc
-index 302f1a22d7d7e..47ac4acb5e284 100644
+index 067bc25deba37..0d9109e0db8f8 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -549,4 +549,5 @@ BASE_FEATURE(kSpdySessionForProxyAdditionalChecks,
-              "SpdySessionForProxyAdditionalChecks",
-              base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -570,4 +570,5 @@ BASE_FEATURE(kOptimizeParsingDataUrls,
+              "OptimizeParsingDataUrls",
+              base::FEATURE_DISABLED_BY_DEFAULT);
  
 +#include "cromite_flags/net_base_features_cc.inc"
  }  // namespace net::features
 diff --git a/net/base/features.h b/net/base/features.h
-index ffa3f6ced770b..fc29e0cb8c62b 100644
+index 8d4fb2164e230..4f330e505be4b 100644
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -522,6 +522,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kStorageAccessHeaders);
- // not causing any problems.
- NET_EXPORT BASE_DECLARE_FEATURE(kSpdySessionForProxyAdditionalChecks);
+@@ -562,6 +562,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kReportingApiEnableEnterpriseCookieIssues);
+ // Optimize parsing data: URLs.
+ NET_EXPORT BASE_DECLARE_FEATURE(kOptimizeParsingDataUrls);
  
 +#include "cromite_flags/net_base_features_h.inc"
  }  // namespace net::features
  
  #endif  // NET_BASE_FEATURES_H_
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
-index 7fe43ddc13a49..2dc3a7a05cad1 100644
+index 2ea1088b1853d..7b7ad7c744420 100644
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -518,4 +518,5 @@ const base::FeatureParam<int> kNetworkContextPrefetchMaxLoaders{
+@@ -474,4 +474,5 @@ const base::FeatureParam<int> kNetworkContextPrefetchMaxLoaders{
      &kNetworkContextPrefetch,
      /*name=*/"max_loaders", /*default_value=*/10};
  
 +#include "cromite_flags/services_network_public_cpp_features_cc.inc"
  }  // namespace network::features
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
-index 6b781e2553781..67615081813eb 100644
+index 3d9e93ef3b43e..56ffdc8bb03c2 100644
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -212,6 +212,7 @@ BASE_DECLARE_FEATURE(kNetworkContextPrefetch);
+@@ -187,6 +187,7 @@ BASE_DECLARE_FEATURE(kNetworkContextPrefetch);
  COMPONENT_EXPORT(NETWORK_CPP)
  extern const base::FeatureParam<int> kNetworkContextPrefetchMaxLoaders;
  
@@ -1754,10 +1903,10 @@ index 6b781e2553781..67615081813eb 100644
  
  #endif  // SERVICES_NETWORK_PUBLIC_CPP_FEATURES_H_
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
-index 16e843fd62d0a..1749f8b349a06 100644
+index 46bd3fa71b397..005b71a575ea1 100644
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2677,5 +2677,6 @@ BASE_FEATURE(kOptimizeLoadingDataUrls,
+@@ -2691,5 +2691,6 @@ BASE_FEATURE(kOptimizeLoadingDataUrls,
               "OptimizeLoadingDataUrls",
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1765,10 +1914,10 @@ index 16e843fd62d0a..1749f8b349a06 100644
  }  // namespace features
  }  // namespace blink
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
-index bbaf8dc5038dc..2907ef19a8389 100644
+index bc6abd67dcd6f..31a211b1adcd1 100644
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -1744,6 +1744,7 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kRenderSizeInScoreAdBrowserSignals);
+@@ -1787,6 +1787,7 @@ BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kRenderSizeInScoreAdBrowserSignals);
  // Optimize loading data: URLs.
  BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kOptimizeLoadingDataUrls);
  
@@ -1776,6 +1925,28 @@ index bbaf8dc5038dc..2907ef19a8389 100644
  }  // namespace features
  }  // namespace blink
  
+diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
+index ed801f34141da..936b145b70003 100644
+--- a/ui/base/ui_base_features.cc
++++ b/ui/base/ui_base_features.cc
+@@ -546,4 +546,5 @@ BASE_FEATURE(kAsyncFullscreenWindowState,
+              "AsyncFullscreenWindowState",
+              base::FEATURE_DISABLED_BY_DEFAULT);
+ 
++#include "cromite_flags/ui_base_features_cc.inc"
+ }  // namespace features
+diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
+index 2232cc983adbc..00a01f521dd20 100644
+--- a/ui/base/ui_base_features.h
++++ b/ui/base/ui_base_features.h
+@@ -261,6 +261,7 @@ BASE_DECLARE_FEATURE(kUseUtf8EncodingForSvgImage);
+ COMPONENT_EXPORT(UI_BASE_FEATURES)
+ BASE_DECLARE_FEATURE(kAsyncFullscreenWindowState);
+ 
++#include "cromite_flags/ui_base_features_h.inc"
+ }  // namespace features
+ 
+ #endif  // UI_BASE_UI_BASE_FEATURES_H_
 -- 
 2.46.0
 

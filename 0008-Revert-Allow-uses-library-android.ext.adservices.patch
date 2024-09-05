@@ -1,4 +1,4 @@
-From e53876c341aee1be73c5dbd39e184da31821c533 Mon Sep 17 00:00:00 2001
+From fc68d1460a3f47dff81e31e86c86a56d30b208c2 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
 Subject: [PATCH 08/11] Revert "Allow uses-library android.ext.adservices"

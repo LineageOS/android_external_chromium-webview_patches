@@ -1,4 +1,4 @@
-From e53876c341aee1be73c5dbd39e184da31821c533 Mon Sep 17 00:00:00 2001
+From 970b0de43f25edc42435eb81b66ff5ba5dd8d9e3 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
 Subject: [PATCH 08/11] Revert "Allow uses-library android.ext.adservices"
@@ -132,10 +132,10 @@ index d14d137d67022..3c236904b28cd 100644
    </application>
  </manifest>
 diff --git a/chrome/android/expectations/monochrome_32_64_public_bundle__base.AndroidManifest.expected b/chrome/android/expectations/monochrome_32_64_public_bundle__base.AndroidManifest.expected
-index 03a31a22f4aed..960947fc21849 100644
+index daa1573ddbaf4..08780e53843da 100644
 --- a/chrome/android/expectations/monochrome_32_64_public_bundle__base.AndroidManifest.expected
 +++ b/chrome/android/expectations/monochrome_32_64_public_bundle__base.AndroidManifest.expected
-@@ -759,7 +759,6 @@
+@@ -768,7 +768,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -144,10 +144,10 @@ index 03a31a22f4aed..960947fc21849 100644
    </application>
  </manifest>
 diff --git a/chrome/android/expectations/monochrome_32_public_bundle__base.AndroidManifest.expected b/chrome/android/expectations/monochrome_32_public_bundle__base.AndroidManifest.expected
-index dc2c5beb2687e..9bc62edaed987 100644
+index 0925d8cae98d7..b67cf13c0027c 100644
 --- a/chrome/android/expectations/monochrome_32_public_bundle__base.AndroidManifest.expected
 +++ b/chrome/android/expectations/monochrome_32_public_bundle__base.AndroidManifest.expected
-@@ -758,7 +758,6 @@
+@@ -767,7 +767,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -156,10 +156,10 @@ index dc2c5beb2687e..9bc62edaed987 100644
    </application>
  </manifest>
 diff --git a/chrome/android/expectations/monochrome_64_32_public_bundle__base.AndroidManifest.expected b/chrome/android/expectations/monochrome_64_32_public_bundle__base.AndroidManifest.expected
-index 01950b63778d3..662904f31a79b 100644
+index 13be62ae945b8..eda5b1a0fa6b3 100644
 --- a/chrome/android/expectations/monochrome_64_32_public_bundle__base.AndroidManifest.expected
 +++ b/chrome/android/expectations/monochrome_64_32_public_bundle__base.AndroidManifest.expected
-@@ -758,7 +758,6 @@
+@@ -767,7 +767,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -168,10 +168,10 @@ index 01950b63778d3..662904f31a79b 100644
    </application>
  </manifest>
 diff --git a/chrome/android/expectations/monochrome_64_public_bundle__base.AndroidManifest.expected b/chrome/android/expectations/monochrome_64_public_bundle__base.AndroidManifest.expected
-index 666dc5741a94d..49ee1492c9346 100644
+index 3c8d943d72b48..b62030e7dfb9f 100644
 --- a/chrome/android/expectations/monochrome_64_public_bundle__base.AndroidManifest.expected
 +++ b/chrome/android/expectations/monochrome_64_public_bundle__base.AndroidManifest.expected
-@@ -758,7 +758,6 @@
+@@ -767,7 +767,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -180,7 +180,7 @@ index 666dc5741a94d..49ee1492c9346 100644
    </application>
  </manifest>
 diff --git a/chrome/android/expectations/monochrome_public_bundle__base.AndroidManifest.expected b/chrome/android/expectations/monochrome_public_bundle__base.AndroidManifest.expected
-index 4d28107f5d986..147a50e48e6fc 100644
+index 7ee75fd9dca82..87acc29c7b08c 100644
 --- a/chrome/android/expectations/monochrome_public_bundle__base.AndroidManifest.expected
 +++ b/chrome/android/expectations/monochrome_public_bundle__base.AndroidManifest.expected
 @@ -737,6 +737,5 @@
@@ -216,7 +216,7 @@ index 0000000000000..da6c78ff7b0cc
 +    </application>
 +</manifest>
 diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/customizations.gni
-index 513570ec0a892..dc130d1916d74 100644
+index 3d8b559964824..c97b0c3115e3b 100644
 --- a/third_party/androidx/customizations.gni
 +++ b/third_party/androidx/customizations.gni
 @@ -65,6 +65,12 @@ template("_androidx_prebuilt") {
@@ -233,5 +233,5 @@ index 513570ec0a892..dc130d1916d74 100644
        # Keeps emoji2 code. See http://crbug.com/1205141
        ignore_proguard_configs = true
 -- 
-2.46.0
+2.46.1
 

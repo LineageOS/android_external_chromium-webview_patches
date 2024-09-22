@@ -1,4 +1,4 @@
-From 3e3bdf8ffffb2956125c969030ee5fc278c44f1e Mon Sep 17 00:00:00 2001
+From 40e4505619b2b0a10a891fc4c699163c2fd1a07c Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/11] disable WebView variations support
@@ -26,10 +26,10 @@ index f8fca3ff457ee..9e2191c8560d0 100644
  
              // TODO(crbug.com/332706093): See if this can be moved before loading native.
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index 3fee8af683063..2afc2347d2a84 100644
+index 7ed3bff2cb0e9..d55667f684111 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -520,10 +520,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -528,10 +528,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
                  }
              }
  
@@ -41,5 +41,5 @@ index 3fee8af683063..2afc2347d2a84 100644
  
              setSingleton(this);
 -- 
-2.46.0
+2.46.1
 

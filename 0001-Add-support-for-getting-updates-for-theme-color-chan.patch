@@ -1,4 +1,4 @@
-From 67681a96b6074e1c10169827d52304e8eb015920 Mon Sep 17 00:00:00 2001
+From 651632115f939996630a302a59e50978af99adf6 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/11] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/11] Add support for getting updates for theme color
  6 files changed, 76 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index d5bba2951a379..ba1833cb940fb 100644
+index a03aa4cb833d3..83c6470e1021e 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -25,7 +25,7 @@ index d5bba2951a379..ba1833cb940fb 100644
  import android.graphics.Paint;
  import android.graphics.Picture;
  import android.graphics.Rect;
-@@ -81,6 +82,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -80,6 +81,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -33,7 +33,7 @@ index d5bba2951a379..ba1833cb940fb 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1851,6 +1853,13 @@ class WebViewChromium
+@@ -1850,6 +1852,13 @@ class WebViewChromium
          }
      }
  
@@ -114,10 +114,10 @@ index a02f8d1c28ed2..f6aa487879929 100644
          private AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index 62dea874c029d..c3ff92f59ddd5 100644
+index 7e5775a10403e..9cb5da4d80961 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-@@ -178,6 +178,8 @@ public abstract class AwContentsClient {
+@@ -177,6 +177,8 @@ public abstract class AwContentsClient {
  
      public abstract void onProgressChanged(int progress);
  
@@ -211,5 +211,5 @@ index be8f554e3930e..7e2e11de7b3db 100644
      public WebResourceResponseInfo shouldInterceptRequest(
              AwContentsClient.AwWebResourceRequest request) {
 -- 
-2.46.0
+2.46.1
 

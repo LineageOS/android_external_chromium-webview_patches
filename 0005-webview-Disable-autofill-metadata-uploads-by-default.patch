@@ -1,4 +1,4 @@
-From f6d4ba92504e5702047013e47040ec26941c256e Mon Sep 17 00:00:00 2001
+From c81b18e0312ea0bf919b352adad4549f18390cae Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Tue, 28 Sep 2021 08:43:01 -0600
 Subject: [PATCH 05/11] webview: Disable autofill metadata uploads by default
@@ -23,5 +23,5 @@ index 201ecfe1eaa3b..f49a7bc22e8ae 100644
    }
  
 -- 
-2.46.0
+2.46.1
 

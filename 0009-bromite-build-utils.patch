@@ -1,4 +1,4 @@
-From 29597d0234f63728028ea665f213f66ef098eee5 Mon Sep 17 00:00:00 2001
+From 4e64c913f3575e695f202a4a62bde21cc3e703fd Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/11] bromite build utils
@@ -445,10 +445,10 @@ index d1a665482c989..1f50d474948f1 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 80f918a81859c..5cfafafa54e64 100644
+index 0db0395c6619b..dfcc96574d197 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -207,7 +207,7 @@ if (!is_robolectric && enable_java_templates) {
+@@ -208,7 +208,7 @@ if (!is_robolectric && enable_java_templates) {
    #   }
    template("java_cpp_enum") {
      action_with_pydeps(target_name) {
@@ -457,7 +457,7 @@ index 80f918a81859c..5cfafafa54e64 100644
  
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
-@@ -218,6 +218,10 @@ if (!is_robolectric && enable_java_templates) {
+@@ -219,6 +219,10 @@ if (!is_robolectric && enable_java_templates) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -786,5 +786,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.46.0
+2.46.1
 

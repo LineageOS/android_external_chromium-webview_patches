@@ -1,4 +1,4 @@
-From 7ede8db8c742cac10924e3af2ea4f63411b12f98 Mon Sep 17 00:00:00 2001
+From aeb310a84499714bb172d13d73a976920a628eb4 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/11] disable WebView variations support
@@ -9,10 +9,10 @@ Subject: [PATCH 06/11] disable WebView variations support
  2 files changed, 10 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index f8fca3ff457ee..9e2191c8560d0 100644
+index 9df9ef610213e..561b1a3dab4aa 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -248,12 +248,6 @@ public class WebViewChromiumAwInit {
+@@ -244,12 +244,6 @@ public class WebViewChromiumAwInit {
  
              AwBrowserProcess.configureChildProcessLauncher();
  
@@ -26,10 +26,10 @@ index f8fca3ff457ee..9e2191c8560d0 100644
  
              // TODO(crbug.com/332706093): See if this can be moved before loading native.
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index 7ed3bff2cb0e9..d55667f684111 100644
+index 19e48c392e3a8..f6dcb9545c067 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -528,10 +528,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -521,10 +521,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
                  }
              }
  
@@ -41,5 +41,5 @@ index 7ed3bff2cb0e9..d55667f684111 100644
  
              setSingleton(this);
 -- 
-2.46.1
+2.47.0
 

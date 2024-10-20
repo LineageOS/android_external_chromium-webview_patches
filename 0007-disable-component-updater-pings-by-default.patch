@@ -1,4 +1,4 @@
-From ea27c5593e0a488f3fec35912cad345d7391d982 Mon Sep 17 00:00:00 2001
+From 49cae320a710d36f4a01b6dca2b5b0ea4e05c7d1 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Fri, 27 Nov 2020 03:56:29 -0500
 Subject: [PATCH 07/11] disable component updater pings by default
@@ -21,5 +21,5 @@ index 6c16b4e37a753..a627cb7ffd59c 100644
  
    // If non-zero, time interval until the first component update check.
 -- 
-2.46.1
+2.47.0
 

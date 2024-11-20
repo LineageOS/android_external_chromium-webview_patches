@@ -1,7 +1,7 @@
-From fe09be5b1351da34ec433ef82e638bfea1b53272 Mon Sep 17 00:00:00 2001
+From 306555c1f4ceeb3942abba07d13503256be7c346 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
-Subject: [PATCH 08/11] Revert "Allow uses-library android.ext.adservices"
+Subject: [PATCH 08/13] Revert "Allow uses-library android.ext.adservices"
 
 This reverts commit 0c3ae92dd16b763625a4d8c3f05012d9813dee2d.
 ---
@@ -216,7 +216,7 @@ index 0000000000000..da6c78ff7b0cc
 +    </application>
 +</manifest>
 diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/customizations.gni
-index 1574c3aa57496..a181dde8426ed 100644
+index 03b231888adc3..5a2773db2739b 100644
 --- a/third_party/androidx/customizations.gni
 +++ b/third_party/androidx/customizations.gni
 @@ -65,6 +65,12 @@ template("_androidx_prebuilt") {

@@ -1,7 +1,7 @@
-From 7fa1e72594f3c3e519ff2d9b67add4bff5a69e3e Mon Sep 17 00:00:00 2001
+From 50f946715b1260f8e91ddd98def73723103c5e9f Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
-Subject: [PATCH 09/11] bromite build utils
+Subject: [PATCH 09/13] bromite build utils
 
 Change-Id: I341ca819f305782864b36de15b42e2da3849897d
 ---
@@ -445,7 +445,7 @@ index c9a3ce41465b3..b35add9bb3222 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 95c8860589046..3640b61ce1b62 100644
+index aa6a2fe716646..47261d84d6152 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -208,7 +208,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -485,7 +485,7 @@ index 69cfc1ea44f49..89cf50ec65786 100644
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
      private static class TextSizeContrastAccessibilityDelegate
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index f9510952f325e..908db42b13788 100644
+index a25f8691324d7..719aa454915d7 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -6,7 +6,8 @@ import("//build/config/android/rules.gni")

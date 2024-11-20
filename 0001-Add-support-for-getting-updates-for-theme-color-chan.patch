@@ -1,7 +1,7 @@
-From 53d180517c51ff50b6cd192da1d4486e9f41e7e4 Mon Sep 17 00:00:00 2001
+From 750f90c9535cd6193324f8d4fbf3554aa62eaf51 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
-Subject: [PATCH 01/11] Add support for getting updates for theme color
+Subject: [PATCH 01/13] Add support for getting updates for theme color
  changes.
 
 ---
@@ -48,7 +48,7 @@ index a03aa4cb833d3..83c6470e1021e 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index a02f8d1c28ed2..f6aa487879929 100644
+index ca112dd360d3d..380dcb6d8f0c2 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 @@ -62,6 +62,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
@@ -88,7 +88,7 @@ index a02f8d1c28ed2..f6aa487879929 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler =
                      new Handler() {
-@@ -1087,6 +1103,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1089,6 +1105,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  
@@ -114,7 +114,7 @@ index a02f8d1c28ed2..f6aa487879929 100644
          private AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index 7e5775a10403e..9cb5da4d80961 100644
+index 8504d195be606..5f223eabe4ee4 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 @@ -177,6 +177,8 @@ public abstract class AwContentsClient {

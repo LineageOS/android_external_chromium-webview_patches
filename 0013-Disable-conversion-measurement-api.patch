@@ -1,7 +1,7 @@
-From 11946c4dd30768ad8a4ae252bb0ab0be05e81107 Mon Sep 17 00:00:00 2001
+From 0762f554d0e8e1e4572ea19288e1d6712ffd6cc0 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
-Subject: [PATCH 11/11] Disable conversion measurement api
+Subject: [PATCH 13/13] Disable conversion measurement api
 
 Disable Conversion Measurement API by disabling the flag and removing
 support for the AttributionReporting provider. it also removes
@@ -45,10 +45,10 @@ Change-Id: I5d97fd708d050e505b451705ca0d95d61b1c76a5
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
-index 4f2b6fa070ad5..ddc89c5ec55e0 100644
+index f8b01df49ec7d..e2b1a711b24b3 100644
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
-@@ -1296,6 +1296,7 @@ network::mojom::AttributionSupport
+@@ -1337,6 +1337,7 @@ network::mojom::AttributionSupport
  AwContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -56,7 +56,7 @@ index 4f2b6fa070ad5..ddc89c5ec55e0 100644
    // WebView only supports OS-level attribution and not web-attribution.
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
-@@ -1314,6 +1315,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -1355,6 +1356,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -66,7 +66,7 @@ index 4f2b6fa070ad5..ddc89c5ec55e0 100644
        static_cast<AwBrowserContext*>(browser_context);
    // WebView only supports OS-level attribution and not web-attribution.
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwSettings.java b/android_webview/java/src/org/chromium/android_webview/AwSettings.java
-index b190963a6b93f..2b14ba3e3bbe7 100644
+index 09cc26f06aff6..13ea6b3418977 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwSettings.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwSettings.java
 @@ -172,7 +172,7 @@ public class AwSettings {
@@ -88,7 +88,7 @@ index b190963a6b93f..2b14ba3e3bbe7 100644
              }
          }
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
-index f6ffd4c55f136..9a2e6c54a63dd 100644
+index ab689d4788bf3..309c519c7cc09 100644
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
 @@ -39,7 +39,6 @@ by a child template that "extends" this file.
@@ -99,7 +99,7 @@ index f6ffd4c55f136..9a2e6c54a63dd 100644
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_CONNECT"/>
      <!--
-@@ -1177,9 +1176,6 @@ by a child template that "extends" this file.
+@@ -1165,9 +1164,6 @@ by a child template that "extends" this file.
              android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mcc|mnc|screenLayout|smallestScreenSize" >
          </activity>
  
@@ -144,10 +144,10 @@ index 6d74cf593c5f6..ca78bbd4ab589 100644
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurementAPIAlternativeUsage);
  }  // namespace embedder_support
 diff --git a/components/renderer_context_menu/render_view_context_menu_base.cc b/components/renderer_context_menu/render_view_context_menu_base.cc
-index c22b3a584bb54..b7b64cbf9ee00 100644
+index 01a7fe089662d..2ae694e06e5ea 100644
 --- a/components/renderer_context_menu/render_view_context_menu_base.cc
 +++ b/components/renderer_context_menu/render_view_context_menu_base.cc
-@@ -503,9 +503,6 @@ RenderViewContextMenuBase::GetOpenURLParamsWithExtraHeaders(
+@@ -509,9 +509,6 @@ RenderViewContextMenuBase::GetOpenURLParamsWithExtraHeaders(
  
    open_url_params.source_site_instance = site_instance_;
  
@@ -200,7 +200,7 @@ index 639732e60f997..7fa6f514970d1 100644
 +SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAggregationService);
  }  // namespace content
 diff --git a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-index d310de6bed9e6..19bbd4bf22013 100644
+index a0823e928a37c..7b7eab730be66 100644
 --- a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
 +++ b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
 @@ -1155,6 +1155,7 @@ void AttributionDataHostManagerImpl::ParseHeader(
@@ -298,10 +298,10 @@ index 2beb1de22eab5..cc90e3bfd16ac 100644
        delegate_(delegate),
        rate_limit_table_(delegate_),
 diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
-index edbdcac55702f..9019dbcc26710 100644
+index a45a20da28026..fe7e9e0980d9b 100644
 --- a/content/browser/storage_partition_impl.cc
 +++ b/content/browser/storage_partition_impl.cc
-@@ -1449,15 +1449,6 @@ void StoragePartitionImpl::Initialize(
+@@ -1454,15 +1454,6 @@ void StoragePartitionImpl::Initialize(
  
    bucket_manager_ = std::make_unique<BucketManager>(this);
  
@@ -318,10 +318,10 @@ index edbdcac55702f..9019dbcc26710 100644
      // Auction worklets on non-Android use dedicated processes; on Android due
      // to high cost of process launch they try to reuse renderers.
 diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
-index f9e850f43ac38..740b39d0efb1f 100644
+index 80b2922f5c73b..9780a5ff883bd 100644
 --- a/content/public/android/BUILD.gn
 +++ b/content/public/android/BUILD.gn
-@@ -200,8 +200,6 @@ android_library("content_full_java") {
+@@ -201,8 +201,6 @@ android_library("content_full_java") {
      "//third_party/androidx:androidx_appcompat_appcompat_resources_java",
      "//third_party/androidx:androidx_collection_collection_java",
      "//third_party/androidx:androidx_core_core_java",
@@ -794,10 +794,10 @@ index 595ee0da8e735..8b6532d400d46 100644
  
      @CalledByNative
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index 49ae7aa8bb754..f421348285b4e 100644
+index b80b9e005c94e..2e79322d536e3 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -565,6 +565,7 @@ void ContentBrowserClient::OnAuctionComplete(
+@@ -569,6 +569,7 @@ void ContentBrowserClient::OnAuctionComplete(
  network::mojom::AttributionSupport ContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -805,7 +805,7 @@ index 49ae7aa8bb754..f421348285b4e 100644
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
        return network::mojom::AttributionSupport::kWeb;
-@@ -582,13 +583,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -586,13 +587,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -821,7 +821,7 @@ index 49ae7aa8bb754..f421348285b4e 100644
  }
  
  bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
-@@ -596,7 +597,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
+@@ -600,7 +601,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
      content::RenderFrameHost* rfh,
      const url::Origin& context_origin,
      const url::Origin& reporting_origin) {
@@ -899,10 +899,10 @@ index f7d2b0d250507..ec7dea7fe306b 100644
      case mojom::AttributionSupport::kWeb:
      case mojom::AttributionSupport::kWebAndOs:
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
-index 6c64af1a831b4..f35c9b10081c0 100644
+index f7476f52f833d..521ca42362b42 100644
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -1581,7 +1581,7 @@ void Page::UpdateBrowsingContextGroup(
+@@ -1590,7 +1590,7 @@ void Page::UpdateBrowsingContextGroup(
  
  void Page::SetAttributionSupport(
      network::mojom::AttributionSupport attribution_support) {
@@ -912,7 +912,7 @@ index 6c64af1a831b4..f35c9b10081c0 100644
  
  template class CORE_TEMPLATE_EXPORT Supplement<Page>;
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index 46369bcb30055..f2eba65ef8dbb 100644
+index 3690123883164..fc2e7cd2ed319 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 @@ -284,7 +284,7 @@
@@ -924,7 +924,7 @@ index 46369bcb30055..f2eba65ef8dbb 100644
        origin_trial_feature_name: "AdInterestGroupAPI",
        implied_by: ["Fledge", "Parakeet"],
        public: true,
-@@ -408,15 +408,15 @@
+@@ -407,15 +407,15 @@
      },
      {
        name: "AttributionReporting",
@@ -942,7 +942,7 @@ index 46369bcb30055..f2eba65ef8dbb 100644
      },
      {
        // This only exists so we can use RuntimeEnabled in the IDL file
-@@ -4244,15 +4244,15 @@
+@@ -4255,15 +4255,15 @@
      },
      {
        name: "TopicsAPI",
@@ -961,13 +961,13 @@ index 46369bcb30055..f2eba65ef8dbb 100644
      {
        name: "TopLevelTpcd",
 diff --git a/ui/events/android/motion_event_android.cc b/ui/events/android/motion_event_android.cc
-index 81d910520de9a..321d16e992ead 100644
+index fa20e256a8d1e..10bd4147c7de7 100644
 --- a/ui/events/android/motion_event_android.cc
 +++ b/ui/events/android/motion_event_android.cc
-@@ -171,7 +171,11 @@ int ToEventFlags(int meta_state, int button_state) {
- }
+@@ -389,7 +389,11 @@ MotionEventAndroid::ToolType MotionEventAndroid::FromAndroidToolType(
+ #undef TOOL_TYPE_CASE
  
- base::TimeTicks FromAndroidTime(base::TimeTicks time) {
+ base::TimeTicks MotionEventAndroid::FromAndroidTime(base::TimeTicks time) {
 -  ValidateEventTimeClock(&time);
 +  base::TimeTicks timestamp;
 +  // Rounding down to milliseconds (from nanoseconds)

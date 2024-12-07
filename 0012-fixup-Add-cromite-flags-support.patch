@@ -1,4 +1,4 @@
-From 5cc071bc38eb7b07ec627931aa0bf08f13c7905c Mon Sep 17 00:00:00 2001
+From ce6f5c7b00d6d3f920c9d0e9724d9a6546659d3f Mon Sep 17 00:00:00 2001
 From: Tommy Webb <tommy@calyxinstitute.org>
 Date: Tue, 12 Nov 2024 20:22:46 +0000
 Subject: [PATCH 12/13] fixup! Add cromite flags support
@@ -156,5 +156,5 @@ index c2bd32b0cd165..9ff7065821823 100644
      const base::FieldTrial::ActiveGroup& group) {
    static const unsigned char kNonBreakingHyphenUTF8[] = {0xE2, 0x80, 0x91,
 -- 
-2.47.0
+2.47.1
 

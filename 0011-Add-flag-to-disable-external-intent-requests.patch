@@ -1,4 +1,4 @@
-From fcb904960a4304ace28036baf7b4cdcc612f1086 Mon Sep 17 00:00:00 2001
+From a39430ecb492e843b7ea219908b746b01040c5e5 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/13] Add flag to disable external intent requests
@@ -269,5 +269,5 @@ index 0000000000000..c4015ad7de119
 +                "AllowExternalIntentRequests",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 -- 
-2.47.0
+2.47.1
 

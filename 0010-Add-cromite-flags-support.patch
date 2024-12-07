@@ -1,4 +1,4 @@
-From ca3f29611cf7c8fea343b2eb2a3679ea8a26d21c Mon Sep 17 00:00:00 2001
+From 792e3fe9a0345645610e5a4fd567a38f20420b79 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 18 Nov 2023 09:41:28 +0000
 Subject: [PATCH 10/13] Add cromite flags support
@@ -1980,5 +1980,5 @@ index 1688560766ffc..3d91197537079 100644
  
  #endif  // UI_BASE_UI_BASE_FEATURES_H_
 -- 
-2.47.0
+2.47.1
 

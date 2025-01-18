@@ -1,7 +1,7 @@
-From 0ed683790b9d5277d180785ad3d8ab42ddb55602 Mon Sep 17 00:00:00 2001
+From a04946e55a072e652f2b3716e058729152664ffe Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
-Subject: [PATCH 09/13] bromite build utils
+Subject: [PATCH 09/12] bromite build utils
 
 Change-Id: I341ca819f305782864b36de15b42e2da3849897d
 ---
@@ -433,10 +433,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index c9a3ce41465b3..b35add9bb3222 100644
+index 8e0c3761f1634..388d7bdb358ce 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -728,6 +728,7 @@ set_defaults("component") {
+@@ -734,6 +734,7 @@ set_defaults("component") {
    configs = default_component_configs
  }
  
@@ -445,10 +445,10 @@ index c9a3ce41465b3..b35add9bb3222 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index aa6a2fe716646..47261d84d6152 100644
+index 053550dd0365d..c568dc99495de 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -208,7 +208,7 @@ if (!is_robolectric && enable_java_templates) {
+@@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
    #   }
    template("java_cpp_enum") {
      action_with_pydeps(target_name) {
@@ -457,7 +457,7 @@ index aa6a2fe716646..47261d84d6152 100644
  
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
-@@ -219,6 +219,10 @@ if (!is_robolectric && enable_java_templates) {
+@@ -220,6 +220,10 @@ if (!is_robolectric && enable_java_templates) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -604,15 +604,15 @@ index 0000000000000..db44defd1ecb8
 +#endif  // CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 new file mode 100755
-index 0000000000000..d01ecbc5428f7
+index 0000000000000..702fe4dce42f0
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 @@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
-+import org.chromium.base.cached_flags.CachedFlag;
++import org.chromium.components.cached_flags.CachedFlagsSharedPreferences;
++import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.base.cached_flags.CachedFlagsSharedPreferences;
 +
 +import org.jni_zero.CalledByNative;
 +import org.jni_zero.NativeMethods;
@@ -655,7 +655,7 @@ index 0000000000000..d01ecbc5428f7
 +    }
 +}
 diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/mojom_parser.py
-index 039c7464268f0..0ddfb753b92d6 100755
+index 28c74c9e4ca17..0b167716212ec 100755
 --- a/mojo/public/tools/mojom/mojom_parser.py
 +++ b/mojo/public/tools/mojom/mojom_parser.py
 @@ -21,6 +21,7 @@ import os
@@ -666,12 +666,12 @@ index 039c7464268f0..0ddfb753b92d6 100755
  from collections import defaultdict
  
  from mojom.generate import module
-@@ -176,11 +177,26 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
+@@ -177,11 +178,26 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
    collect(build_metadata_filename)
    return allowed_imports
  
 +def _ResolveInclude(mojom_abspath, input_root_paths):
-+  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, input_root_paths)
++  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, mojom_abspath, input_root_paths)
 +  with codecs.open(mojom_abspath, encoding='utf-8') as f:
 +    src = f.read()
 +
@@ -695,7 +695,7 @@ index 039c7464268f0..0ddfb753b92d6 100755
      conditional_features.RemoveDisabledDefinitions(ast, enabled_features)
      return mojom_abspath, ast
  
-@@ -300,7 +316,7 @@ def _ParseMojoms(mojom_files,
+@@ -301,7 +317,7 @@ def _ParseMojoms(mojom_files,
        (path, abs_path) for abs_path, path in mojom_files_to_parse.items())
  
    logging.info('Parsing %d .mojom into ASTs', len(mojom_files_to_parse))
@@ -800,5 +800,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.47.1
+2.48.1
 

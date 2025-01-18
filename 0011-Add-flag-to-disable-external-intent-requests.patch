@@ -1,7 +1,7 @@
-From a39430ecb492e843b7ea219908b746b01040c5e5 Mon Sep 17 00:00:00 2001
+From f8105d0d5cccbdcf498cbe3acd427938acbcc9f1 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
-Subject: [PATCH 11/13] Add flag to disable external intent requests
+Subject: [PATCH 11/12] Add flag to disable external intent requests
 
 Adds a new flag that allows to control the switch with same name;
 when flag is disabled no external intent will ever be allowed,
@@ -73,7 +73,7 @@ index 4bf2bf4b527b3..c7ad21ed8c9af 100644
      @Override
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAllowExternalIntentRequests.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAllowExternalIntentRequests.java
 new file mode 100644
-index 0000000000000..de469ca636b99
+index 0000000000000..98a7d11ec4dba
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAllowExternalIntentRequests.java
 @@ -0,0 +1,33 @@
@@ -96,7 +96,7 @@ index 0000000000000..de469ca636b99
 +
 +package org.chromium.chrome.browser.flags.cromite;
 +
-+import org.chromium.base.cached_flags.CachedFlag;
++import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
 +
 +public class sAllowExternalIntentRequests {
@@ -181,7 +181,7 @@ index 1490544805b1a..0403e7484be10 100644
      public static final String BLOCK_FRAME_RENAVIGATIONS_NAME = "BlockFrameRenavigations3";
      public static final String BLOCK_INTENTS_TO_SELF_NAME = "BlockIntentsToSelf";
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index 4c55552f71b02..dd05a0b76f058 100644
+index 1e9f7547837df..38bd6a7836637 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 @@ -1532,6 +1532,12 @@ public class ExternalNavigationHandler {
@@ -197,7 +197,7 @@ index 4c55552f71b02..dd05a0b76f058 100644
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params,
              Intent targetIntent,
-@@ -1594,6 +1600,21 @@ public class ExternalNavigationHandler {
+@@ -1588,6 +1594,21 @@ public class ExternalNavigationHandler {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  
@@ -269,5 +269,5 @@ index 0000000000000..c4015ad7de119
 +                "AllowExternalIntentRequests",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 -- 
-2.47.1
+2.48.1
 

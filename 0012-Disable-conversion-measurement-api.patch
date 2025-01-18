@@ -1,7 +1,7 @@
-From ec8ec95d9a8ff39b576d8d137b44292e2d61f23e Mon Sep 17 00:00:00 2001
+From 3b4600c0ae093ea2bf3a356950ad8c57328a65cb Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
-Subject: [PATCH 13/13] Disable conversion measurement api
+Subject: [PATCH 12/12] Disable conversion measurement api
 
 Disable Conversion Measurement API by disabling the flag and removing
 support for the AttributionReporting provider. it also removes
@@ -23,7 +23,7 @@ Change-Id: I5d97fd708d050e505b451705ca0d95d61b1c76a5
  .../render_view_context_menu_base.cc          |   3 -
  .../aggregatable_report_sender.cc             |  15 +-
  .../aggregation_service_features.cc           |   1 +
- .../attribution_data_host_manager_impl.cc     |   1 +
+ .../attribution_data_host_manager_impl.cc     |   2 +
  .../attribution_reporting/attribution_host.cc |   1 +
  .../attribution_os_level_manager.cc           |   3 +-
  .../attribution_report_network_sender.cc      |   9 +
@@ -39,16 +39,16 @@ Change-Id: I5d97fd708d050e505b451705ca0d95d61b1c76a5
  .../network/public/cpp/attribution_utils.cc   |   2 +
  third_party/blink/renderer/core/page/page.cc  |   2 +-
  .../platform/runtime_enabled_features.json5   |  10 +-
- ui/events/android/motion_event_android.cc     |   6 +-
- 26 files changed, 77 insertions(+), 381 deletions(-)
+ ui/events/android/motion_event_android.cc     |   8 +-
+ 26 files changed, 79 insertions(+), 382 deletions(-)
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
-index f8b01df49ec7d..e2b1a711b24b3 100644
+index 88eb4fc1b09f8..2adcd8a266f6b 100644
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
-@@ -1337,6 +1337,7 @@ network::mojom::AttributionSupport
+@@ -1321,6 +1321,7 @@ network::mojom::AttributionSupport
  AwContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -56,7 +56,7 @@ index f8b01df49ec7d..e2b1a711b24b3 100644
    // WebView only supports OS-level attribution and not web-attribution.
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
-@@ -1355,6 +1356,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -1339,6 +1340,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -88,7 +88,7 @@ index 09cc26f06aff6..13ea6b3418977 100644
              }
          }
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
-index ab689d4788bf3..309c519c7cc09 100644
+index 9bb1c95729a7a..257c25a73e7b3 100644
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
 @@ -39,7 +39,6 @@ by a child template that "extends" this file.
@@ -99,7 +99,7 @@ index ab689d4788bf3..309c519c7cc09 100644
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_CONNECT"/>
      <!--
-@@ -1165,9 +1164,6 @@ by a child template that "extends" this file.
+@@ -1157,9 +1156,6 @@ by a child template that "extends" this file.
              android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mcc|mnc|screenLayout|smallestScreenSize" >
          </activity>
  
@@ -123,11 +123,11 @@ index e2bacdeaadcd7..b0a39975b2e43 100644
    }
  
 diff --git a/components/attribution_reporting/features.cc b/components/attribution_reporting/features.cc
-index a710a40605656..14ff36c110fc7 100644
+index 1bf1191b316cb..c70e634510034 100644
 --- a/components/attribution_reporting/features.cc
 +++ b/components/attribution_reporting/features.cc
-@@ -29,4 +29,5 @@ BASE_FEATURE(kAttributionScopes,
-              "AttributionScopes",
+@@ -29,4 +29,5 @@ BASE_FEATURE(kAttributionAggregatableNamedBudgets,
+              "AttributionAggregatableNamedBudgets",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurement);
@@ -144,10 +144,10 @@ index 6d74cf593c5f6..ca78bbd4ab589 100644
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurementAPIAlternativeUsage);
  }  // namespace embedder_support
 diff --git a/components/renderer_context_menu/render_view_context_menu_base.cc b/components/renderer_context_menu/render_view_context_menu_base.cc
-index 01a7fe089662d..2ae694e06e5ea 100644
+index edf3c0f19409e..fdfe5b928072c 100644
 --- a/components/renderer_context_menu/render_view_context_menu_base.cc
 +++ b/components/renderer_context_menu/render_view_context_menu_base.cc
-@@ -509,9 +509,6 @@ RenderViewContextMenuBase::GetOpenURLParamsWithExtraHeaders(
+@@ -521,9 +521,6 @@ RenderViewContextMenuBase::GetOpenURLParamsWithExtraHeaders(
  
    open_url_params.source_site_instance = site_instance_;
  
@@ -190,32 +190,33 @@ index bf0e83e261206..02a294cfa0c1d 100644
    if (headers) {
      http_response_code = headers->response_code();
 diff --git a/content/browser/aggregation_service/aggregation_service_features.cc b/content/browser/aggregation_service/aggregation_service_features.cc
-index 639732e60f997..7fa6f514970d1 100644
+index 91a25591b2c63..b6ee42f1436a1 100644
 --- a/content/browser/aggregation_service/aggregation_service_features.cc
 +++ b/content/browser/aggregation_service/aggregation_service_features.cc
-@@ -20,4 +20,5 @@ BASE_FEATURE(kPrivacySandboxAggregationServiceFilteringIds,
+@@ -14,4 +14,5 @@ BASE_FEATURE(kPrivacySandboxAggregationServiceFilteringIds,
               "PrivacySandboxAggregationServiceFilteringIds",
               base::FEATURE_ENABLED_BY_DEFAULT);
  
 +SET_CROMITE_FEATURE_DISABLED(kPrivacySandboxAggregationService);
  }  // namespace content
 diff --git a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-index a0823e928a37c..7b7eab730be66 100644
+index a49bcb91ef538..4cf279419d215 100644
 --- a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
 +++ b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-@@ -1155,6 +1155,7 @@ void AttributionDataHostManagerImpl::ParseHeader(
+@@ -1112,6 +1112,8 @@ void AttributionDataHostManagerImpl::ParseHeader(
+     Registrations& registrations,
      HeaderPendingDecode pending_decode,
      Registrar registrar) {
-   CHECK(it != registrations_.end());
 +  if ((true)) return;
- 
-   switch (it->eligibility()) {
++
+   switch (registrations.eligibility()) {
      case RegistrationEligibility::kSourceOrTrigger:
+       break;
 diff --git a/content/browser/attribution_reporting/attribution_host.cc b/content/browser/attribution_reporting/attribution_host.cc
-index ef79f6cba2964..45676fca53a4c 100644
+index 67be5644505ad..af0e4956e65df 100644
 --- a/content/browser/attribution_reporting/attribution_host.cc
 +++ b/content/browser/attribution_reporting/attribution_host.cc
-@@ -257,6 +257,7 @@ void AttributionHost::NotifyNavigationRegistrationData(
+@@ -312,6 +312,7 @@ void AttributionHost::NotifyNavigationRegistrationData(
      return;
    }
  
@@ -245,12 +246,12 @@ index 21787d459d6dd..2d21801d7876f 100644
  
  // static
 diff --git a/content/browser/attribution_reporting/attribution_report_network_sender.cc b/content/browser/attribution_reporting/attribution_report_network_sender.cc
-index b551ed92dfff8..5301dfd12a57c 100644
+index 30eb145dca98f..b2695adf88877 100644
 --- a/content/browser/attribution_reporting/attribution_report_network_sender.cc
 +++ b/content/browser/attribution_reporting/attribution_report_network_sender.cc
 @@ -144,6 +144,9 @@ void AttributionReportNetworkSender::SendReport(GURL url,
                                                  url::Origin origin,
-                                                 const std::string& body,
+                                                 std::string body,
                                                  UrlLoaderCallback callback) {
 +  // this is never called on Bromite but nothing would be sent if it were
 +  if ((true)) return;
@@ -258,7 +259,7 @@ index b551ed92dfff8..5301dfd12a57c 100644
    auto resource_request = std::make_unique<network::ResourceRequest>();
    resource_request->url = std::move(url);
    resource_request->method = net::HttpRequestHeaders::kPostMethod;
-@@ -218,6 +221,12 @@ void AttributionReportNetworkSender::OnReportSent(
+@@ -219,6 +222,12 @@ void AttributionReportNetworkSender::OnReportSent(
      ReportSentCallback sent_callback,
      UrlLoaderList::iterator it,
      scoped_refptr<net::HttpResponseHeaders> headers) {
@@ -272,10 +273,10 @@ index b551ed92dfff8..5301dfd12a57c 100644
  
    // Consider a non-200 HTTP code as a non-internal error.
 diff --git a/content/browser/attribution_reporting/attribution_storage_sql.cc b/content/browser/attribution_reporting/attribution_storage_sql.cc
-index 2beb1de22eab5..cc90e3bfd16ac 100644
+index e8eed2ab0b9a4..0dc515e90c80e 100644
 --- a/content/browser/attribution_reporting/attribution_storage_sql.cc
 +++ b/content/browser/attribution_reporting/attribution_storage_sql.cc
-@@ -507,6 +507,8 @@ void AssignSourceForDeactivationOrDeletion(
+@@ -535,6 +535,8 @@ void AssignSourceForDeactivationOrDeletion(
    }
  }
  
@@ -284,7 +285,7 @@ index 2beb1de22eab5..cc90e3bfd16ac 100644
  }  // namespace
  
  // static
-@@ -529,9 +531,9 @@ bool AttributionStorageSql::Transaction::Commit() {
+@@ -557,9 +559,9 @@ bool AttributionStorageSql::Transaction::Commit() {
  AttributionStorageSql::AttributionStorageSql(
      const base::FilePath& user_data_directory,
      AttributionResolverDelegate* delegate)
@@ -298,7 +299,7 @@ index 2beb1de22eab5..cc90e3bfd16ac 100644
        delegate_(delegate),
        rate_limit_table_(delegate_),
 diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
-index a45a20da28026..fe7e9e0980d9b 100644
+index c43bb22ce2326..29c207130fd04 100644
 --- a/content/browser/storage_partition_impl.cc
 +++ b/content/browser/storage_partition_impl.cc
 @@ -1454,15 +1454,6 @@ void StoragePartitionImpl::Initialize(
@@ -318,10 +319,10 @@ index a45a20da28026..fe7e9e0980d9b 100644
      // Auction worklets on non-Android use dedicated processes; on Android due
      // to high cost of process launch they try to reuse renderers.
 diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
-index 80b2922f5c73b..9780a5ff883bd 100644
+index c21c5218e76ee..29f914ac59d1d 100644
 --- a/content/public/android/BUILD.gn
 +++ b/content/public/android/BUILD.gn
-@@ -201,8 +201,6 @@ android_library("content_full_java") {
+@@ -202,8 +202,6 @@ android_library("content_full_java") {
      "//third_party/androidx:androidx_appcompat_appcompat_resources_java",
      "//third_party/androidx:androidx_collection_collection_java",
      "//third_party/androidx:androidx_core_core_java",
@@ -794,10 +795,10 @@ index 595ee0da8e735..8b6532d400d46 100644
  
      @CalledByNative
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index b80b9e005c94e..2e79322d536e3 100644
+index a1b6aad3587e7..c7b9d630b37aa 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -569,6 +569,7 @@ void ContentBrowserClient::OnAuctionComplete(
+@@ -581,6 +581,7 @@ void ContentBrowserClient::OnAuctionComplete(
  network::mojom::AttributionSupport ContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -805,7 +806,7 @@ index b80b9e005c94e..2e79322d536e3 100644
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
        return network::mojom::AttributionSupport::kWeb;
-@@ -586,13 +587,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -598,13 +599,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -821,7 +822,7 @@ index b80b9e005c94e..2e79322d536e3 100644
  }
  
  bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
-@@ -600,7 +601,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
+@@ -612,7 +613,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
      content::RenderFrameHost* rfh,
      const url::Origin& context_origin,
      const url::Origin& reporting_origin) {
@@ -899,10 +900,10 @@ index f7d2b0d250507..ec7dea7fe306b 100644
      case mojom::AttributionSupport::kWeb:
      case mojom::AttributionSupport::kWebAndOs:
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
-index f7476f52f833d..521ca42362b42 100644
+index cacc256893475..cb0257e4cb449 100644
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -1590,7 +1590,7 @@ void Page::UpdateBrowsingContextGroup(
+@@ -1562,7 +1562,7 @@ void Page::UpdateBrowsingContextGroup(
  
  void Page::SetAttributionSupport(
      network::mojom::AttributionSupport attribution_support) {
@@ -912,10 +913,10 @@ index f7476f52f833d..521ca42362b42 100644
  
  template class CORE_TEMPLATE_EXPORT Supplement<Page>;
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index 298f1e0b95e61..7fc29800ec4ce 100644
+index db7c64eebdf34..114e6f0538bde 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -284,7 +284,7 @@
+@@ -275,7 +275,7 @@
      {
        // Interest Group JS API/runtimeflag.
        name: "AdInterestGroupAPI",
@@ -924,7 +925,7 @@ index 298f1e0b95e61..7fc29800ec4ce 100644
        origin_trial_feature_name: "AdInterestGroupAPI",
        implied_by: ["Fledge", "Parakeet"],
        public: true,
-@@ -407,15 +407,15 @@
+@@ -412,15 +412,15 @@
      },
      {
        name: "AttributionReporting",
@@ -942,7 +943,7 @@ index 298f1e0b95e61..7fc29800ec4ce 100644
      },
      {
        // This only exists so we can use RuntimeEnabled in the IDL file
-@@ -4260,15 +4260,15 @@
+@@ -4316,15 +4316,15 @@
      },
      {
        name: "TopicsAPI",
@@ -958,25 +959,27 @@ index 298f1e0b95e61..7fc29800ec4ce 100644
        public: true,
 -      status: "stable",
      },
-     {
-       name: "TopLevelTpcd",
+     // This is a killswitch for the behavior where popover.showPopover() and
+     // dialog.showModal() throw DOM exceptions if the document isn't active.
 diff --git a/ui/events/android/motion_event_android.cc b/ui/events/android/motion_event_android.cc
-index fa20e256a8d1e..10bd4147c7de7 100644
+index 3cee1f27caf56..f14aa162bf6b1 100644
 --- a/ui/events/android/motion_event_android.cc
 +++ b/ui/events/android/motion_event_android.cc
-@@ -389,7 +389,11 @@ MotionEventAndroid::ToolType MotionEventAndroid::FromAndroidToolType(
+@@ -383,8 +383,12 @@ MotionEventAndroid::ToolType MotionEventAndroid::FromAndroidToolType(
  #undef TOOL_TYPE_CASE
  
  base::TimeTicks MotionEventAndroid::FromAndroidTime(base::TimeTicks time) {
 -  ValidateEventTimeClock(&time);
+-  return time;
 +  base::TimeTicks timestamp;
 +  // Rounding down to milliseconds (from nanoseconds)
 +  // see https://bugs.chromium.org/p/chromium/issues/detail?id=1378615
 +  timestamp = base::TimeTicks::FromUptimeMillis(time.ToUptimeMillis());
 +  ValidateEventTimeClock(&timestamp);
-   return time;
++  return timestamp;
  }
  
+ float MotionEventAndroid::ToValidFloat(float x) {
 -- 
-2.47.1
+2.48.1
 

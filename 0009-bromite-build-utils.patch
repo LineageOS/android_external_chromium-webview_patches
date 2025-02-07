@@ -1,9 +1,8 @@
-From a04946e55a072e652f2b3716e058729152664ffe Mon Sep 17 00:00:00 2001
+From 8ed5112cd4ee0717f865e43ed3e8f29cb2d576f7 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
 
-Change-Id: I341ca819f305782864b36de15b42e2da3849897d
 ---
  build/android/gyp/java_cpp_enum.py            |  36 +++++-
  build/android/gyp/util/build_utils.py         |  25 +++-
@@ -33,10 +32,10 @@ Change-Id: I341ca819f305782864b36de15b42e2da3849897d
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index 711e04ed21e24..3eebb658426d1 100755
+index 5adbec51f729d..fd566ae66a592 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
-@@ -173,6 +173,7 @@ class DirectiveSet:
+@@ -209,6 +209,7 @@ class DirectiveSet:
  
  
  class HeaderParser:
@@ -44,7 +43,7 @@ index 711e04ed21e24..3eebb658426d1 100755
    single_line_comment_re = re.compile(r'\s*//\s*([^\n]*)')
    multi_line_comment_start_re = re.compile(r'\s*/\*')
    enum_line_re = re.compile(r'^\s*(\w+)(\s*\=\s*([^,\n]+))?,?')
-@@ -200,7 +201,7 @@ class HeaderParser:
+@@ -237,7 +238,7 @@ class HeaderParser:
    enum_single_line_re = re.compile(
        r'^\s*(?:\[cpp.*\])?\s*enum.*{(?P<enum_entries>.*)}.*$')
  
@@ -53,15 +52,15 @@ index 711e04ed21e24..3eebb658426d1 100755
      self._lines = lines
      self._path = path
      self._enum_definitions = []
-@@ -217,6 +218,7 @@ class HeaderParser:
+@@ -254,6 +255,7 @@ class HeaderParser:
      self._generator_directives = DirectiveSet()
      self._multi_line_generator_directive = None
      self._current_enum_entry = ''
 +    self._options = options
  
    def _ShouldIgnoreLine(self):
-     return self._in_preprocessor_block and not self._in_buildflag_android
-@@ -260,6 +262,24 @@ class HeaderParser:
+     return self._in_preprocessor_block and not all(self._in_buildflag_android)
+@@ -296,6 +298,24 @@ class HeaderParser:
        raise Exception('Multi-line comments in enums are not supported in ' +
                        self._path)
  
@@ -86,7 +85,7 @@ index 711e04ed21e24..3eebb658426d1 100755
      enum_comment = HeaderParser.single_line_comment_re.match(line)
      if enum_comment:
        comment = enum_comment.groups()[0]
-@@ -360,9 +380,9 @@ class HeaderParser:
+@@ -396,9 +416,9 @@ class HeaderParser:
          self._ParseSingleLineEnum(single_line_enum.group('enum_entries'))
  
  
@@ -98,7 +97,7 @@ index 711e04ed21e24..3eebb658426d1 100755
      if not enum_definitions:
        raise Exception('No enums found in %s\n'
                        'Did you forget prefixing enums with '
-@@ -375,9 +395,9 @@ def DoGenerate(source_paths):
+@@ -411,9 +431,9 @@ def DoGenerate(source_paths):
        yield output_path, output
  
  
@@ -110,7 +109,7 @@ index 711e04ed21e24..3eebb658426d1 100755
  
  
  def GenerateOutput(source_path, enum_definition):
-@@ -456,6 +476,10 @@ def DoMain(argv):
+@@ -493,6 +513,10 @@ def DoMain(argv):
    parser.add_option('--srcjar',
                      help='When specified, a .srcjar at the given path is '
                      'created instead of individual .java files.')
@@ -121,7 +120,7 @@ index 711e04ed21e24..3eebb658426d1 100755
  
    options, args = parser.parse_args(argv)
  
-@@ -465,7 +489,7 @@ def DoMain(argv):
+@@ -502,7 +526,7 @@ def DoMain(argv):
  
    with action_helpers.atomic_output(options.srcjar) as f:
      with zipfile.ZipFile(f, 'w', zipfile.ZIP_STORED) as srcjar:
@@ -433,10 +432,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 8e0c3761f1634..388d7bdb358ce 100644
+index 9164ee0578686..e27a01c306cdf 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -734,6 +734,7 @@ set_defaults("component") {
+@@ -735,6 +735,7 @@ set_defaults("component") {
    configs = default_component_configs
  }
  
@@ -445,7 +444,7 @@ index 8e0c3761f1634..388d7bdb358ce 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 053550dd0365d..c568dc99495de 100644
+index 1a313ac60bcb2..e02bc33de2d31 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -469,10 +468,10 @@ index 053550dd0365d..c568dc99495de 100644
      }
    }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index 69cfc1ea44f49..89cf50ec65786 100644
+index c639a4b03487f..97a51ed4740b2 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -10,6 +10,11 @@ import org.chromium.components.browser_ui.accessibility.AccessibilitySettingsDel
+@@ -13,6 +13,11 @@ import org.chromium.components.browser_ui.settings.SettingsNavigation;
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
@@ -485,7 +484,7 @@ index 69cfc1ea44f49..89cf50ec65786 100644
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
      private static class TextSizeContrastAccessibilityDelegate
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index a25f8691324d7..719aa454915d7 100644
+index f9c1d35f582d3..1709eff620f32 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -6,7 +6,8 @@ import("//build/config/android/rules.gni")
@@ -498,7 +497,7 @@ index a25f8691324d7..719aa454915d7 100644
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
-@@ -30,7 +31,8 @@ android_library("java") {
+@@ -31,7 +32,8 @@ android_library("java") {
  }
  
  generate_jni("jni_headers") {
@@ -508,7 +507,7 @@ index a25f8691324d7..719aa454915d7 100644
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -38,6 +40,10 @@ generate_jni("jni_headers") {
+@@ -39,6 +41,10 @@ generate_jni("jni_headers") {
  
  static_library("flags_android") {
    sources = [

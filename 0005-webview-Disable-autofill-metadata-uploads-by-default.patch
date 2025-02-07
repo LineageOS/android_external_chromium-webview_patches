@@ -1,4 +1,4 @@
-From f34fe35f58f9d77d9c17c8f93a8e6aaaf706e910 Mon Sep 17 00:00:00 2001
+From 79bd9e9749cadfffaf7b3cea60f4cbe899c00eeb Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Tue, 28 Sep 2021 08:43:01 -0600
 Subject: [PATCH 05/12] webview: Disable autofill metadata uploads by default
@@ -6,14 +6,14 @@ Subject: [PATCH 05/12] webview: Disable autofill metadata uploads by default
 * [haggertk - 2021-11-16] - Update per d85f6c03db147
   (Reland "[Autofill] Inline kAutofillMetadataUploads")
 ---
- components/autofill/core/browser/randomized_encoder.cc | 2 +-
+ .../autofill/core/browser/crowdsourcing/randomized_encoder.cc   | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/components/autofill/core/browser/randomized_encoder.cc b/components/autofill/core/browser/randomized_encoder.cc
-index b92a466b3381b..66440df0bd034 100644
---- a/components/autofill/core/browser/randomized_encoder.cc
-+++ b/components/autofill/core/browser/randomized_encoder.cc
-@@ -188,7 +188,7 @@ const char RandomizedEncoder::kUrlKeyedAnonymizedDataCollectionEnabled[] =
+diff --git a/components/autofill/core/browser/crowdsourcing/randomized_encoder.cc b/components/autofill/core/browser/crowdsourcing/randomized_encoder.cc
+index 2246a11c6f8bd..260981a5972d4 100644
+--- a/components/autofill/core/browser/crowdsourcing/randomized_encoder.cc
++++ b/components/autofill/core/browser/crowdsourcing/randomized_encoder.cc
+@@ -152,7 +152,7 @@ std::string GetEncodingSeed(PrefService* pref_service) {
  std::unique_ptr<RandomizedEncoder> RandomizedEncoder::Create(
      PrefService* pref_service) {
    // Early abort if metadata uploads are not enabled.

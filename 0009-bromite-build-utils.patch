@@ -1,4 +1,4 @@
-From 1c7de29a862c1a83a6fe97f6bc8645d9f0dafc10 Mon Sep 17 00:00:00 2001
+From e4dd9abcd4cdb8fa94783541c63c99d3f735307a Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -432,10 +432,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 9164ee0578686..e27a01c306cdf 100644
+index c01896919e5a4..c7542a0c5702e 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -735,6 +735,7 @@ set_defaults("component") {
+@@ -734,6 +734,7 @@ set_defaults("component") {
    configs = default_component_configs
  }
  
@@ -444,7 +444,7 @@ index 9164ee0578686..e27a01c306cdf 100644
  # ACTION OVERRIDE
  # =============================================================================
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 1a313ac60bcb2..e02bc33de2d31 100644
+index be82605fa8706..88321dba104bc 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {

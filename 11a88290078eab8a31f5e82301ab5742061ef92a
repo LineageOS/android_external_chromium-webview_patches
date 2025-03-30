@@ -16,6 +16,23 @@
       "message": "When building a GSI target, the webview entry causes the following error:\n\n```\nerror: build/make/target/product/gsi/Android.bp:84:1: \"android_gsi\" depends on undefined module \"webview\".\nOr did you mean [\"Twelve\" \"Velvet\" \"libpiex\" \"libvixl\" \"service\" \"services\" \"webRTC\"]?\n```\n\nAOSP defines webview in bp instead of mk since A12.\n\nBase Android.bp taken from AOSP android-14.0.0_r75; `optional_uses_libs` added to meet build requirements.",
       "revId": "11a88290078eab8a31f5e82301ab5742061ef92a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a250ca1_65d76a98",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 20162
+      },
+      "writtenOn": "2025-03-30T06:01:53Z",
+      "side": 1,
+      "message": "Does not build as-is; does build when this Android.bp is manually created at external/chromium-webview root.",
+      "revId": "11a88290078eab8a31f5e82301ab5742061ef92a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }

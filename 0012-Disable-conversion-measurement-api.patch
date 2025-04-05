@@ -1,4 +1,4 @@
-From 0d4f07f8052387115001a0b22a0602103ea5d83f Mon Sep 17 00:00:00 2001
+From b6bbfbf683a2059115edc6f8221972519988b123 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
 Subject: [PATCH 12/12] Disable conversion measurement api
@@ -39,8 +39,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/AttributionOsLevelManager.java    | 349 +-----------------
  .../public/browser/content_browser_client.cc  |   7 +-
  .../public/browser/navigation_controller.cc   |   1 -
- .../Disable-conversion-measurement-api.inc    |   1 +
- .../Disable-conversion-measurement-api.inc    |  10 +
+ .../Disable-conversion-measurement-api.inc    |   2 +
+ .../Disable-conversion-measurement-api.inc    |   8 +
  .../attribution/request_headers_internal.cc   |   1 +
  services/network/network_context.cc           |  20 -
  .../network/public/cpp/attribution_utils.cc   |   2 +
@@ -48,12 +48,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  third_party/blink/renderer/core/page/page.cc  |   2 +-
  .../platform/runtime_enabled_features.json5   |  20 +-
  ui/events/android/motion_event_android.cc     |   8 +-
- 36 files changed, 101 insertions(+), 430 deletions(-)
+ 36 files changed, 100 insertions(+), 430 deletions(-)
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
-index d0e9dec32d5ea..a7701fc75849e 100644
+index 35a3981594848..473e94b3cf297 100644
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
 @@ -1302,6 +1302,7 @@ network::mojom::AttributionSupport
@@ -130,10 +130,10 @@ index 5b5fe60a41618..82b299c7cacad 100644
          {% if enable_openxr == "true" %}
            <!-- launchMode is set to singleTask because there should never be multiple copies of the app running. -->
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
-index 988e6c7d4700a..57786e811bf11 100644
+index e4f4dd7fdaf34..eb32b0750635e 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
-@@ -151,6 +151,8 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
+@@ -150,6 +150,8 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
                  // not great to dynamically remove the preference in this way.
              case SiteSettingsCategory.Type.ADS:
                  return SiteSettingsCategory.adsCategoryEnabled();
@@ -156,10 +156,10 @@ index 6938b75d909db..66e34073bf2c7 100644
      std::move(callback).Run(std::nullopt);
      return;
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/chrome/browser/resources/settings/privacy_page/privacy_page.html
-index 7f98d8ac8d2f3..57cd00b1a31e2 100644
+index e370bdef2b6dd..3b6af29f4134d 100644
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.html
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.html
-@@ -626,11 +626,6 @@
+@@ -665,11 +665,6 @@
            </category-setting-exceptions>
          </settings-subpage>
        </template>
@@ -172,7 +172,7 @@ index 7f98d8ac8d2f3..57cd00b1a31e2 100644
          <settings-subpage page-title="$i18n{siteSettingsCategoryMicrophone}"
              search-label="$i18n{siteSettingsAllSitesSearch}"
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
-index 001852c43411e..ebd39217552a1 100644
+index 16d1a68dccf87..6febeb26ae018 100644
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
 @@ -94,7 +94,7 @@ function addPrivacyChildRoutes(r: Partial<SettingsRoutes>) {
@@ -220,10 +220,10 @@ index 9f66a302e57d0..2de50f7eed7cb 100644
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurement);
  }  // namespace attribution_reporting::features
 diff --git a/components/content_settings/core/browser/content_settings_registry.cc b/components/content_settings/core/browser/content_settings_registry.cc
-index b1e3ab1d5562a..2d2c681b34154 100644
+index abc8bc5353fe6..59925321e6db5 100644
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
-@@ -689,7 +689,7 @@ void ContentSettingsRegistry::Init() {
+@@ -690,7 +690,7 @@ void ContentSettingsRegistry::Init() {
             ContentSettingsInfo::INHERIT_IN_INCOGNITO,
             ContentSettingsInfo::EXCEPTIONS_ON_SECURE_ORIGINS_ONLY);
  
@@ -289,10 +289,10 @@ index 7856d639e01ed..c94edcc391225 100644
    if (headers) {
      http_response_code = headers->response_code();
 diff --git a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-index cab9cccdc533b..e0ca0dd431edd 100644
+index 058cc889b25bb..234d334566112 100644
 --- a/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
 +++ b/content/browser/attribution_reporting/attribution_data_host_manager_impl.cc
-@@ -758,11 +758,9 @@ class AttributionDataHostManagerImpl::PendingRegistrationData {
+@@ -797,11 +797,9 @@ class AttributionDataHostManagerImpl::PendingRegistrationData {
          headers->GetNormalizedHeader(
              attribution_reporting::kAttributionReportingRegisterTriggerHeader);
  
@@ -306,7 +306,7 @@ index cab9cccdc533b..e0ca0dd431edd 100644
  
      const bool has_source =
          web_source_header.has_value() || os_source_header.has_value();
-@@ -1121,6 +1119,8 @@ void AttributionDataHostManagerImpl::ParseHeader(
+@@ -1160,6 +1158,8 @@ void AttributionDataHostManagerImpl::ParseHeader(
      Registrations& registrations,
      HeaderPendingDecode pending_decode,
      Registrar registrar) {
@@ -316,7 +316,7 @@ index cab9cccdc533b..e0ca0dd431edd 100644
      case RegistrationEligibility::kSourceOrTrigger:
        break;
 diff --git a/content/browser/attribution_reporting/attribution_host.cc b/content/browser/attribution_reporting/attribution_host.cc
-index 53b6c288ceb7e..6d8d0211b285b 100644
+index 531e39d33656f..95cbcd333c3a4 100644
 --- a/content/browser/attribution_reporting/attribution_host.cc
 +++ b/content/browser/attribution_reporting/attribution_host.cc
 @@ -119,8 +119,6 @@ AttributionHost::AttributionHost(WebContents* web_contents)
@@ -328,7 +328,7 @@ index 53b6c288ceb7e..6d8d0211b285b 100644
  #endif
  }
  
-@@ -318,6 +316,7 @@ void AttributionHost::NotifyNavigationRegistrationData(
+@@ -332,6 +330,7 @@ void AttributionHost::NotifyNavigationRegistrationData(
      return;
    }
  
@@ -337,10 +337,10 @@ index 53b6c288ceb7e..6d8d0211b285b 100644
        AttributionManager::FromWebContents(web_contents());
    DCHECK(attribution_manager);
 diff --git a/content/browser/attribution_reporting/attribution_manager_impl.cc b/content/browser/attribution_reporting/attribution_manager_impl.cc
-index efc94740e14f4..947bc9be8c425 100644
+index 07aa1fd201ed4..6c4263b1c2fab 100644
 --- a/content/browser/attribution_reporting/attribution_manager_impl.cc
 +++ b/content/browser/attribution_reporting/attribution_manager_impl.cc
-@@ -573,11 +573,7 @@ bool IsOperationAllowed(
+@@ -552,11 +552,7 @@ bool IsOperationAllowed(
  }
  
  std::unique_ptr<AttributionOsLevelManager> CreateOsLevelManager() {
@@ -401,10 +401,10 @@ index c48210a13dd90..6fcb32b3a3397 100644
  
    // Consider a non-200 HTTP code as a non-internal error.
 diff --git a/content/browser/attribution_reporting/attribution_storage_sql.cc b/content/browser/attribution_reporting/attribution_storage_sql.cc
-index 5864c3b235ccf..6e703b7c602b9 100644
+index 3b33f6066e70f..8f41c14254413 100644
 --- a/content/browser/attribution_reporting/attribution_storage_sql.cc
 +++ b/content/browser/attribution_reporting/attribution_storage_sql.cc
-@@ -532,6 +532,8 @@ void AssignSourceForDeactivationOrDeletion(
+@@ -533,6 +533,8 @@ void AssignSourceForDeactivationOrDeletion(
    }
  }
  
@@ -413,7 +413,7 @@ index 5864c3b235ccf..6e703b7c602b9 100644
  }  // namespace
  
  // static
-@@ -554,9 +556,9 @@ bool AttributionStorageSql::Transaction::Commit() {
+@@ -555,9 +557,9 @@ bool AttributionStorageSql::Transaction::Commit() {
  AttributionStorageSql::AttributionStorageSql(
      const base::FilePath& user_data_directory,
      AttributionResolverDelegate* delegate)
@@ -427,10 +427,10 @@ index 5864c3b235ccf..6e703b7c602b9 100644
            /*tag=*/"Conversions"),
        delegate_(delegate),
 diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
-index 622142dcf64df..7f3a15c37cc1e 100644
+index a5287d9c28938..edf3f9ba1c6a4 100644
 --- a/content/browser/renderer_host/render_frame_host_impl.cc
 +++ b/content/browser/renderer_host/render_frame_host_impl.cc
-@@ -10241,6 +10241,7 @@ bool RenderFrameHostImpl::IsFencedFrameReportingFromRendererAllowed(
+@@ -10254,6 +10254,7 @@ bool RenderFrameHostImpl::IsFencedFrameReportingFromRendererAllowed(
      return false;
    }
  
@@ -438,7 +438,7 @@ index 622142dcf64df..7f3a15c37cc1e 100644
    if (!IsActive()) {
      // reportEvent is not allowed when this RenderFrameHost or one of its
      // ancestors is not active.
-@@ -14045,6 +14046,16 @@ void RenderFrameHostImpl::BindTrustTokenQueryAnswerer(
+@@ -14093,6 +14094,16 @@ void RenderFrameHostImpl::BindTrustTokenQueryAnswerer(
      return;
    }
  
@@ -456,7 +456,7 @@ index 622142dcf64df..7f3a15c37cc1e 100644
    // secure contexts, so we could additionally add a check verifying that the
    // bind request "is coming from a secure context"---but there's currently no
 diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
-index 29a3522bffdd0..221100ec924da 100644
+index 91b0547550e85..f1e426879a223 100644
 --- a/content/browser/storage_partition_impl.cc
 +++ b/content/browser/storage_partition_impl.cc
 @@ -1482,15 +1482,6 @@ void StoragePartitionImpl::Initialize(
@@ -472,7 +472,7 @@ index 29a3522bffdd0..221100ec924da 100644
 -        this, path, special_storage_policy_);
 -  }
 -
-   if (base::FeatureList::IsEnabled(blink::features::kInterestGroupStorage)) {
+   if (base::FeatureList::IsEnabled(network::features::kInterestGroupStorage)) {
      // Auction worklets on non-Android use dedicated processes; on Android due
      // to high cost of process launch they try to reuse renderers.
 @@ -1542,9 +1533,6 @@ void StoragePartitionImpl::Initialize(
@@ -486,7 +486,7 @@ index 29a3522bffdd0..221100ec924da 100644
    if (is_in_memory()) {
      // Pass an empty path if in_memory so that CdmStorage.db is not stored on
 diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
-index 6316eb0306fac..84ebb80c06227 100644
+index c4ce9bfa3e68e..53a34e89ced57 100644
 --- a/content/public/android/BUILD.gn
 +++ b/content/public/android/BUILD.gn
 @@ -208,8 +208,6 @@ android_library("content_full_java") {
@@ -962,7 +962,7 @@ index 3d81dc051f114..4e2dc6dc1b3bd 100644
  
      @CalledByNative
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index f07621fc68623..cae901d9fd1a6 100644
+index 79490d0d3d622..18756c6bc5cc6 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
 @@ -601,6 +601,7 @@ void ContentBrowserClient::OnAuctionComplete(
@@ -1012,27 +1012,26 @@ index 08c7fd6e4deac..0f44f844c81c5 100644
  #if DCHECK_IS_ON()
 diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
 new file mode 100644
-index 0000000000000..12701797e167c
+index 0000000000000..3487672196460
 --- /dev/null
 +++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1 @@
-+// none
+@@ -0,0 +1,2 @@
++SET_CROMITE_FEATURE_DISABLED(kBrowsingTopics);
++SET_CROMITE_FEATURE_DISABLED(kInterestGroupStorage);
 diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 new file mode 100644
-index 0000000000000..6b14f26df95a8
+index 0000000000000..08338bef3c5a2
 --- /dev/null
 +++ b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,8 @@
 +SET_CROMITE_FEATURE_DISABLED(kAdAuctionSignals);
-+SET_CROMITE_FEATURE_DISABLED(kBrowsingTopics);
 +SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsDocumentAPI);
 +SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsParameters);
 +SET_CROMITE_FEATURE_DISABLED(kFledge);
 +SET_CROMITE_FEATURE_DISABLED(kFledgeBiddingAndAuctionServer);
-+SET_CROMITE_FEATURE_DISABLED(kInterestGroupStorage);
 +SET_CROMITE_FEATURE_DISABLED(kPrivateAggregationApi);
-+SET_CROMITE_FEATURE_DISABLED(kBiddingAndScoringDebugReportingAPI);
 +SET_CROMITE_FEATURE_DISABLED(kAllowURNsInIframes);
++SET_CROMITE_FEATURE_DISABLED(kFledgeSampleDebugReports);
 diff --git a/services/network/attribution/request_headers_internal.cc b/services/network/attribution/request_headers_internal.cc
 index 430b310c9179f..a91c599f06826 100644
 --- a/services/network/attribution/request_headers_internal.cc
@@ -1046,10 +1045,10 @@ index 430b310c9179f..a91c599f06826 100644
  
    const char* grease1;
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index e74079c81ddad..8bed0c046da89 100644
+index 85e8de6a7ce8e..458c5708d8ed1 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -2637,26 +2637,6 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
+@@ -2683,26 +2683,6 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
      builder.set_network_quality_estimator(
          network_service_->network_quality_estimator());
    }
@@ -1110,10 +1109,10 @@ index 2845c36c7a81e..0dc719be2e718 100644
          request_id(request_id) {}
  
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
-index c8157c539795c..c74719beb51ba 100644
+index ffea9cdf7dd8d..60beb2cfa16e1 100644
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -1575,7 +1575,7 @@ void Page::UpdateBrowsingContextGroup(
+@@ -1623,7 +1623,7 @@ void Page::UpdateBrowsingContextGroup(
  
  void Page::SetAttributionSupport(
      network::mojom::AttributionSupport attribution_support) {
@@ -1123,7 +1122,7 @@ index c8157c539795c..c74719beb51ba 100644
  
  template class CORE_TEMPLATE_EXPORT Supplement<Page>;
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index b6f5a0ec57929..e2db00a9af5ad 100644
+index 2f46a741ab3a2..5b3214e033be2 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 @@ -286,8 +286,8 @@
@@ -1137,7 +1136,7 @@ index b6f5a0ec57929..e2db00a9af5ad 100644
        origin_trial_feature_name: "AdInterestGroupAPI",
        implied_by: ["Fledge", "Parakeet"],
        public: true,
-@@ -459,8 +459,8 @@
+@@ -453,8 +453,8 @@
        name: "AtomicMoveRangePreservation",
      },
      {
@@ -1148,7 +1147,7 @@ index b6f5a0ec57929..e2db00a9af5ad 100644
        base_feature: "none",
        public: true,
      },
-@@ -3428,8 +3428,8 @@
+@@ -3465,8 +3465,8 @@
        base_feature: "none",
      },
      {
@@ -1159,7 +1158,7 @@ index b6f5a0ec57929..e2db00a9af5ad 100644
        base_feature: "none",
        public: true,
      },
-@@ -4344,16 +4344,16 @@
+@@ -4438,16 +4438,16 @@
        status: "experimental",
      },
      {
@@ -1200,5 +1199,5 @@ index e764b30fa251b..bb8a88e5e0dc0 100644
  
  float MotionEventAndroid::ToValidFloat(float x) {
 -- 
-2.48.1
+2.49.0
 

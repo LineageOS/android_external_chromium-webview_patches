@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64396166_0a3b4767",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-04-21T02:05:47Z",
+      "side": 1,
+      "message": "Non-Pixel:\n```\n[100% 201/201] Install: /mnt/out/out/lineage-22/target/product/nx_tab/product/app/webview/oat/arm64/we\n\n#### build completed successfully (03:41 (mm:ss)) ####\n```\n\nPixeL:\n```\n[100% 8920/8920] Install: /mnt/out/out/lineage-22/target/product/tangorpro/product/app/webview/webview\n\n#### build completed successfully (05:31 (mm:ss)) ####\n\n\n```",
+      "revId": "c162f97f8ebd24341ec6ada931b58bc9dba6cfd0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}

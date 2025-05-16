@@ -1,4 +1,4 @@
-From a7d20742f342f199da6e6c0d08f2b095b08b1f1f Mon Sep 17 00:00:00 2001
+From 8de952c24059f7e93d3d417d6ba844e65aacc77b Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/12] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index ae55d2e3f84a1..db4d34e7575c4 100644
+index 2e68e473bdf54..2ab500d0ed17e 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -25,7 +25,7 @@ index ae55d2e3f84a1..db4d34e7575c4 100644
  import android.graphics.Paint;
  import android.graphics.Picture;
  import android.graphics.Rect;
-@@ -80,6 +81,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -81,6 +82,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -33,7 +33,7 @@ index ae55d2e3f84a1..db4d34e7575c4 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1872,6 +1874,13 @@ class WebViewChromium
+@@ -1873,6 +1875,13 @@ class WebViewChromium
          }
      }
  
@@ -48,7 +48,7 @@ index ae55d2e3f84a1..db4d34e7575c4 100644
      public int getContentHeight() {
          try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
-index cd0b282ad7498..96f393e758451 100644
+index acbba93177b4a..01bad44549cf2 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 @@ -63,6 +63,8 @@ import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
@@ -60,9 +60,9 @@ index cd0b282ad7498..96f393e758451 100644
  import java.security.Principal;
  import java.security.PrivateKey;
  import java.security.cert.X509Certificate;
-@@ -112,6 +114,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
-     private static final Pattern FILE_ANDROID_ASSET_PATTERN =
-             Pattern.compile("^file:/*android_(asset|res).*");
+@@ -106,6 +108,9 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+     private WeakHashMap<AwPermissionRequest, WeakReference<PermissionRequestAdapter>>
+             mOngoingPermissionRequests;
  
 +    private static Method sWebChromeClientThemeColorMethod;
 +    private static boolean sWebChromeClientThemeColorMethodInitialized;
@@ -70,7 +70,7 @@ index cd0b282ad7498..96f393e758451 100644
      /**
       * Adapter constructor.
       *
-@@ -123,6 +128,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -117,6 +122,17 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          super(webView, webViewDelegate, context);
          try (ScopedSysTraceEvent event =
                  ScopedSysTraceEvent.scoped("WebView.APICallback.WebViewClient.constructor")) {
@@ -88,7 +88,7 @@ index cd0b282ad7498..96f393e758451 100644
              // See //android_webview/docs/how-does-on-create-window-work.md for more details.
              mUiThreadHandler =
                      new Handler() {
-@@ -1099,6 +1115,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
+@@ -1083,6 +1099,24 @@ class WebViewContentsClientAdapter extends SharedWebViewContentsClientAdapter {
          }
      }
  
@@ -114,10 +114,10 @@ index cd0b282ad7498..96f393e758451 100644
          private AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index f0c088f37e05a..7b32e38d785c3 100644
+index 59951a7783900..585480b6299bc 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-@@ -181,6 +181,8 @@ public abstract class AwContentsClient {
+@@ -128,6 +128,8 @@ public abstract class AwContentsClient {
  
      public abstract void onProgressChanged(int progress);
  
@@ -127,10 +127,10 @@ index f0c088f37e05a..7b32e38d785c3 100644
  
      public abstract boolean shouldOverrideKeyEvent(KeyEvent event);
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
-index fe29c88d38009..625ac490c2db0 100644
+index ba8f944feff44..f7bc58be0a017 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
-@@ -140,6 +140,9 @@ public class AwContentsClientCallbackHelper {
+@@ -138,6 +138,9 @@ public class AwContentsClientCallbackHelper {
      private static final int MSG_ON_FORM_RESUBMISSION = 14;
      private static final int MSG_ON_SAFE_BROWSING_HIT = 15;
  
@@ -140,7 +140,7 @@ index fe29c88d38009..625ac490c2db0 100644
      // Minimum period allowed between consecutive onNewPicture calls, to rate-limit the callbacks.
      private static final long ON_NEW_PICTURE_MIN_PERIOD_MILLIS = 500;
      // Timestamp of the most recent onNewPicture callback.
-@@ -274,6 +277,11 @@ public class AwContentsClientCallbackHelper {
+@@ -272,6 +275,11 @@ public class AwContentsClientCallbackHelper {
                          mContentsClient.onFormResubmission(info.mDontResend, info.mResend);
                          break;
                      }
@@ -152,7 +152,7 @@ index fe29c88d38009..625ac490c2db0 100644
                  default:
                      throw new IllegalStateException(
                              "AwContentsClientCallbackHelper: unhandled message " + msg.what);
-@@ -379,6 +387,10 @@ public class AwContentsClientCallbackHelper {
+@@ -376,6 +384,10 @@ public class AwContentsClientCallbackHelper {
          mHandler.sendMessage(mHandler.obtainMessage(MSG_SYNTHESIZE_PAGE_LOADING, url));
      }
  
@@ -196,10 +196,10 @@ index 20aa168a597c1..8ee48e319efd1 100644
          return mCommittedNavigation;
      }
 diff --git a/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java b/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
-index be8f554e3930e..7e2e11de7b3db 100644
+index 3ece9777e66ad..8649247f79f19 100644
 --- a/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
 +++ b/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
-@@ -69,6 +69,10 @@ public class NullContentsClient extends AwContentsClient {
+@@ -70,6 +70,10 @@ public class NullContentsClient extends AwContentsClient {
      @Override
      public void onProgressChanged(int progress) {}
  
@@ -208,8 +208,8 @@ index be8f554e3930e..7e2e11de7b3db 100644
 +    }
 +
      @Override
-     public WebResourceResponseInfo shouldInterceptRequest(
-             AwContentsClient.AwWebResourceRequest request) {
+     public WebResourceResponseInfo shouldInterceptRequest(AwWebResourceRequest request) {
+         return null;
 -- 
 2.49.0
 

@@ -1,4 +1,4 @@
-From 212a0032634cd8de3e6d020d68c3b9fcae4e37c5 Mon Sep 17 00:00:00 2001
+From 6d0aeb51427173eae277fa37be89d91d491ae6a7 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -15,13 +15,13 @@ Subject: [PATCH 09/12] bromite build utils
  build/config/android/rules.gni                |   6 +-
  .../ChromeAccessibilitySettingsDelegate.java  |   5 +
  chrome/browser/flags/BUILD.gn                 |  10 +-
- .../flags/android/cromite_native_utils.cc     |  57 ++++++++++
+ .../flags/android/cromite_native_utils.cc     |  92 +++++++++++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
  .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
  mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 17 files changed, 502 insertions(+), 19 deletions(-)
+ 17 files changed, 537 insertions(+), 19 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -432,17 +432,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 632de02789948..2bcabb49ba2ef 100644
+index a9d2caeb1c92e..03f1266b8adb3 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -764,3 +764,5 @@ if (is_component_build) {
+@@ -792,3 +792,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index fbb3ba1e994e4..928d6a3cdd85f 100644
+index c3c62337a760e..b75674a55343c 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -518,10 +518,10 @@ index f9c1d35f582d3..1709eff620f32 100644
    ]
 diff --git a/chrome/browser/flags/android/cromite_native_utils.cc b/chrome/browser/flags/android/cromite_native_utils.cc
 new file mode 100755
-index 0000000000000..a9e707e23ccbc
+index 0000000000000..8aa17d8820df9
 --- /dev/null
 +++ b/chrome/browser/flags/android/cromite_native_utils.cc
-@@ -0,0 +1,57 @@
+@@ -0,0 +1,92 @@
 +#include "chrome/browser/flags/android/cromite_native_utils.h"
 +
 +#include "chrome/browser/browser_process.h"
@@ -544,10 +544,33 @@ index 0000000000000..a9e707e23ccbc
 +  entries.erase(internal_name + "@1"); // enabled
 +  entries.erase(internal_name + "@2"); // disabled
 +
-+  if (isEnabled)
-+    entries.insert(internal_name + "@1");
-+  else
-+    entries.insert(internal_name + "@2");
++  bool is_switch = false;
++  if (const flags_ui::FeatureEntry* entry =
++        about_flags::GetCurrentFlagsState()->FindFeatureEntryByName(
++          internal_name)) {
++    if (entry->type == flags_ui::FeatureEntry::SINGLE_DISABLE_VALUE) {
++      entries.erase(entry->switches.command_line_switch);
++      if (isEnabled) {
++        entries.insert(entry->switches.command_line_switch);
++      }
++      is_switch = true;
++    } else if (entry->type == flags_ui::FeatureEntry::ENABLE_DISABLE_VALUE) {
++      entries.erase(entry->switches.command_line_switch);
++      entries.erase(entry->switches.disable_command_line_switch);
++      if (isEnabled) {
++        entries.insert(entry->switches.disable_command_line_switch);
++      }
++      is_switch = true;
++    }
++  }
++
++  if (!is_switch) {
++    if (isEnabled) {
++      entries.insert(internal_name + "@1");
++    } else {
++      entries.insert(internal_name + "@2");
++    }
++  }
 +
 +  flags_storage.SetFlags(entries);
 +  flags_storage.CommitPendingWrites();
@@ -560,6 +583,18 @@ index 0000000000000..a9e707e23ccbc
 +  flags_ui::PrefServiceFlagsStorage flags_storage(
 +      g_browser_process->local_state());
 +  std::set<std::string> entries = flags_storage.GetFlags();
++
++  if (const flags_ui::FeatureEntry* entry =
++        about_flags::GetCurrentFlagsState()->FindFeatureEntryByName(
++          internal_name)) {
++    if (entry->type == flags_ui::FeatureEntry::SINGLE_DISABLE_VALUE &&
++        entries.count(entry->switches.command_line_switch)) {
++      return true;
++    } else if (entry->type == flags_ui::FeatureEntry::ENABLE_DISABLE_VALUE &&
++               entries.count(entry->switches.disable_command_line_switch)) {
++      return true;
++    }
++  }
 +
 +  const std::string enabled_entry = internal_name + "@1";
 +  if (entries.count(enabled_entry))

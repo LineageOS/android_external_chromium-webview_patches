@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bfad491a_4d9a245f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29080
+      },
+      "writtenOn": "2025-05-25T14:45:01Z",
+      "side": 1,
+      "message": "Also verified there is no /product/app/webview/oat/arm/ created on 64-bit only builds after this change",
+      "revId": "5840890d755159787fbba5da9f78c53e8f0e4461",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}

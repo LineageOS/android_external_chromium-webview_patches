@@ -16,6 +16,24 @@
       "message": "I assumed ART would avoid compiling it unless any zygote32 process required it, but maybe it does it as soon as zygote32 starts?\nCan you check on clean build",
       "revId": "3b6d5150fea7fc72bc54020ceb9aeed758fc96ce",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e1774b37_d023beae",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29080
+      },
+      "writtenOn": "2025-05-25T16:34:34Z",
+      "side": 1,
+      "message": "At least it compiles during bg-dexopt-job and I have no 32-bit apps that depends on Webview (confirmed by `dumpsys package com.android.webview`). If you still need clean results, I will check it later",
+      "parentUuid": "2d2e7ed3_8c3733fd",
+      "revId": "3b6d5150fea7fc72bc54020ceb9aeed758fc96ce",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }

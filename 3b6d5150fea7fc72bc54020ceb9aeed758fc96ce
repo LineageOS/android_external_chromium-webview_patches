@@ -34,6 +34,24 @@
       "parentUuid": "2d2e7ed3_8c3733fd",
       "revId": "3b6d5150fea7fc72bc54020ceb9aeed758fc96ce",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05d459d1_8ca012f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-05-25T17:19:10Z",
+      "side": 1,
+      "message": "If you have no 32bit apps then it means zygote32 is enough, likely there\u0027s a preload of sort\nPlease check whenever you have time 😊",
+      "parentUuid": "e1774b37_d023beae",
+      "revId": "3b6d5150fea7fc72bc54020ceb9aeed758fc96ce",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }

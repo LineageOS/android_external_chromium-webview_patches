@@ -1,4 +1,4 @@
-From e4658ada920eac87cd0decffc3e0c3d724f9af05 Mon Sep 17 00:00:00 2001
+From 657f7ae9bb3d0cf852d8e579ef29c1e15d8c0b0c Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/12] disable WebView variations support
@@ -9,29 +9,29 @@ Subject: [PATCH 06/12] disable WebView variations support
  2 files changed, 10 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index c96f6d461e247..1ff593c8c19b3 100644
+index 9fe76e760b2b1..4a1dc3b19f60d 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -342,12 +342,6 @@ public class WebViewChromiumAwInit {
+@@ -408,12 +408,6 @@ public class WebViewChromiumAwInit {
  
-             AwBrowserProcess.configureChildProcessLauncher();
+                     AwBrowserProcess.configureChildProcessLauncher();
  
--            // finishVariationsInitLocked() must precede native initialization so the seed is
--            // available when AwFeatureListCreator::SetUpFieldTrials() runs.
--            if (!FastVariationsSeedSafeModeAction.hasRun()) {
--                finishVariationsInitLocked();
--            }
--
-             AwBrowserProcess.start();
- 
-             // TODO(crbug.com/332706093): See if this can be moved before loading native.
+-                    // finishVariationsInitLocked() must precede native initialization so
+-                    // the seed is available when AwFeatureListCreator::SetUpFieldTrials()
+-                    // runs.
+-                    if (!FastVariationsSeedSafeModeAction.hasRun()) {
+-                        finishVariationsInitLocked();
+-                    }
+                 });
+         tasks.addLast(AwBrowserProcess::start);
+         tasks.addLast(
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index 1bb6cb5ca8c9a..46558e7af93d7 100644
+index 4a6ac79ebc08d..7e275a2736ab0 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -591,10 +591,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
-                 }
-             }
+@@ -627,10 +627,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+             mAwInit.setStartupTaskExperimentEnabled(enableStartupTasksExperiment);
+             AwBrowserMainParts.setWebViewStartupTasksLogicIsEnabled(enableStartupTasksExperiment);
  
 -            if (!FastVariationsSeedSafeModeAction.hasRun()) {
 -                mAwInit.startVariationsInit();

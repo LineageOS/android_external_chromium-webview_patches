@@ -1,4 +1,4 @@
-From b84903854864ceb13df0fd6f27fcd93d4bc076b1 Mon Sep 17 00:00:00 2001
+From 60bbe4263adb42148e09bcc32e8b5eb6f5f56bd7 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/12] Add flag to disable external intent requests
@@ -31,10 +31,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-flag-to-disable-external-intent-requests.inc
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
-index 8763021064c62..e994a65a438a6 100644
+index 7900aa61618df..3ca06ff9b73fa 100644
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -62,7 +62,12 @@ found in the LICENSE file.
+@@ -58,7 +58,12 @@ found in the LICENSE file.
          android:title="@string/settings_incognito_tab_lock_title"
          android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
          android:persistent="false" />
@@ -47,7 +47,7 @@ index 8763021064c62..e994a65a438a6 100644
 +        app:needRestart="false" />
      <PreferenceCategory
          android:key="security_section"
-         android:title="@string/security_section_title" />
+       android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 index 84f7e4e7fc0d1..7401741d913cd 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
@@ -200,10 +200,10 @@ index e2e4578e0da7b..9792a59569556 100644
      public static final String BLOCK_FRAME_RENAVIGATIONS_NAME = "BlockFrameRenavigations3";
      public static final String BLOCK_INTENTS_TO_SELF_NAME = "BlockIntentsToSelf";
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index b3e85a6feaa43..62d0b9a216bd6 100644
+index c7ebed01ee106..7ac4b8f738f51 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -1529,6 +1529,12 @@ public class ExternalNavigationHandler {
+@@ -1537,6 +1537,12 @@ public class ExternalNavigationHandler {
                  || ignoreBackForwardNav(params);
      }
  
@@ -216,7 +216,7 @@ index b3e85a6feaa43..62d0b9a216bd6 100644
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params,
              Intent targetIntent,
-@@ -1585,6 +1591,21 @@ public class ExternalNavigationHandler {
+@@ -1593,6 +1599,21 @@ public class ExternalNavigationHandler {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  

@@ -1,4 +1,4 @@
-From b7232c6b61e52b9f75446f0e8b88e332fdef5901 Mon Sep 17 00:00:00 2001
+From 3e5090bb91b13f2a246d267abf94a4f1a42f3446 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -432,17 +432,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index c3a3bf4970783..10de90e6f2c66 100644
+index 706f0f32fe3d5..c59ee37b319c2 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -796,3 +796,5 @@ if (is_component_build) {
+@@ -844,3 +844,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index f43fcfa7f01af..4c9d3bfa6fcda 100644
+index 05f947f426b44..07ff43faad6a7 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -466,10 +466,10 @@ index f43fcfa7f01af..4c9d3bfa6fcda 100644
      }
    }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index c639a4b03487f..97a51ed4740b2 100644
+index 06d7e028d6c05..962f3f84503ac 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -13,6 +13,11 @@ import org.chromium.components.browser_ui.settings.SettingsNavigation;
+@@ -15,6 +15,11 @@ import org.chromium.components.browser_ui.settings.SettingsNavigation;
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
@@ -479,8 +479,8 @@ index c639a4b03487f..97a51ed4740b2 100644
 +import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
  /** The Chrome implementation of AccessibilitySettingsDelegate. */
+ @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
-     private static class TextSizeContrastAccessibilityDelegate
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
 index f9c1d35f582d3..1709eff620f32 100644
 --- a/chrome/browser/flags/BUILD.gn
@@ -832,5 +832,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.49.0
+2.50.0
 

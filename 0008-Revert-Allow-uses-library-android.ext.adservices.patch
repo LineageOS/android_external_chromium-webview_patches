@@ -1,4 +1,4 @@
-From e0a6aac259edd032244a4d8907d94f7fe3a74d67 Mon Sep 17 00:00:00 2001
+From a89e1803ab1bcf6b1683d2a91ef159c8242e4b27 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
 Subject: [PATCH 08/12] Revert "Allow uses-library android.ext.adservices"
@@ -233,5 +233,5 @@ index f4d453788030e..2d384df33ed5c 100644
        # Keeps emoji2 code. See http://crbug.com/1205141
        ignore_proguard_configs = true
 -- 
-2.49.0
+2.50.0
 

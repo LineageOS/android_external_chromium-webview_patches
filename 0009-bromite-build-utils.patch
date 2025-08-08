@@ -1,10 +1,10 @@
-From 3e5090bb91b13f2a246d267abf94a4f1a42f3446 Mon Sep 17 00:00:00 2001
+From 6cb0bd4c6ae7c6035389b22831d38f8efd9070b1 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
 
 ---
- build/android/gyp/java_cpp_enum.py            |  36 +++++-
+ build/android/gyp/java_cpp_enum.py            |  37 +++++-
  build/android/gyp/util/build_utils.py         |  25 +++-
  build/bromite/bromite_utils.gni               |  79 +++++++++++++
  build/bromite/gyp/cpp_bromite_include.py      |  35 ++++++
@@ -21,7 +21,7 @@ Subject: [PATCH 09/12] bromite build utils
  mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 17 files changed, 537 insertions(+), 19 deletions(-)
+ 17 files changed, 538 insertions(+), 19 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -32,10 +32,10 @@ Subject: [PATCH 09/12] bromite build utils
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index 66ea639d9acf0..af19ca1f15b46 100755
+index ffd896d9bc7ec..c43486b3ecd1b 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
-@@ -209,6 +209,7 @@ class DirectiveSet:
+@@ -208,6 +208,7 @@ class DirectiveSet:
  
  
  class HeaderParser:
@@ -43,7 +43,7 @@ index 66ea639d9acf0..af19ca1f15b46 100755
    single_line_comment_re = re.compile(r'\s*//\s*([^\n]*)')
    multi_line_comment_start_re = re.compile(r'\s*/\*')
    enum_line_re = re.compile(r'^\s*(\w+)(\s*\=\s*([^,\n]+))?,?')
-@@ -237,7 +238,7 @@ class HeaderParser:
+@@ -236,7 +237,7 @@ class HeaderParser:
    enum_single_line_re = re.compile(
        r'^\s*(?:\[cpp.*\])?\s*enum.*{(?P<enum_entries>.*)}.*$')
  
@@ -52,7 +52,7 @@ index 66ea639d9acf0..af19ca1f15b46 100755
      self._lines = lines
      self._path = path
      self._enum_definitions = []
-@@ -254,6 +255,7 @@ class HeaderParser:
+@@ -253,6 +254,7 @@ class HeaderParser:
      self._generator_directives = DirectiveSet()
      self._multi_line_generator_directive = None
      self._current_enum_entry = ''
@@ -60,7 +60,7 @@ index 66ea639d9acf0..af19ca1f15b46 100755
  
    def _ShouldIgnoreLine(self):
      return self._in_preprocessor_block and not all(self._in_buildflag_android)
-@@ -296,6 +298,24 @@ class HeaderParser:
+@@ -295,6 +297,24 @@ class HeaderParser:
        raise Exception('Multi-line comments in enums are not supported in ' +
                        self._path)
  
@@ -85,7 +85,7 @@ index 66ea639d9acf0..af19ca1f15b46 100755
      enum_comment = HeaderParser.single_line_comment_re.match(line)
      if enum_comment:
        comment = enum_comment.groups()[0]
-@@ -396,9 +416,9 @@ class HeaderParser:
+@@ -395,9 +415,9 @@ class HeaderParser:
          self._ParseSingleLineEnum(single_line_enum.group('enum_entries'))
  
  
@@ -97,46 +97,44 @@ index 66ea639d9acf0..af19ca1f15b46 100755
      if not enum_definitions:
        raise Exception('No enums found in %s\n'
                        'Did you forget prefixing enums with '
-@@ -411,9 +431,9 @@ def DoGenerate(source_paths):
+@@ -410,9 +430,9 @@ def DoGenerate(source_paths):
        yield output_path, output
  
  
 -def DoParseHeaderFile(path):
 +def DoParseHeaderFile(path, options):
-   with open(path) as f:
+   with open(path, encoding='utf-8') as f:
 -    return HeaderParser(f.readlines(), path).ParseDefinitions()
 +    return HeaderParser(f.readlines(), options, path).ParseDefinitions()
  
  
  def GenerateOutput(source_path, enum_definition):
-@@ -496,6 +516,10 @@ def DoMain(argv):
-   parser.add_option('--srcjar',
-                     help='When specified, a .srcjar at the given path is '
-                     'created instead of individual .java files.')
-+  parser.add_option('--gen_dir',
-+                    help='Indicates the path to the generated file')
-+  parser.add_option('--root_dir',
-+                    help='Indicates the path to the build root')
+@@ -498,11 +518,16 @@ def DoMain(argv):
+                       nargs='+',
+                       help='Path to at least one input file.')
  
-   options, args = parser.parse_args(argv)
- 
-@@ -505,7 +529,7 @@ def DoMain(argv):
++  parser.add_argument('--gen_dir',
++                      help='Indicates the path to the generated file')
++  parser.add_argument('--root_dir',
++                      help='Indicates the path to the build root')
++
+   options = parser.parse_args(argv)
  
    with action_helpers.atomic_output(options.srcjar) as f:
      with zipfile.ZipFile(f, 'w', zipfile.ZIP_STORED) as srcjar:
--      for output_path, data in DoGenerate(input_paths):
-+      for output_path, data in DoGenerate(input_paths, options):
+-      for output_path, data in DoGenerate(options.input_paths):
++      for output_path, data in DoGenerate(options.input_paths, options):
          zip_helpers.add_to_zip_hermetic(srcjar, output_path, data=data)
  
  
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
-index f12a7f035ab0b..3c6179ccde2b5 100644
+index 9da32d0c5d7e5..45bdff36d74e0 100644
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
-@@ -502,4 +502,27 @@ def ReadSourcesList(sources_list_file_name):
+@@ -433,4 +433,27 @@ def ReadSourcesList(sources_list_file_name):
    Note that this function should not be used to parse response files.
    """
-   with open(sources_list_file_name) as f:
+   with open(sources_list_file_name, encoding='utf-8') as f:
 -    return [file_name.strip() for file_name in f]
 +    files = [file_name.strip() for file_name in f]
 +    # allows inclusion of all files in the indicated folder
@@ -432,17 +430,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 706f0f32fe3d5..c59ee37b319c2 100644
+index ada289497b25f..a0be595de1904 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -844,3 +844,5 @@ if (is_component_build) {
+@@ -843,3 +843,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 05f947f426b44..07ff43faad6a7 100644
+index 6b0c5f325b0ec..bb9ec33e840b1 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -832,5 +830,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.50.0
+2.51.0
 

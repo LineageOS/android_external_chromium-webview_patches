@@ -1,4 +1,4 @@
-From e578f1c1732b96c2f19f1beb0568ae958c6e5266 Mon Sep 17 00:00:00 2001
+From 7b542cc145ea03bb5f9b5c91a4145dd211cc2d2e Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/12] disable WebView variations support
@@ -9,7 +9,7 @@ Subject: [PATCH 06/12] disable WebView variations support
  2 files changed, 10 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index 07695e149bbb2..e6bfa008f77b4 100644
+index d00463c0774a6..f7dbdbbbca448 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 @@ -410,12 +410,6 @@ public class WebViewChromiumAwInit {
@@ -26,7 +26,7 @@ index 07695e149bbb2..e6bfa008f77b4 100644
          tasks.addLast(AwBrowserProcess::start);
          tasks.addLast(
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index c35b857040162..1f4421e5c5e65 100644
+index 1410a9ac61999..2f5c0a6696acb 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 @@ -577,10 +577,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
@@ -41,5 +41,5 @@ index c35b857040162..1f4421e5c5e65 100644
  
              FlagOverrideHelper helper =
 -- 
-2.50.0
+2.51.0
 

@@ -1,4 +1,4 @@
-From 7ee11124fb0e44a157721d72f83cdbdcc3d7c7c3 Mon Sep 17 00:00:00 2001
+From 86f97ed0c647af1b00943c63c7f7fd86e3fd8918 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/12] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index c61ad08954c74..3b09eb59b7f9c 100644
+index 6dd6e0ff308a3..1712da72a5ebe 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -33,7 +33,7 @@ index c61ad08954c74..3b09eb59b7f9c 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1872,6 +1874,13 @@ class WebViewChromium
+@@ -1875,6 +1877,13 @@ class WebViewChromium
          }
      }
  
@@ -114,10 +114,10 @@ index a76418fcec396..1dcafd344872f 100644
          private final AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index c755255d8367a..608fa33545a75 100644
+index d83aad1d99f36..d8d758eb714eb 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-@@ -148,6 +148,8 @@ public abstract class AwContentsClient {
+@@ -146,6 +146,8 @@ public abstract class AwContentsClient {
  
      public abstract void onProgressChanged(int progress);
  

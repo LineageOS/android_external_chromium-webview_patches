@@ -1,4 +1,4 @@
-From 6cb0bd4c6ae7c6035389b22831d38f8efd9070b1 Mon Sep 17 00:00:00 2001
+From 184ebb5651d1b0e56cfc14172d3884391e0ad45f Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -128,10 +128,10 @@ index ffd896d9bc7ec..c43486b3ecd1b 100755
  
  
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
-index 9da32d0c5d7e5..45bdff36d74e0 100644
+index f6f2fd6543bfa..5abb1c86cf3fb 100644
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
-@@ -433,4 +433,27 @@ def ReadSourcesList(sources_list_file_name):
+@@ -404,4 +404,27 @@ def ReadSourcesList(sources_list_file_name):
    Note that this function should not be used to parse response files.
    """
    with open(sources_list_file_name, encoding='utf-8') as f:
@@ -303,7 +303,7 @@ index 0000000000000..b5adeb538b32d
 +cpp_bromite_include.py
 diff --git a/build/bromite/gyp/java_bromite_impl.py b/build/bromite/gyp/java_bromite_impl.py
 new file mode 100644
-index 0000000000000..5fe190870e2c7
+index 0000000000000..9525ecd1d4ed5
 --- /dev/null
 +++ b/build/bromite/gyp/java_bromite_impl.py
 @@ -0,0 +1,107 @@
@@ -362,7 +362,7 @@ index 0000000000000..5fe190870e2c7
 +    lines = f.readlines()
 +
 +  template = ''.join(lines)
-+  package, class_name = java_cpp_utils.ParseTemplateFile(lines)
++  package, class_name = java_cpp_utils.ParseTemplateFile(template)
 +  output_path = java_cpp_utils.GetJavaFilePath(package, class_name)
 +  strings = []
 +
@@ -430,17 +430,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index ada289497b25f..a0be595de1904 100644
+index 9d778df88664f..36b5225777d13 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -843,3 +843,5 @@ if (is_component_build) {
+@@ -870,3 +870,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 6b0c5f325b0ec..bb9ec33e840b1 100644
+index d176f828ca862..5e7b0dc50de2c 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -480,7 +480,7 @@ index 06d7e028d6c05..962f3f84503ac 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index f9c1d35f582d3..1709eff620f32 100644
+index 252fcbaffa279..a6892aae16560 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -6,7 +6,8 @@ import("//build/config/android/rules.gni")

@@ -1,4 +1,4 @@
-From 63a5da768b9c11043ca7e3bfd7a0856e3127c8d2 Mon Sep 17 00:00:00 2001
+From 7c75bf41d7836c04a59acb334291078ac51bb0e8 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/12] Add flag to disable external intent requests
@@ -49,10 +49,10 @@ index 555a31b5d055b..b9ab4ff2fd7e2 100644
          android:key="security_section"
        android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-index b0d0c3bdf885a..a2617bb046602 100644
+index f313677fede50..c74f651e1e883 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-@@ -36,6 +36,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
+@@ -35,6 +35,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
  import org.chromium.chrome.browser.externalnav.ExternalNavigationDelegateImpl;
  import org.chromium.chrome.browser.flags.ActivityType;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -60,7 +60,7 @@ index b0d0c3bdf885a..a2617bb046602 100644
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.init.ChromeActivityNativeDelegate;
-@@ -128,6 +129,7 @@ public class CustomTabDelegateFactory implements TabDelegateFactory {
+@@ -152,6 +153,7 @@ public class CustomTabDelegateFactory implements TabDelegateFactory {
  
          @Override
          public boolean shouldDisableAllExternalIntents() {
@@ -69,10 +69,10 @@ index b0d0c3bdf885a..a2617bb046602 100644
                      && ChromeFeatureList.sCctAuthTabDisableAllExternalIntents.isEnabled();
          }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
-index 595186ccd1177..0aaec7e505a12 100644
+index adebbcb0185f7..c81e823af5f8c 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
-@@ -26,6 +26,7 @@ import org.chromium.base.supplier.Supplier;
+@@ -25,6 +25,7 @@ import org.chromium.base.PackageManagerUtils;
  import org.chromium.build.annotations.NullMarked;
  import org.chromium.build.annotations.Nullable;
  import org.chromium.chrome.browser.ChromeTabbedActivity2;
@@ -80,12 +80,12 @@ index 595186ccd1177..0aaec7e505a12 100644
  import org.chromium.chrome.browser.IntentHandler;
  import org.chromium.chrome.browser.browserservices.intents.WebappConstants;
  import org.chromium.chrome.browser.document.ChromeLauncherActivity;
-@@ -117,7 +118,8 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
- 
+@@ -119,7 +120,8 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
      @Override
-     public boolean shouldDisableExternalIntentRequestsForUrl(GURL url) {
+     public boolean shouldDisableExternalIntentRequestsForUrl(
+             ExternalNavigationParams params, Intent intent) {
 -        return false;
-+        if ("tel".equals(url.getScheme())) return false;
++        if ("tel".equals(params.getUrl().getScheme())) return false;
 +        return !sAllowExternalIntentRequests.getInstance().isEnabled();
      }
  
@@ -200,10 +200,10 @@ index 045ef95170425..688d7d7838276 100644
      public static final String BLOCK_INTENTS_TO_SELF_NAME = "BlockIntentsToSelf";
      public static final String NAVIGATION_CAPTURE_REFACTOR_ANDROID_NAME =
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index bed32d84978c9..31e80692c0dfa 100644
+index d846952da87b8..04a415ab20246 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -1558,6 +1558,12 @@ public class ExternalNavigationHandler {
+@@ -1556,6 +1556,12 @@ public class ExternalNavigationHandler {
                  || ignoreBackForwardNav(params);
      }
  
@@ -216,7 +216,7 @@ index bed32d84978c9..31e80692c0dfa 100644
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params,
              Intent targetIntent,
-@@ -1626,6 +1632,21 @@ public class ExternalNavigationHandler {
+@@ -1624,6 +1630,21 @@ public class ExternalNavigationHandler {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  

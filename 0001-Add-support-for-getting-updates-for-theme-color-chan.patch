@@ -1,4 +1,4 @@
-From 0a1ccabb846842fab4f45b2e9c91314bd1b5b038 Mon Sep 17 00:00:00 2001
+From 19066fffb6888cce93a560dbf8146f301e314942 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/12] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 6dd6e0ff308a3..1712da72a5ebe 100644
+index 2cbc6d064f5ea..5fb9c5799dd0b 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -10,6 +10,7 @@ import android.content.Intent;
@@ -25,7 +25,7 @@ index 6dd6e0ff308a3..1712da72a5ebe 100644
  import android.graphics.Paint;
  import android.graphics.Picture;
  import android.graphics.Rect;
-@@ -80,6 +81,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -85,6 +86,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -33,7 +33,7 @@ index 6dd6e0ff308a3..1712da72a5ebe 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1875,6 +1877,13 @@ class WebViewChromium
+@@ -1837,6 +1839,13 @@ class WebViewChromium
          }
      }
  
@@ -114,10 +114,10 @@ index a76418fcec396..1dcafd344872f 100644
          private final AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index d83aad1d99f36..d8d758eb714eb 100644
+index 87c0f6aec84b7..60db71f28c915 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-@@ -146,6 +146,8 @@ public abstract class AwContentsClient {
+@@ -144,6 +144,8 @@ public abstract class AwContentsClient {
  
      public abstract void onProgressChanged(int progress);
  
@@ -127,7 +127,7 @@ index d83aad1d99f36..d8d758eb714eb 100644
  
      public abstract boolean shouldOverrideKeyEvent(KeyEvent event);
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
-index ba8f944feff44..f7bc58be0a017 100644
+index 96f87025ed2e3..553ff1276c03f 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClientCallbackHelper.java
 @@ -138,6 +138,9 @@ public class AwContentsClientCallbackHelper {

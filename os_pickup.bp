@@ -53,6 +53,7 @@ android_app_import {
         },
     },
     optional_uses_libs: [
+        "android.test.base",
         "androidx.window.extensions",
         "com.android.extensions.xr",
     ],

@@ -1,4 +1,4 @@
-From 184ebb5651d1b0e56cfc14172d3884391e0ad45f Mon Sep 17 00:00:00 2001
+From bdedec4b51162268f39b9d873eb0266be75d9a70 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -32,7 +32,7 @@ Subject: [PATCH 09/12] bromite build utils
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index ffd896d9bc7ec..c43486b3ecd1b 100755
+index 353908384ac3a..b3dfbfc3c26d0 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
 @@ -208,6 +208,7 @@ class DirectiveSet:
@@ -52,7 +52,7 @@ index ffd896d9bc7ec..c43486b3ecd1b 100755
      self._lines = lines
      self._path = path
      self._enum_definitions = []
-@@ -253,6 +254,7 @@ class HeaderParser:
+@@ -257,6 +258,7 @@ class HeaderParser:
      self._generator_directives = DirectiveSet()
      self._multi_line_generator_directive = None
      self._current_enum_entry = ''
@@ -60,7 +60,7 @@ index ffd896d9bc7ec..c43486b3ecd1b 100755
  
    def _ShouldIgnoreLine(self):
      return self._in_preprocessor_block and not all(self._in_buildflag_android)
-@@ -295,6 +297,24 @@ class HeaderParser:
+@@ -303,6 +305,24 @@ class HeaderParser:
        raise Exception('Multi-line comments in enums are not supported in ' +
                        self._path)
  
@@ -85,7 +85,7 @@ index ffd896d9bc7ec..c43486b3ecd1b 100755
      enum_comment = HeaderParser.single_line_comment_re.match(line)
      if enum_comment:
        comment = enum_comment.groups()[0]
-@@ -395,9 +415,9 @@ class HeaderParser:
+@@ -404,9 +424,9 @@ class HeaderParser:
          self._ParseSingleLineEnum(single_line_enum.group('enum_entries'))
  
  
@@ -97,7 +97,7 @@ index ffd896d9bc7ec..c43486b3ecd1b 100755
      if not enum_definitions:
        raise Exception('No enums found in %s\n'
                        'Did you forget prefixing enums with '
-@@ -410,9 +430,9 @@ def DoGenerate(source_paths):
+@@ -419,9 +439,9 @@ def DoGenerate(source_paths):
        yield output_path, output
  
  
@@ -109,7 +109,7 @@ index ffd896d9bc7ec..c43486b3ecd1b 100755
  
  
  def GenerateOutput(source_path, enum_definition):
-@@ -498,11 +518,16 @@ def DoMain(argv):
+@@ -507,11 +527,16 @@ def DoMain(argv):
                        nargs='+',
                        help='Path to at least one input file.')
  
@@ -430,17 +430,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 9d778df88664f..36b5225777d13 100644
+index 24a1d143954ae..cb9795a542af9 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -870,3 +870,5 @@ if (is_component_build) {
+@@ -835,3 +835,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index d176f828ca862..5e7b0dc50de2c 100644
+index 581467ac878b6..3aff5956ed7f7 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {

@@ -1,4 +1,4 @@
-From a0524ea8818014dc1748b16a6e530e0193f64dc9 Mon Sep 17 00:00:00 2001
+From 3294384e3546fbf3444dded9986b138004576ae0 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -14,14 +14,14 @@ Subject: [PATCH 09/12] bromite build utils
  build/config/BUILDCONFIG.gn                   |   2 +
  build/config/android/rules.gni                |   6 +-
  .../ChromeAccessibilitySettingsDelegate.java  |   5 +
- chrome/browser/flags/BUILD.gn                 |  10 +-
+ chrome/browser/flags/BUILD.gn                 |   8 +-
  .../flags/android/cromite_native_utils.cc     |  92 +++++++++++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
  .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
  mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 17 files changed, 538 insertions(+), 19 deletions(-)
+ 17 files changed, 536 insertions(+), 19 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -440,7 +440,7 @@ index 24a1d143954ae..cb9795a542af9 100644
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 581467ac878b6..3aff5956ed7f7 100644
+index bd65956fdfa47..071382cf6e554 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -464,7 +464,7 @@ index 581467ac878b6..3aff5956ed7f7 100644
      }
    }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index 06d7e028d6c05..962f3f84503ac 100644
+index e605b4e89d7e4..0b1fc4dd95c1a 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 @@ -15,6 +15,11 @@ import org.chromium.components.browser_ui.settings.SettingsNavigation;
@@ -480,10 +480,10 @@ index 06d7e028d6c05..962f3f84503ac 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 252fcbaffa279..a6892aae16560 100644
+index 8f55c65c9c110..bcfac80aec7ed 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -6,7 +6,8 @@ import("//build/config/android/rules.gni")
+@@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
  import("//third_party/jni_zero/jni_zero.gni")
  
  android_library("java") {
@@ -493,7 +493,7 @@ index 252fcbaffa279..a6892aae16560 100644
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
-@@ -31,7 +32,8 @@ android_library("java") {
+@@ -33,7 +34,8 @@ android_library("java") {
  }
  
  generate_jni("jni_headers") {
@@ -503,17 +503,15 @@ index 252fcbaffa279..a6892aae16560 100644
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -39,6 +41,10 @@ generate_jni("jni_headers") {
+@@ -41,6 +43,8 @@ generate_jni("jni_headers") {
  
  static_library("flags_android") {
    sources = [
 +    "android/cromite_native_utils.cc",
 +    "android/cromite_native_utils.h",
-+  ]
-+  sources += [
+     "android/chrome_feature_list.h",
      "android/chrome_session_state.cc",
      "android/chrome_session_state.h",
-   ]
 diff --git a/chrome/browser/flags/android/cromite_native_utils.cc b/chrome/browser/flags/android/cromite_native_utils.cc
 new file mode 100755
 index 0000000000000..8aa17d8820df9
@@ -830,5 +828,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.51.0
+2.51.2
 

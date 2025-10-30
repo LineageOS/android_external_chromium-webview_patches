@@ -1,4 +1,4 @@
-From 4d9ca7c1c6fe9af09daf22f7726d22d4ce5ab0d2 Mon Sep 17 00:00:00 2001
+From 07aa1d998a1720a872ac8a698e05257c242691d9 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Tue, 19 May 2020 17:21:42 -0600
 Subject: [PATCH 02/12] Add xxxhdpi icon_webview.png to BUILD.gn
@@ -8,10 +8,10 @@ Subject: [PATCH 02/12] Add xxxhdpi icon_webview.png to BUILD.gn
  1 file changed, 1 insertion(+)
 
 diff --git a/android_webview/nonembedded/BUILD.gn b/android_webview/nonembedded/BUILD.gn
-index 2792820093db0..1ca84117b9fd5 100644
+index c69d3f69de997..89c5f4498c015 100644
 --- a/android_webview/nonembedded/BUILD.gn
 +++ b/android_webview/nonembedded/BUILD.gn
-@@ -229,6 +229,7 @@ android_resources("icon_resources") {
+@@ -231,6 +231,7 @@ android_resources("icon_resources") {
      "java/res_icon/drawable-mdpi/icon_webview.png",
      "java/res_icon/drawable-xhdpi/icon_webview.png",
      "java/res_icon/drawable-xxhdpi/icon_webview.png",
@@ -20,5 +20,5 @@ index 2792820093db0..1ca84117b9fd5 100644
  }
  
 -- 
-2.51.0
+2.51.2
 

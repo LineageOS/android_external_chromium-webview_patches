@@ -1,31 +1,23 @@
-From 19066fffb6888cce93a560dbf8146f301e314942 Mon Sep 17 00:00:00 2001
+From c7d5ae2597fa760da2550d9e079dc07c080c0986 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
  changes.
 
 ---
- .../webview/chromium/WebViewChromium.java     |  9 +++++
+ .../webview/chromium/WebViewChromium.java     |  8 +++++
  .../WebViewContentsClientAdapter.java         | 34 +++++++++++++++++++
  .../android_webview/AwContentsClient.java     |  2 ++
  .../AwContentsClientCallbackHelper.java       | 12 +++++++
  .../AwWebContentsObserver.java                | 14 ++++++++
  .../test/NullContentsClient.java              |  4 +++
- 6 files changed, 75 insertions(+)
+ 6 files changed, 74 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 2cbc6d064f5ea..5fb9c5799dd0b 100644
+index a62479ecded64..902336b897353 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-@@ -10,6 +10,7 @@ import android.content.Intent;
- import android.content.res.Configuration;
- import android.graphics.Bitmap;
- import android.graphics.Canvas;
-+import android.graphics.Color;
- import android.graphics.Paint;
- import android.graphics.Picture;
- import android.graphics.Rect;
-@@ -85,6 +86,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -86,6 +86,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -33,7 +25,7 @@ index 2cbc6d064f5ea..5fb9c5799dd0b 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1837,6 +1839,13 @@ class WebViewChromium
+@@ -1824,6 +1825,13 @@ class WebViewChromium
          }
      }
  
@@ -211,5 +203,5 @@ index 3ece9777e66ad..8649247f79f19 100644
      public WebResourceResponseInfo shouldInterceptRequest(AwWebResourceRequest request) {
          return null;
 -- 
-2.51.0
+2.51.2
 

@@ -1,4 +1,4 @@
-From 9dd0a153d8723e624de6cfd6fb5b0b20d0ebd83b Mon Sep 17 00:00:00 2001
+From 045243ac1e910af09e9b1975a3390aab715057a1 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/12] disable WebView variations support
@@ -9,10 +9,10 @@ Subject: [PATCH 06/12] disable WebView variations support
  2 files changed, 11 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index efa806733e611..73972b8055adf 100644
+index 8d3244586d334..4991faeca811c 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -620,13 +620,6 @@ public class WebViewChromiumAwInit {
+@@ -667,13 +667,6 @@ public class WebViewChromiumAwInit {
                      }
  
                      AwBrowserProcess.configureChildProcessLauncher();
@@ -27,10 +27,10 @@ index efa806733e611..73972b8055adf 100644
  
          addBrowserProcessStartTasksToQueue(
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index c963ce42331f6..be36ffbaaf334 100644
+index 41326580256e4..6ea7d3e52d75d 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -676,10 +676,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -687,10 +687,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
              // This must happen after pref value has been read and SafeMode setup has completed.
              setupStartupTaskExperiments(androidXConfig);
  
@@ -42,5 +42,5 @@ index c963ce42331f6..be36ffbaaf334 100644
                      .isCachedFeatureEnabled(AwFeatures.WEBVIEW_MOVE_WORK_TO_PROVIDER_INIT)) {
                  PostTask.postTask(
 -- 
-2.51.2
+2.52.0
 

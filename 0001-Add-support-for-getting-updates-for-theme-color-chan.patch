@@ -1,4 +1,4 @@
-From fd0ffdd855f7192941bfecb2276dd4672f575007 Mon Sep 17 00:00:00 2001
+From 68a47226c07e4e73fb9c4dab685e7423deaf10ad Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
@@ -9,12 +9,12 @@ Subject: [PATCH 01/12] Add support for getting updates for theme color
  .../WebViewContentsClientAdapter.java         | 34 +++++++++++++++++++
  .../android_webview/AwContentsClient.java     |  2 ++
  .../AwContentsClientCallbackHelper.java       | 12 +++++++
- .../AwWebContentsObserver.java                | 14 ++++++++
+ .../AwWebContentsObserver.java                | 15 ++++++++
  .../test/NullContentsClient.java              |  4 +++
- 6 files changed, 74 insertions(+)
+ 6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index a62479ecded64..902336b897353 100644
+index b6465dce3dc4f..52505fc15ac88 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -86,6 +86,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
@@ -25,7 +25,7 @@ index a62479ecded64..902336b897353 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1824,6 +1825,13 @@ class WebViewChromium
+@@ -1808,6 +1809,13 @@ class WebViewChromium
          }
      }
  
@@ -156,14 +156,15 @@ index 96f87025ed2e3..553ff1276c03f 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index ea85bdc646907..bd251ff0ead85 100644
+index 74a0764a682f8..75159880c20f4 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-@@ -321,6 +321,13 @@ public class AwWebContentsObserver extends WebContentsObserver
+@@ -233,6 +233,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
                      });
          }
  
 +        if (client != null) {
++            AwContents awContents = mAwContents.get();
 +            WebContents contents = awContents != null ? awContents.getWebContents() : null;
 +            if (contents != null) {
 +                client.getCallbackHelper().postOnThemeColorChanged(contents.getThemeColor());
@@ -173,7 +174,7 @@ index ea85bdc646907..bd251ff0ead85 100644
          if (client != null && navigation.isPrimaryMainFrameFragmentNavigation()) {
              // Note fragment navigations do not have a matching onPageStarted.
              client.getCallbackHelper().postOnPageFinished(url);
-@@ -347,6 +354,13 @@ public class AwWebContentsObserver extends WebContentsObserver
+@@ -251,6 +259,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
          }
      }
  
@@ -203,5 +204,5 @@ index 3ece9777e66ad..8649247f79f19 100644
      public WebResourceResponseInfo shouldInterceptRequest(AwWebResourceRequest request) {
          return null;
 -- 
-2.51.2
+2.52.0
 

@@ -1,4 +1,4 @@
-From 73ccca6e595c6794b3101b827cf6b0fb263b576f Mon Sep 17 00:00:00 2001
+From 04998547fad1398afe22ec3d2b525461b83a5042 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -32,7 +32,7 @@ Subject: [PATCH 09/12] bromite build utils
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index 353908384ac3a..b3dfbfc3c26d0 100755
+index b2eb26354318e..b3091d9beb45a 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
 @@ -208,6 +208,7 @@ class DirectiveSet:
@@ -43,24 +43,24 @@ index 353908384ac3a..b3dfbfc3c26d0 100755
    single_line_comment_re = re.compile(r'\s*//\s*([^\n]*)')
    multi_line_comment_start_re = re.compile(r'\s*/\*')
    enum_line_re = re.compile(r'^\s*(\w+)(\s*\=\s*([^,\n]+))?,?')
-@@ -236,7 +237,7 @@ class HeaderParser:
+@@ -230,7 +231,7 @@ class HeaderParser:
    enum_single_line_re = re.compile(
        r'^\s*(?:\[cpp.*\])?\s*enum.*{(?P<enum_entries>.*)}.*$')
  
 -  def __init__(self, lines, path=''):
 +  def __init__(self, lines, options, path=''):
-     self._lines = lines
+     self._lines = java_cpp_utils.PreprocessIfBlocks(lines)
      self._path = path
      self._enum_definitions = []
-@@ -257,6 +258,7 @@ class HeaderParser:
+@@ -240,6 +241,7 @@ class HeaderParser:
      self._generator_directives = DirectiveSet()
      self._multi_line_generator_directive = None
      self._current_enum_entry = ''
 +    self._options = options
  
-   def _ShouldIgnoreLine(self):
-     return self._in_preprocessor_block and not all(self._in_buildflag_android)
-@@ -303,6 +305,24 @@ class HeaderParser:
+   def _ApplyGeneratorDirectives(self):
+     self._generator_directives.UpdateDefinition(self._current_definition)
+@@ -266,6 +268,24 @@ class HeaderParser:
        raise Exception('Multi-line comments in enums are not supported in ' +
                        self._path)
  
@@ -85,7 +85,7 @@ index 353908384ac3a..b3dfbfc3c26d0 100755
      enum_comment = HeaderParser.single_line_comment_re.match(line)
      if enum_comment:
        comment = enum_comment.groups()[0]
-@@ -404,9 +424,9 @@ class HeaderParser:
+@@ -367,9 +387,9 @@ class HeaderParser:
          self._ParseSingleLineEnum(single_line_enum.group('enum_entries'))
  
  
@@ -97,7 +97,7 @@ index 353908384ac3a..b3dfbfc3c26d0 100755
      if not enum_definitions:
        raise Exception('No enums found in %s\n'
                        'Did you forget prefixing enums with '
-@@ -419,9 +439,9 @@ def DoGenerate(source_paths):
+@@ -382,9 +402,9 @@ def DoGenerate(source_paths):
        yield output_path, output
  
  
@@ -109,7 +109,7 @@ index 353908384ac3a..b3dfbfc3c26d0 100755
  
  
  def GenerateOutput(source_path, enum_definition):
-@@ -507,11 +527,16 @@ def DoMain(argv):
+@@ -470,11 +490,16 @@ def DoMain(argv):
                        nargs='+',
                        help='Path to at least one input file.')
  
@@ -430,17 +430,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 24a1d143954ae..cb9795a542af9 100644
+index 38719796a381e..fc8e927a532aa 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -835,3 +835,5 @@ if (is_component_build) {
+@@ -832,3 +832,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index bd65956fdfa47..071382cf6e554 100644
+index 2aebf6c79f8ca..f7765eb640669 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
@@ -464,7 +464,7 @@ index bd65956fdfa47..071382cf6e554 100644
      }
    }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index e605b4e89d7e4..0b1fc4dd95c1a 100644
+index 17601849169ea..17d7c78af538f 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 @@ -15,6 +15,11 @@ import org.chromium.components.browser_ui.settings.SettingsNavigation;
@@ -480,7 +480,7 @@ index e605b4e89d7e4..0b1fc4dd95c1a 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 8f55c65c9c110..bcfac80aec7ed 100644
+index bdc33e12fe711..2765135959bd9 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
@@ -683,10 +683,10 @@ index 0000000000000..702fe4dce42f0
 +    }
 +}
 diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/mojom_parser.py
-index 28c74c9e4ca17..0b167716212ec 100755
+index 37f6a0d4af9e3..0d4f166ff65ee 100755
 --- a/mojo/public/tools/mojom/mojom_parser.py
 +++ b/mojo/public/tools/mojom/mojom_parser.py
-@@ -21,6 +21,7 @@ import os
+@@ -20,6 +20,7 @@ import os
  import os.path
  import sys
  import traceback
@@ -694,13 +694,13 @@ index 28c74c9e4ca17..0b167716212ec 100755
  from collections import defaultdict
  
  from mojom.generate import module
-@@ -177,11 +178,26 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
+@@ -180,11 +181,26 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
    collect(build_metadata_filename)
    return allowed_imports
  
 +def _ResolveInclude(mojom_abspath, input_root_paths):
 +  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, mojom_abspath, input_root_paths)
-+  with codecs.open(mojom_abspath, encoding='utf-8') as f:
++  with open(mojom_abspath, encoding='utf-8') as f:
 +    src = f.read()
 +
 +    lines = src.splitlines();
@@ -716,14 +716,14 @@ index 28c74c9e4ca17..0b167716212ec 100755
  # multiprocessing helper.
 -def _ParseAstHelper(mojom_abspath, enabled_features):
 +def _ParseAstHelper(mojom_abspath, enabled_features, input_root_paths):
-   with codecs.open(mojom_abspath, encoding='utf-8') as f:
+   with open(mojom_abspath, encoding='utf-8') as f:
 -    ast = parser.Parse(f.read(), mojom_abspath)
 +    src = _ResolveInclude(mojom_abspath, input_root_paths)
 +    ast = parser.Parse(src, mojom_abspath)
      conditional_features.RemoveDisabledDefinitions(ast, enabled_features)
      return mojom_abspath, ast
  
-@@ -301,7 +317,7 @@ def _ParseMojoms(mojom_files,
+@@ -304,7 +320,7 @@ def _ParseMojoms(mojom_files,
        (path, abs_path) for abs_path, path in mojom_files_to_parse.items())
  
    logging.info('Parsing %d .mojom into ASTs', len(mojom_files_to_parse))
@@ -828,5 +828,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.51.2
+2.52.0
 

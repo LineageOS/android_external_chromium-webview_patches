@@ -1,25 +1,25 @@
-From 3cb346adc30538cdd7d08e226fed9a82a1faec36 Mon Sep 17 00:00:00 2001
+From 3bbb9aa4c93ddd49b90d971bb3082b8d20e2fd63 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 1 Dec 2020 00:56:57 -0500
 Subject: [PATCH 04/12] disable autofill server communication by default
 
 ---
- components/autofill/core/common/autofill_features.cc | 2 +-
+ components/autofill/core/common/autofill_debug_features.cc | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/components/autofill/core/common/autofill_features.cc b/components/autofill/core/common/autofill_features.cc
-index a6d8101d249a9..4049e923b55c5 100644
---- a/components/autofill/core/common/autofill_features.cc
-+++ b/components/autofill/core/common/autofill_features.cc
-@@ -895,7 +895,7 @@ const base::FeatureParam<std::string> kAutofillOverridePredictionsJson{
+diff --git a/components/autofill/core/common/autofill_debug_features.cc b/components/autofill/core/common/autofill_debug_features.cc
+index 2ae54907c9758..4b9508793a67f 100644
+--- a/components/autofill/core/common/autofill_debug_features.cc
++++ b/components/autofill/core/common/autofill_debug_features.cc
+@@ -106,7 +106,7 @@ BASE_FEATURE_PARAM(std::string,
  // autofill server API url up to the parent "directory" of the "query" and
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/
 -BASE_FEATURE(kAutofillServerCommunication, base::FEATURE_ENABLED_BY_DEFAULT);
 +BASE_FEATURE(kAutofillServerCommunication, base::FEATURE_DISABLED_BY_DEFAULT);
  
- // Enables showing DOM Node ID of elements.
- BASE_FEATURE(kShowDomNodeIDs, base::FEATURE_DISABLED_BY_DEFAULT);
+ // Controls attaching the autofill type predictions to their respective
+ // element in the DOM.
 -- 
-2.51.2
+2.52.0
 

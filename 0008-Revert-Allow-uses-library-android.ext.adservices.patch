@@ -1,4 +1,4 @@
-From 7491632c01407b3db10e248bb87348f49abe0078 Mon Sep 17 00:00:00 2001
+From 4bbe2c658a845ea2233e4dd6f11cc2a4621a1441 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
 Subject: [PATCH 08/12] Revert "Allow uses-library android.ext.adservices"
@@ -21,10 +21,10 @@ This reverts commit 0c3ae92dd16b763625a4d8c3f05012d9813dee2d.
  create mode 100644 third_party/androidx/0_privacysandbox_AndroidManifest.xml
 
 diff --git a/android_webview/expectations/system_webview_32_64_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_32_64_bundle.AndroidManifest.expected
-index 19e50189e3383..ac584935634f4 100644
+index ca072e61ee689..ce8dfe792259b 100644
 --- a/android_webview/expectations/system_webview_32_64_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/system_webview_32_64_bundle.AndroidManifest.expected
-@@ -508,7 +508,6 @@
+@@ -509,7 +509,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -33,10 +33,10 @@ index 19e50189e3383..ac584935634f4 100644
      <uses-library android:name="androidx.window.extensions" android:required="false"/>
    </application>
 diff --git a/android_webview/expectations/system_webview_32_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_32_bundle.AndroidManifest.expected
-index 08166ff979c3e..9280fc494e97c 100644
+index 359a3c539d65c..d0d36cd75da1f 100644
 --- a/android_webview/expectations/system_webview_32_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/system_webview_32_bundle.AndroidManifest.expected
-@@ -507,7 +507,6 @@
+@@ -508,7 +508,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -45,10 +45,10 @@ index 08166ff979c3e..9280fc494e97c 100644
      <uses-library android:name="androidx.window.extensions" android:required="false"/>
    </application>
 diff --git a/android_webview/expectations/system_webview_64_32_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_64_32_bundle.AndroidManifest.expected
-index d9bf759fb48ec..26817a1f4375b 100644
+index a6b568486d3f1..72ac6f25bdb38 100644
 --- a/android_webview/expectations/system_webview_64_32_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/system_webview_64_32_bundle.AndroidManifest.expected
-@@ -507,7 +507,6 @@
+@@ -508,7 +508,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -57,10 +57,10 @@ index d9bf759fb48ec..26817a1f4375b 100644
      <uses-library android:name="androidx.window.extensions" android:required="false"/>
    </application>
 diff --git a/android_webview/expectations/system_webview_64_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_64_bundle.AndroidManifest.expected
-index 9de77f190b16c..1201f88322844 100644
+index 5859daad6936c..56fb6fc00f9e3 100644
 --- a/android_webview/expectations/system_webview_64_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/system_webview_64_bundle.AndroidManifest.expected
-@@ -507,7 +507,6 @@
+@@ -508,7 +508,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -69,7 +69,7 @@ index 9de77f190b16c..1201f88322844 100644
      <uses-library android:name="androidx.window.extensions" android:required="false"/>
    </application>
 diff --git a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
-index 3162d02dd2334..d25f91883661f 100644
+index 41a26c8ba9e66..39261ba5fc662 100644
 --- a/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/system_webview_bundle.AndroidManifest.expected
 @@ -497,6 +497,5 @@
@@ -80,10 +80,10 @@ index 3162d02dd2334..d25f91883661f 100644
    </application>
  </manifest>
 diff --git a/android_webview/expectations/trichrome_webview_32_64_bundle.AndroidManifest.expected b/android_webview/expectations/trichrome_webview_32_64_bundle.AndroidManifest.expected
-index 324d49219d4c6..257ac9dd33fff 100644
+index 0412da609d380..d8d27ed36c186 100644
 --- a/android_webview/expectations/trichrome_webview_32_64_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/trichrome_webview_32_64_bundle.AndroidManifest.expected
-@@ -507,7 +507,6 @@
+@@ -508,7 +508,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -92,10 +92,10 @@ index 324d49219d4c6..257ac9dd33fff 100644
      <uses-static-library android:name="org.chromium.trichromelibrary" android:certDigest="32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0" android:version="OFFSET=31"/>
    </application>
 diff --git a/android_webview/expectations/trichrome_webview_32_bundle.AndroidManifest.expected b/android_webview/expectations/trichrome_webview_32_bundle.AndroidManifest.expected
-index 80e10e7782d55..4321e66a7b65f 100644
+index c2208400206c0..919b3a5ffcc0f 100644
 --- a/android_webview/expectations/trichrome_webview_32_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/trichrome_webview_32_bundle.AndroidManifest.expected
-@@ -506,7 +506,6 @@
+@@ -507,7 +507,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -104,10 +104,10 @@ index 80e10e7782d55..4321e66a7b65f 100644
      <uses-static-library android:name="org.chromium.trichromelibrary" android:certDigest="32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0" android:version="OFFSET=30"/>
    </application>
 diff --git a/android_webview/expectations/trichrome_webview_64_32_bundle.AndroidManifest.expected b/android_webview/expectations/trichrome_webview_64_32_bundle.AndroidManifest.expected
-index f0aa677125541..c72b4a97e21d7 100644
+index 7dc832d57d4d7..28708e306df1d 100644
 --- a/android_webview/expectations/trichrome_webview_64_32_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/trichrome_webview_64_32_bundle.AndroidManifest.expected
-@@ -506,7 +506,6 @@
+@@ -507,7 +507,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -116,10 +116,10 @@ index f0aa677125541..c72b4a97e21d7 100644
      <uses-static-library android:name="org.chromium.trichromelibrary" android:certDigest="32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0" android:version="OFFSET=33"/>
    </application>
 diff --git a/android_webview/expectations/trichrome_webview_64_bundle.AndroidManifest.expected b/android_webview/expectations/trichrome_webview_64_bundle.AndroidManifest.expected
-index 4ce72b0b9f9af..aa9b45a1ccfab 100644
+index 7fc1bab963334..f472084db1d42 100644
 --- a/android_webview/expectations/trichrome_webview_64_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/trichrome_webview_64_bundle.AndroidManifest.expected
-@@ -506,7 +506,6 @@
+@@ -507,7 +507,6 @@
          android:process=":sandboxed_process9"
          android:visibleToInstantApps="true">
      </service>  # DIFF-ANCHOR: e2f3bbbd
@@ -128,7 +128,7 @@ index 4ce72b0b9f9af..aa9b45a1ccfab 100644
      <uses-static-library android:name="org.chromium.trichromelibrary" android:certDigest="32a2fc74d731105859e5a85df16d95f102d85b22099b8064c5d8915c61dad1e0" android:version="OFFSET=34"/>
    </application>
 diff --git a/android_webview/expectations/trichrome_webview_bundle.AndroidManifest.expected b/android_webview/expectations/trichrome_webview_bundle.AndroidManifest.expected
-index d14fe818e320a..15b28fd0e9395 100644
+index d873ece60663a..bcd903033aaa5 100644
 --- a/android_webview/expectations/trichrome_webview_bundle.AndroidManifest.expected
 +++ b/android_webview/expectations/trichrome_webview_bundle.AndroidManifest.expected
 @@ -497,7 +497,6 @@
@@ -165,10 +165,10 @@ index 0000000000000..da6c78ff7b0cc
 +    </application>
 +</manifest>
 diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/customizations.gni
-index 3fe4b8178a536..d51176093da4e 100644
+index fe3d1088a102e..036b119594aa1 100644
 --- a/third_party/androidx/customizations.gni
 +++ b/third_party/androidx/customizations.gni
-@@ -74,6 +74,12 @@ template("_androidx_prebuilt") {
+@@ -79,6 +79,12 @@ template("_androidx_prebuilt") {
        # Replace broad library -keep rules with a more limited set in
        # chrome/android/java/proguard.flags instead.
        ignore_proguard_configs = true
@@ -182,5 +182,5 @@ index 3fe4b8178a536..d51176093da4e 100644
        # Keeps emoji2 code. See http://crbug.com/1205141
        ignore_proguard_configs = true
 -- 
-2.51.2
+2.52.0
 

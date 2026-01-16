@@ -1,4 +1,4 @@
-From 6eae5e67402b069731aa6967e837f7374cc14d1b Mon Sep 17 00:00:00 2001
+From 7aae084483a9bf6287241b133e53612f9fd2d9c7 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sun, 27 Dec 2020 09:42:54 -0700
 Subject: [PATCH 03/12] webview: Hard no to persistent histograms
@@ -15,25 +15,24 @@ Subject: [PATCH 03/12] webview: Hard no to persistent histograms
  1 file changed, 2 insertions(+)
 
 diff --git a/android_webview/browser/aw_field_trials.cc b/android_webview/browser/aw_field_trials.cc
-index d97f8c90fb302..965edf46f1f29 100644
+index 093dadfd1fa18..c3551f789702f 100644
 --- a/android_webview/browser/aw_field_trials.cc
 +++ b/android_webview/browser/aw_field_trials.cc
-@@ -36,6 +36,7 @@
+@@ -36,12 +36,14 @@
  #include "ui/gl/gl_switches.h"
  
  void AwFieldTrials::OnVariationsSetupComplete() {
 +#if 0
    // Persistent histograms must be enabled ASAP, but depends on Features.
-   base::FilePath metrics_dir;
-   if (base::PathService::Get(base::DIR_ANDROID_APP_DATA, &metrics_dir)) {
-@@ -43,6 +44,7 @@ void AwFieldTrials::OnVariationsSetupComplete() {
-   } else {
-     NOTREACHED();
-   }
+   android_webview::AwMetricsServiceClient* metrics_service_client =
+       android_webview::AwMetricsServiceClient::GetInstance();
+   metrics_service_client->SetUpMetricsDir();
+   InstantiatePersistentHistogramsWithFeaturesAndCleanup(
+       metrics_service_client->GetMetricsDir());
 +#endif
  }
  
  // TODO(crbug.com/40271903): Consider to migrate all WebView feature overrides
 -- 
-2.51.2
+2.52.0
 

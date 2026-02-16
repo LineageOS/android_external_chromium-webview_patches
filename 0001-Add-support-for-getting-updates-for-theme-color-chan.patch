@@ -1,4 +1,4 @@
-From 68a47226c07e4e73fb9c4dab685e7423deaf10ad Mon Sep 17 00:00:00 2001
+From 7410673643d808c9234404f0ad7ebabcce9a4d5e Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
@@ -14,10 +14,10 @@ Subject: [PATCH 01/12] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index b6465dce3dc4f..52505fc15ac88 100644
+index b2e81f9c991d7..5aa31c88ab535 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-@@ -86,6 +86,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -90,6 +90,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -25,7 +25,7 @@ index b6465dce3dc4f..52505fc15ac88 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1808,6 +1809,13 @@ class WebViewChromium
+@@ -2482,6 +2483,13 @@ class WebViewChromium
          }
      }
  
@@ -38,7 +38,7 @@ index b6465dce3dc4f..52505fc15ac88 100644
 +
      @Override
      public int getContentHeight() {
-         try (TraceEvent event = TraceEvent.scoped("WebView.APICall.Framework.GET_CONTENT_HEIGHT")) {
+         // This is an inspectable property and a ViewDebug exported property - don't forbid builder.
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 index a76418fcec396..1dcafd344872f 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
@@ -156,10 +156,10 @@ index 96f87025ed2e3..553ff1276c03f 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index 74a0764a682f8..75159880c20f4 100644
+index e2d05e325ffbc..62dd52e8b6e7b 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-@@ -233,6 +233,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -225,6 +225,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
                      });
          }
  
@@ -174,7 +174,7 @@ index 74a0764a682f8..75159880c20f4 100644
          if (client != null && navigation.isPrimaryMainFrameFragmentNavigation()) {
              // Note fragment navigations do not have a matching onPageStarted.
              client.getCallbackHelper().postOnPageFinished(url);
-@@ -251,6 +259,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -243,6 +251,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
          }
      }
  
@@ -204,5 +204,5 @@ index 3ece9777e66ad..8649247f79f19 100644
      public WebResourceResponseInfo shouldInterceptRequest(AwWebResourceRequest request) {
          return null;
 -- 
-2.52.0
+2.53.0
 

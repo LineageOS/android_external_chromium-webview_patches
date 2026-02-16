@@ -1,4 +1,4 @@
-From 04998547fad1398afe22ec3d2b525461b83a5042 Mon Sep 17 00:00:00 2001
+From 24b7c8bd98011455a73b9b6cd835e7344df237b8 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -15,13 +15,13 @@ Subject: [PATCH 09/12] bromite build utils
  build/config/android/rules.gni                |   6 +-
  .../ChromeAccessibilitySettingsDelegate.java  |   5 +
  chrome/browser/flags/BUILD.gn                 |   8 +-
- .../flags/android/cromite_native_utils.cc     |  92 +++++++++++++++
+ .../flags/android/cromite_native_utils.cc     |  94 +++++++++++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
  .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
  mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 17 files changed, 536 insertions(+), 19 deletions(-)
+ 17 files changed, 538 insertions(+), 19 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -440,19 +440,10 @@ index 38719796a381e..fc8e927a532aa 100644
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 2aebf6c79f8ca..f7765eb640669 100644
+index caa35daa9944b..936a9a7f6cbd9 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -209,7 +209,7 @@ if (!is_robolectric && enable_java_templates) {
-   #   }
-   template("java_cpp_enum") {
-     action_with_pydeps(target_name) {
--      forward_variables_from(invoker, TESTONLY_AND_VISIBILITY + [ "sources" ])
-+      forward_variables_from(invoker, TESTONLY_AND_VISIBILITY + [ "sources", "deps" ])
- 
-       # The sources aren't compiled so don't check their dependencies.
-       check_includes = false
-@@ -220,6 +220,10 @@ if (!is_robolectric && enable_java_templates) {
+@@ -224,6 +224,10 @@ if (!is_robolectric && enable_java_templates) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -463,6 +454,15 @@ index 2aebf6c79f8ca..f7765eb640669 100644
        outputs = [ _srcjar_path ]
      }
    }
+@@ -278,7 +282,7 @@ if (!is_robolectric && enable_java_templates) {
+   #   my.java.package.
+   template("java_cpp_strings") {
+     action_with_pydeps(target_name) {
+-      forward_variables_from(invoker, TESTONLY_AND_VISIBILITY + [ "sources" ])
++      forward_variables_from(invoker, TESTONLY_AND_VISIBILITY + [ "sources", "deps" ])
+ 
+       # The sources aren't compiled so don't check their dependencies.
+       check_includes = false
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 index 17601849169ea..17d7c78af538f 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
@@ -514,10 +514,10 @@ index bdc33e12fe711..2765135959bd9 100644
      "android/chrome_session_state.h",
 diff --git a/chrome/browser/flags/android/cromite_native_utils.cc b/chrome/browser/flags/android/cromite_native_utils.cc
 new file mode 100755
-index 0000000000000..8aa17d8820df9
+index 0000000000000..085dace41b884
 --- /dev/null
 +++ b/chrome/browser/flags/android/cromite_native_utils.cc
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,94 @@
 +#include "chrome/browser/flags/android/cromite_native_utils.h"
 +
 +#include "chrome/browser/browser_process.h"
@@ -527,10 +527,10 @@ index 0000000000000..8aa17d8820df9
 +
 +#include "base/android/jni_string.h"
 +
-+using base::android::JavaParamRef;
++using base::android::JavaRef;
 +
 +static void JNI_CromiteNativeUtils_SetEnabled(JNIEnv* env,
-+    const JavaParamRef<jstring>& featureName, jboolean isEnabled) {
++    const JavaRef<jstring>& featureName, bool isEnabled) {
 +  flags_ui::PrefServiceFlagsStorage flags_storage(
 +      g_browser_process->local_state());
 +  std::set<std::string> entries = flags_storage.GetFlags();
@@ -573,7 +573,7 @@ index 0000000000000..8aa17d8820df9
 +}
 +
 +static jboolean JNI_CromiteNativeUtils_IsFlagEnabled(JNIEnv* env,
-+    const JavaParamRef<jstring>& featureName) {
++    const JavaRef<jstring>& featureName) {
 +  auto internal_name = base::android::ConvertJavaStringToUTF8(env, featureName);
 +
 +  flags_ui::PrefServiceFlagsStorage flags_storage(
@@ -610,6 +610,8 @@ index 0000000000000..8aa17d8820df9
 +
 +  return false;
 +}
++
++DEFINE_JNI(CromiteNativeUtils)
 diff --git a/chrome/browser/flags/android/cromite_native_utils.h b/chrome/browser/flags/android/cromite_native_utils.h
 new file mode 100755
 index 0000000000000..db44defd1ecb8
@@ -632,7 +634,7 @@ index 0000000000000..db44defd1ecb8
 +#endif  // CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 new file mode 100755
-index 0000000000000..702fe4dce42f0
+index 0000000000000..e3ed27bc71054
 --- /dev/null
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 @@ -0,0 +1,46 @@
@@ -677,7 +679,7 @@ index 0000000000000..702fe4dce42f0
 +    }
 +
 +    @NativeMethods
-+    interface Natives {
++    public interface Natives {
 +        void setEnabled(String featureName, boolean newValue);
 +        boolean isFlagEnabled(String featureName);
 +    }
@@ -828,5 +830,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.52.0
+2.53.0
 

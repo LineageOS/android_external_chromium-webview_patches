@@ -1,4 +1,4 @@
-From d76f4c45b5d17e6888ab11b4706581a8d693fc50 Mon Sep 17 00:00:00 2001
+From b0477e77863b441facc997f00a2a0970605080bb Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
 Subject: [PATCH 08/12] Revert "Allow uses-library android.ext.adservices"
@@ -165,10 +165,10 @@ index 0000000000000..da6c78ff7b0cc
 +    </application>
 +</manifest>
 diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/customizations.gni
-index f52f544ca3d13..da65db983d57d 100644
+index b18debaa9cab1..eb044cddeb052 100644
 --- a/third_party/androidx/customizations.gni
 +++ b/third_party/androidx/customizations.gni
-@@ -82,6 +82,12 @@ template("_androidx_prebuilt") {
+@@ -79,6 +79,12 @@ template("_androidx_prebuilt") {
        # Replace broad library -keep rules with a more limited set in
        # chrome/android/java/proguard.flags instead.
        ignore_proguard_configs = true
@@ -182,5 +182,5 @@ index f52f544ca3d13..da65db983d57d 100644
        # Keeps emoji2 code. See http://crbug.com/1205141
        ignore_proguard_configs = true
 -- 
-2.53.0
+2.43.0
 

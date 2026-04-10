@@ -1,4 +1,4 @@
-From 1accddd5793bd783e0cb033bb959bafd8708e432 Mon Sep 17 00:00:00 2001
+From 270d36bac2e5241a74bbcd9c86685079f33c7ee9 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
 Subject: [PATCH 12/12] Disable conversion measurement api
@@ -52,10 +52,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
-index fae9f1451b871..ba526b0c2e741 100644
+index df85e830cb9c1..2675cf54bbaa5 100644
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
-@@ -1350,6 +1350,7 @@ network::mojom::AttributionSupport
+@@ -1371,6 +1371,7 @@ network::mojom::AttributionSupport
  AwContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -63,7 +63,7 @@ index fae9f1451b871..ba526b0c2e741 100644
    // WebView only supports OS-level attribution and not web-attribution.
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
-@@ -1368,6 +1369,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -1389,6 +1390,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -73,7 +73,7 @@ index fae9f1451b871..ba526b0c2e741 100644
        static_cast<AwBrowserContext*>(browser_context);
    // WebView only supports OS-level attribution and not web-attribution.
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwSettings.java b/android_webview/java/src/org/chromium/android_webview/AwSettings.java
-index 8c715428f0a52..8553e7fdfbee4 100644
+index 0b6a10a992c65..457bd90766003 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwSettings.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwSettings.java
 @@ -201,7 +201,7 @@ public class AwSettings {
@@ -85,7 +85,7 @@ index 8c715428f0a52..8553e7fdfbee4 100644
  
      @SpeculativeLoadingAllowedFlags
      private int mSpeculativeLoadingAllowedFlags =
-@@ -1813,7 +1813,7 @@ public class AwSettings {
+@@ -1820,7 +1820,7 @@ public class AwSettings {
      public void setAttributionBehavior(@AttributionBehavior int behavior) {
          synchronized (mAwSettingsLock) {
              if (mAttributionBehavior != behavior) {
@@ -95,10 +95,10 @@ index 8c715428f0a52..8553e7fdfbee4 100644
              }
          }
 diff --git a/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml b/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml
-index 512b7bf3bdc0d..4fcbc89f7f7ad 100644
+index 527e87e50476e..85c9cec19e576 100644
 --- a/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml
 +++ b/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml
-@@ -190,9 +190,6 @@
+@@ -191,9 +191,6 @@
              android:exported="true">
          </activity>
  
@@ -109,7 +109,7 @@ index 512b7bf3bdc0d..4fcbc89f7f7ad 100644
                   android:enabled="false"
                   android:exported="false">
 diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/AndroidManifest.xml
-index 1aef3a4966f40..1032de9a5c7ca 100644
+index 5270a95ee7b87..dee4cdd42dffb 100644
 --- a/chrome/android/java/AndroidManifest.xml
 +++ b/chrome/android/java/AndroidManifest.xml
 @@ -39,7 +39,6 @@ by a child template that "extends" this file.
@@ -120,7 +120,7 @@ index 1aef3a4966f40..1032de9a5c7ca 100644
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
      <uses-permission-sdk-23 android:name="android.permission.BLUETOOTH_CONNECT"/>
      <!--
-@@ -1237,9 +1236,6 @@ by a child template that "extends" this file.
+@@ -1253,9 +1252,6 @@ by a child template that "extends" this file.
              android:name="com.google.android.gms.cast.framework.ReconnectionService"
              tools:node="remove" />
  
@@ -131,7 +131,7 @@ index 1aef3a4966f40..1032de9a5c7ca 100644
          {% if enable_openxr == "true" %}
            <!-- launchMode is set to singleTask because there should never be multiple copies of the app running. -->
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
-index 6901bab8ed827..311f223b78a63 100644
+index d6e01c0bc9e52..ee27fe7625956 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
 @@ -152,6 +152,8 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
@@ -144,7 +144,7 @@ index 6901bab8ed827..311f223b78a63 100644
                  return ChromeFeatureList.isEnabled(
                          ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING);
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page_index.html b/chrome/browser/resources/settings/privacy_page/privacy_page_index.html
-index a293331f085d1..ba32933d1c426 100644
+index 90ddcb0cba4eb..a29af6d708be4 100644
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page_index.html
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page_index.html
 @@ -179,15 +179,6 @@
@@ -164,11 +164,11 @@ index a293331f085d1..ba32933d1c426 100644
        routes_.SITE_SETTINGS_AUTO_PICTURE_IN_PICTURE, currentRoute,
        inSearchMode)]]" update-when-false>
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
-index 00a5445f87711..4ad8d8f38b16a 100644
+index 687bc78abc1c7..18a7247f8ba3d 100644
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
-@@ -79,7 +79,7 @@ function addPrivacyChildRoutes(r: Partial<SettingsRoutes>) {
-         r.SITE_SETTINGS.createChild('smartCardReaders');
+@@ -82,7 +82,7 @@ function addPrivacyChildRoutes(r: Partial<SettingsRoutes>) {
+     r.SITE_SETTINGS_WEB_PRINTING = r.SITE_SETTINGS.createChild('webPrinting');
    }
    // </if>
 -  r.SITE_SETTINGS_AUTO_VERIFY = r.SITE_SETTINGS.createChild('autoVerify');
@@ -177,7 +177,7 @@ index 00a5445f87711..4ad8d8f38b16a 100644
        r.SITE_SETTINGS.createChild('backgroundSync');
    r.SITE_SETTINGS_CAMERA = r.SITE_SETTINGS.createChild('camera');
 diff --git a/chrome/browser/resources/settings/site_settings/site_settings_page.ts b/chrome/browser/resources/settings/site_settings/site_settings_page.ts
-index 4575f9c814d37..94b3bf883c4aa 100644
+index 0ae371bd02646..1460b2f8b1771 100644
 --- a/chrome/browser/resources/settings/site_settings/site_settings_page.ts
 +++ b/chrome/browser/resources/settings/site_settings/site_settings_page.ts
 @@ -67,6 +67,7 @@ function getCategoryItemMap(): Map<ContentSettingsTypes, CategoryListItem> {
@@ -212,10 +212,10 @@ index b199e7682ad33..a5929da4e4ba1 100644
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurement);
  }  // namespace attribution_reporting::features
 diff --git a/components/content_settings/core/browser/content_settings_registry.cc b/components/content_settings/core/browser/content_settings_registry.cc
-index 164baa1e1de0d..02c5049295765 100644
+index 8adb55497b971..73dadfdd99cc4 100644
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
-@@ -648,7 +648,7 @@ void ContentSettingsRegistry::Init() {
+@@ -649,7 +649,7 @@ void ContentSettingsRegistry::Init() {
             ContentSettingsInfo::INHERIT_IN_INCOGNITO,
             PermissionSettingsInfo::EXCEPTIONS_ON_SECURE_ORIGINS_ONLY);
  
@@ -420,10 +420,10 @@ index 6bb9cb3997a04..80688b77f79bd 100644
            /*tag=*/"Conversions"),
        delegate_(delegate),
 diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
-index 2d8a70f5fc0f6..ea9fa11e29e8b 100644
+index c5ee522e5ffb3..7a6d136a1a451 100644
 --- a/content/browser/renderer_host/render_frame_host_impl.cc
 +++ b/content/browser/renderer_host/render_frame_host_impl.cc
-@@ -10639,6 +10639,7 @@ bool RenderFrameHostImpl::IsFencedFrameReportingFromRendererAllowed(
+@@ -10782,6 +10782,7 @@ bool RenderFrameHostImpl::IsFencedFrameReportingFromRendererAllowed(
      return false;
    }
  
@@ -431,7 +431,7 @@ index 2d8a70f5fc0f6..ea9fa11e29e8b 100644
    if (!IsActive()) {
      // reportEvent is not allowed when this RenderFrameHost or one of its
      // ancestors is not active.
-@@ -14818,6 +14819,16 @@ void RenderFrameHostImpl::BindTrustTokenQueryAnswerer(
+@@ -14939,6 +14940,16 @@ void RenderFrameHostImpl::BindTrustTokenQueryAnswerer(
      return;
    }
  
@@ -449,10 +449,10 @@ index 2d8a70f5fc0f6..ea9fa11e29e8b 100644
    // secure contexts, so we could additionally add a check verifying that the
    // bind request "is coming from a secure context"---but there's currently no
 diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
-index c3e9ef303ee96..322e1e8449b16 100644
+index 7f3228a5e5148..dc5556802380b 100644
 --- a/content/browser/storage_partition_impl.cc
 +++ b/content/browser/storage_partition_impl.cc
-@@ -1512,15 +1512,6 @@ void StoragePartitionImpl::Initialize(
+@@ -1460,15 +1460,6 @@ void StoragePartitionImpl::Initialize(
  
    bucket_manager_ = std::make_unique<BucketManager>(this);
  
@@ -468,7 +468,7 @@ index c3e9ef303ee96..322e1e8449b16 100644
    if (base::FeatureList::IsEnabled(network::features::kInterestGroupStorage)) {
      // Auction worklets on non-Android use dedicated processes; on Android due
      // to high cost of process launch they try to reuse renderers.
-@@ -1572,9 +1563,6 @@ void StoragePartitionImpl::Initialize(
+@@ -1520,9 +1511,6 @@ void StoragePartitionImpl::Initialize(
  
    font_access_manager_ = FontAccessManager::Create();
  
@@ -479,10 +479,10 @@ index c3e9ef303ee96..322e1e8449b16 100644
    if (is_in_memory()) {
      // Pass an empty path if in_memory so that CdmStorage.db is not stored on
 diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
-index c6ea08786bf2a..81a718a5f05a8 100644
+index dfd08d8eb463a..4f73bc1128c78 100644
 --- a/content/public/android/BUILD.gn
 +++ b/content/public/android/BUILD.gn
-@@ -213,8 +213,6 @@ android_library("content_full_java") {
+@@ -208,8 +208,6 @@ android_library("content_full_java") {
      "//third_party/androidx:androidx_appcompat_appcompat_resources_java",
      "//third_party/androidx:androidx_collection_collection_java",
      "//third_party/androidx:androidx_core_core_java",
@@ -955,10 +955,10 @@ index 85cabdbd730a0..4e2dc6dc1b3bd 100644
  
      @CalledByNative
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index d6b69893dd3cc..cd68c2e3a95d9 100644
+index d2dccc29b0e13..b3a1f71778f1a 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -644,6 +644,7 @@ void ContentBrowserClient::OnAuctionComplete(
+@@ -653,6 +653,7 @@ void ContentBrowserClient::OnAuctionComplete(
  network::mojom::AttributionSupport ContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -966,7 +966,7 @@ index d6b69893dd3cc..cd68c2e3a95d9 100644
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
        return network::mojom::AttributionSupport::kWeb;
-@@ -661,13 +662,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -670,13 +671,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -982,7 +982,7 @@ index d6b69893dd3cc..cd68c2e3a95d9 100644
  }
  
  bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
-@@ -675,7 +676,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
+@@ -684,7 +685,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
      content::RenderFrameHost* rfh,
      const url::Origin& context_origin,
      const url::Origin& reporting_origin) {
@@ -1038,10 +1038,10 @@ index c4f75aefbcb89..d5773ec6a993a 100644
  
    const char* grease1;
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index 7e784ecaa7035..3c703f1b2cc56 100644
+index 3b928d610abb8..b6fae5950696f 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1316,6 +1316,10 @@ void NetworkContext::ClearTrustTokenData(mojom::ClearDataFilterPtr filter,
+@@ -1323,6 +1323,10 @@ void NetworkContext::ClearTrustTokenData(mojom::ClearDataFilterPtr filter,
  
  void NetworkContext::ClearTrustTokenSessionOnlyData(
      ClearTrustTokenSessionOnlyDataCallback callback) {
@@ -1052,7 +1052,7 @@ index 7e784ecaa7035..3c703f1b2cc56 100644
    // Only called when Private State Tokens is enabled, i.e.,
    // `trust_token_store_` is non-null.
    DCHECK(trust_token_store_);
-@@ -2723,26 +2727,6 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
+@@ -2766,26 +2770,6 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
      builder.set_network_quality_estimator(
          network_service_->network_quality_estimator());
    }
@@ -1100,7 +1100,7 @@ index 17ba678f15681..540b02540358d 100644
      case mojom::AttributionSupport::kWeb:
      case mojom::AttributionSupport::kWebAndOs:
 diff --git a/third_party/blink/renderer/core/frame/attribution_src_loader.cc b/third_party/blink/renderer/core/frame/attribution_src_loader.cc
-index 10adb208ebf4e..0cef501ea5576 100644
+index 6bbeb9aa27b1a..1f69f81320a2e 100644
 --- a/third_party/blink/renderer/core/frame/attribution_src_loader.cc
 +++ b/third_party/blink/renderer/core/frame/attribution_src_loader.cc
 @@ -220,8 +220,6 @@ struct AttributionSrcLoader::AttributionHeaders {
@@ -1113,10 +1113,10 @@ index 10adb208ebf4e..0cef501ea5576 100644
          request_id(request_id) {}
  
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
-index 9279acc2d17b3..fbb4486f06ede 100644
+index 09b4fe3f101fc..f3e898505d278 100644
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
-@@ -1579,7 +1579,7 @@ void Page::UpdateBrowsingContextGroup(
+@@ -1590,7 +1590,7 @@ void Page::UpdateBrowsingContextGroup(
  
  void Page::SetAttributionSupport(
      network::mojom::AttributionSupport attribution_support) {
@@ -1126,7 +1126,7 @@ index 9279acc2d17b3..fbb4486f06ede 100644
  
  template class CORE_TEMPLATE_EXPORT Supplement<Page>;
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index 70a7e2a5203d3..941a0d0b3743a 100644
+index 8b0fd5c3b6a65..9a15ffc28c2f3 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 @@ -296,8 +296,8 @@
@@ -1140,7 +1140,7 @@ index 70a7e2a5203d3..941a0d0b3743a 100644
        origin_trial_feature_name: "AdInterestGroupAPI",
        implied_by: ["Fledge", "Parakeet"],
        public: true,
-@@ -639,8 +639,8 @@
+@@ -658,8 +658,8 @@
        status: "stable",
      },
      {
@@ -1151,7 +1151,7 @@ index 70a7e2a5203d3..941a0d0b3743a 100644
        base_feature: "none",
        public: true,
      },
-@@ -4258,8 +4258,8 @@
+@@ -4372,8 +4372,8 @@
        base_feature: "none",
      },
      {
@@ -1162,7 +1162,7 @@ index 70a7e2a5203d3..941a0d0b3743a 100644
        base_feature: "none",
        public: true,
      },
-@@ -5497,16 +5497,16 @@
+@@ -5708,16 +5708,16 @@
        status: "experimental",
      },
      {

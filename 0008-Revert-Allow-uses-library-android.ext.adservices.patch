@@ -1,4 +1,4 @@
-From b0477e77863b441facc997f00a2a0970605080bb Mon Sep 17 00:00:00 2001
+From b635fc7c7f2b0029d5de64434a074a450cd47bd7 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
 Subject: [PATCH 08/12] Revert "Allow uses-library android.ext.adservices"
@@ -165,10 +165,10 @@ index 0000000000000..da6c78ff7b0cc
 +    </application>
 +</manifest>
 diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/customizations.gni
-index b18debaa9cab1..eb044cddeb052 100644
+index 334001bfedf8b..cebd24d1c4330 100644
 --- a/third_party/androidx/customizations.gni
 +++ b/third_party/androidx/customizations.gni
-@@ -79,6 +79,12 @@ template("_androidx_prebuilt") {
+@@ -85,6 +85,12 @@ template("_androidx_prebuilt") {
        # Replace broad library -keep rules with a more limited set in
        # chrome/android/java/proguard.flags instead.
        ignore_proguard_configs = true

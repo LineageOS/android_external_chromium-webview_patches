@@ -1,4 +1,4 @@
-From 8ad04cc3cca1e00fd7276981459471613b733be1 Mon Sep 17 00:00:00 2001
+From 59228e45fd2d793d3e3207a94408954cb4301993 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color
@@ -14,7 +14,7 @@ Subject: [PATCH 01/12] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 1ab06a906f667..c913deeac1758 100644
+index f2eaa10d6c5ee..5a554452d2c33 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 @@ -90,6 +90,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
@@ -189,7 +189,7 @@ index e7d0814121d7c..9b9b0a4c1a926 100644
          return mCommittedNavigation;
      }
 diff --git a/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java b/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
-index cb09e7da3ba9c..0222a1c9d5d5f 100644
+index c56d85c5c0551..807fb795d1ecc 100644
 --- a/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
 +++ b/android_webview/test/shell/src/org/chromium/android_webview/test/NullContentsClient.java
 @@ -71,6 +71,10 @@ public class NullContentsClient extends AwContentsClient {

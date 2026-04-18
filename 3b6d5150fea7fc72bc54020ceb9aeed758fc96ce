@@ -52,6 +52,24 @@
       "parentUuid": "e1774b37_d023beae",
       "revId": "3b6d5150fea7fc72bc54020ceb9aeed758fc96ce",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bccdb6ee_c41d8d14",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29080
+      },
+      "writtenOn": "2026-04-18T16:16:46Z",
+      "side": 1,
+      "message": "Checked on clean boot without addons, no apps launched (except LOS SUW and Settings). 32-bit Webview was still compiled",
+      "parentUuid": "05d459d1_8ca012f2",
+      "revId": "3b6d5150fea7fc72bc54020ceb9aeed758fc96ce",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }

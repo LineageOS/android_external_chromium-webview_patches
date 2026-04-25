@@ -1,4 +1,4 @@
-From 01172ce2b0821699c27b6a3770a35a738c049faf Mon Sep 17 00:00:00 2001
+From 2559e5c9142710fb6e123d8ca09f6dfec7bf7205 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 18 Nov 2023 09:41:28 +0000
 Subject: [PATCH 10/12] Add cromite flags support
@@ -823,7 +823,7 @@ index dc4bbedae805e..ffcc7da91a30c 100644
    sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
    sources += [
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
-index 390d0c70f2c69..161f579925f30 100644
+index b5b5a70a069de..e725bf9b07fbf 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
 @@ -826,6 +826,7 @@ BASE_FEATURE(kYourSavedInfoSettingsPageAndroid, base::FEATURE_DISABLED_BY_DEFAUL
@@ -847,7 +847,7 @@ index a2b523d8a9cc7..83ceb49972c75 100644
  
  #endif  // CHROME_BROWSER_FLAGS_ANDROID_CHROME_FEATURE_LIST_H_
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-index 7292e452bf43f..1ff2334c1e040 100644
+index 0b7ca30de6a46..de23c2cd14e04 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 @@ -20,6 +20,10 @@ import org.chromium.components.cached_flags.DoubleCachedFeatureParam;
@@ -1758,10 +1758,10 @@ index f2199b1d5e424..ed900f38efb6d 100644
      variations.push_back(GetActiveGroupNameAsString(group));
    }
 diff --git a/content/common/features.cc b/content/common/features.cc
-index d4e81818d098b..0f49428367b8d 100644
+index 6446b2c3a342c..f909e88a45a46 100644
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
-@@ -763,4 +763,5 @@ bool IsEnforceSameDocumentOriginInvariantsEnabled() {
+@@ -783,4 +783,5 @@ bool IsEnforceSameDocumentOriginInvariantsEnabled() {
               blink::features::kTreatMhtmlInitialDocumentLoadsAsCrossDocument);
  }
  

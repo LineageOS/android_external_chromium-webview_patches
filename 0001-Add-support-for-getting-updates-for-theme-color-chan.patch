@@ -1,4 +1,4 @@
-From 83e74875fa43751de5e1a0cb4a1a16253f54aabf Mon Sep 17 00:00:00 2001
+From 5e15d24939c7492f1ae73e15ec7fc00b93616b2b Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/12] Add support for getting updates for theme color

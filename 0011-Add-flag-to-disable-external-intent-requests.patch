@@ -1,4 +1,4 @@
-From 2e31997700a4cde056744857f3952e084e06d028 Mon Sep 17 00:00:00 2001
+From ec9e4767b4f49ab5967e9496ed55e723d17fd947 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/12] Add flag to disable external intent requests

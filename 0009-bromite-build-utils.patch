@@ -1,4 +1,4 @@
-From 030df79895625669a82fb28abd4f2ab6477d46f8 Mon Sep 17 00:00:00 2001
+From 61bf8b3ece5676664ef1dd18e9b700b72530fdf8 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/12] bromite build utils
@@ -431,17 +431,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 4d1ac59b9b7dc..48ee6a27d0389 100644
+index cc00f84630e06..0323a25c043f0 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -829,3 +829,5 @@ if (is_component_build) {
+@@ -830,3 +830,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 18867073f2af6..851bcf77263f2 100644
+index a97203144a36f..aba9de16fba9e 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -224,6 +224,10 @@ if (!is_robolectric && enable_java_templates) {
@@ -481,7 +481,7 @@ index 2b01d8e45dfcd..1ded065400f79 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 8300668495992..dc4bbedae805e 100644
+index 1839ca0a2d9f2..113f686de5c15 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")

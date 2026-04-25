@@ -1,4 +1,4 @@
-From 2e31997700a4cde056744857f3952e084e06d028 Mon Sep 17 00:00:00 2001
+From 854c2c853d26925e3d50524fca8ba026c5349037 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/12] Add flag to disable external intent requests
@@ -49,7 +49,7 @@ index 1cf95117e63cc..5807c713ce334 100644
          android:key="security_section"
        android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-index 4bde7f26f19cc..10b32f9b76505 100644
+index 08167fa2e7328..396ce183736ff 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 @@ -39,6 +39,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
@@ -202,10 +202,10 @@ index bc6757766ed09..bb62f049c634c 100644
      public static final String NAVIGATION_CAPTURE_REFACTOR_ANDROID_NAME =
              "NavigationCaptureRefactorAndroid";
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index 5378c88e11093..3837ec25f0636 100644
+index 5270120b7ca7d..b050e759b70d0 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -1796,6 +1796,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
+@@ -1793,6 +1793,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
          return false;
      }
  
@@ -218,7 +218,7 @@ index 5378c88e11093..3837ec25f0636 100644
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params,
              Intent targetIntent,
-@@ -1883,6 +1889,21 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
+@@ -1880,6 +1886,21 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  

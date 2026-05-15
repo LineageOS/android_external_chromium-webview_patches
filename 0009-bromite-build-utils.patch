@@ -1,7 +1,7 @@
-From 61bf8b3ece5676664ef1dd18e9b700b72530fdf8 Mon Sep 17 00:00:00 2001
+From d3b695e13d8915a9dabab1a8db072c5270c5eb11 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
-Subject: [PATCH 09/12] bromite build utils
+Subject: [PATCH 09/13] bromite build utils
 
 ---
  build/android/gyp/java_cpp_enum.py            |  37 +++++-
@@ -431,10 +431,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index cc00f84630e06..0323a25c043f0 100644
+index 00d3892f3cd42..4c0fb16901b73 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -830,3 +830,5 @@ if (is_component_build) {
+@@ -877,3 +877,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
@@ -481,7 +481,7 @@ index 2b01d8e45dfcd..1ded065400f79 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 1839ca0a2d9f2..113f686de5c15 100644
+index ee439eeaf5395..3008d8f56a067 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
@@ -844,5 +844,5 @@ index 35c1b20bc2c83..6a600ee42da7b 100644
      removal_comments_extension = None  # None means no removal comments
      if args.enable_removal_comments:
 -- 
-2.43.0
+2.53.0
 

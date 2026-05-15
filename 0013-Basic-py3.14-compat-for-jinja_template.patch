@@ -1,0 +1,47 @@
+From ee0ce3babc67b03f56d5e3ed66592c46e3eb7e7c Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Sat, 6 Jun 2026 10:22:21 -0600
+Subject: [PATCH 13/13] Basic py3.14 compat for jinja_template
+
+---
+ build/android/gyp/jinja_template.py | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/build/android/gyp/jinja_template.py b/build/android/gyp/jinja_template.py
+index 2172f8ff6ecf9..b940fd4819e5f 100755
+--- a/build/android/gyp/jinja_template.py
++++ b/build/android/gyp/jinja_template.py
+@@ -6,7 +6,6 @@
+ 
+ """Renders one or more template files using the Jinja template engine."""
+ 
+-import codecs
+ import argparse
+ import os
+ import sys
+@@ -67,11 +66,11 @@ def _ProcessFile(processor, input_filename, output_filename):
+   # If |output| is same with the file content, we skip update and
+   # ninja's restat will avoid rebuilding things that depend on it.
+   if os.path.isfile(output_filename):
+-    with codecs.open(output_filename, 'r', 'utf-8') as f:
++    with open(output_filename, 'r', encoding='utf-8') as f:
+       if f.read() == output:
+         return
+ 
+-  with codecs.open(output_filename, 'w', 'utf-8') as output_file:
++  with open(output_filename, 'w', encoding='utf-8') as output_file:
+     output_file.write(output)
+ 
+ 
+@@ -111,7 +110,7 @@ def main():
+   parser.add_argument('--inputs', required=True,
+                       help='GN-list of template files to process.')
+   parser.add_argument('--includes', default='',
+-                      help="GN-list of files that get {% include %}'ed.")
++                      help="GN-list of files that get {%% include %%}'ed.")
+   parser.add_argument('--output', help='The output file to generate. Valid '
+                       'only if there is a single input.')
+   parser.add_argument('--outputs-zip', help='A zip file for the processed '
+-- 
+2.53.0
+

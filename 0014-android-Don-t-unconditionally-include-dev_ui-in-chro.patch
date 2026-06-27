@@ -1,0 +1,38 @@
+From 7b40cd51c824cc2efe819842f350823ca487fe61 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Sat, 27 Jun 2026 10:56:53 -0600
+Subject: [PATCH 14/14] android: Don't unconditionally include dev_ui in
+ chrome/browser:core
+
+---
+ chrome/browser/BUILD.gn | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
+index 311a3dfebc076..7324b075c06c8 100644
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -1321,7 +1321,6 @@ source_set("core") {
+     deps += [
+       ":profile_key_startup_accessor",
+       "//chrome/browser/accessibility/accessibility_prefs",
+-      "//chrome/browser/dev_ui",
+       "//chrome/browser/facilitated_payments",
+       "//chrome/browser/feed",
+       "//chrome/browser/notifications/chime/android",
+@@ -1349,6 +1348,12 @@ source_set("core") {
+       "//services/webnn/public/mojom:features",
+       "//ui/compositor",
+     ]
++
++    if (dfmify_dev_ui) {
++      deps += [
++        "//chrome/browser/dev_ui",
++      ]
++    }
+   }
+ 
+   if (is_chromeos) {
+-- 
+2.53.0
+

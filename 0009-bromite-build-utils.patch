@@ -1,7 +1,7 @@
-From 5d146781810007a3006c5ac30648703ffcc746c6 Mon Sep 17 00:00:00 2001
+From 4d8bdfa55249d4004593d44491e628c5d0a15ca2 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
-Subject: [PATCH 09/13] bromite build utils
+Subject: [PATCH 09/14] bromite build utils
 
 ---
  build/android/gyp/java_cpp_enum.py            |  37 +++++-
@@ -431,17 +431,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 00d3892f3cd42..4c0fb16901b73 100644
+index 12595c1e36678..63afe9233a2f1 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -877,3 +877,5 @@ if (is_component_build) {
+@@ -864,3 +864,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index a97203144a36f..aba9de16fba9e 100644
+index cbe9d51a3d783..f81acc4d5b7ce 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -224,6 +224,10 @@ if (!is_robolectric && enable_java_templates) {
@@ -465,10 +465,10 @@ index a97203144a36f..aba9de16fba9e 100644
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index 2b01d8e45dfcd..1ded065400f79 100644
+index d3cbc86c92820..ca6420e095ab9 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -17,6 +17,11 @@ import org.chromium.components.dom_distiller.core.DistilledPagePrefs;
+@@ -16,6 +16,11 @@ import org.chromium.components.dom_distiller.core.DistilledPagePrefs;
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
@@ -481,7 +481,7 @@ index 2b01d8e45dfcd..1ded065400f79 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index ee439eeaf5395..3008d8f56a067 100644
+index a3ef16fdb568d..c51e56137aa99 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
@@ -774,7 +774,7 @@ index 16397abea2a82..c088207169e5a 100755
      if self.debug:
        print("End parsing of element %s" % name)
 diff --git a/tools/grit/grit_rule.gni b/tools/grit/grit_rule.gni
-index 581027382d400..78e60c75a9a2d 100644
+index b4955a1bc116e..06842fdc79de9 100644
 --- a/tools/grit/grit_rule.gni
 +++ b/tools/grit/grit_rule.gni
 @@ -360,7 +360,7 @@ template("grit") {

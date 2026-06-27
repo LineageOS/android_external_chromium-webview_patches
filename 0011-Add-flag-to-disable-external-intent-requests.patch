@@ -1,7 +1,7 @@
-From 6b007b07462213ad733a20732152b36eeb00a5e4 Mon Sep 17 00:00:00 2001
+From c2bb5eae73b40d40feb91e13275f48fc4cf69ae3 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
-Subject: [PATCH 11/13] Add flag to disable external intent requests
+Subject: [PATCH 11/14] Add flag to disable external intent requests
 
 Adds a new flag that allows to control the switch with same name;
 when flag is disabled no external intent will ever be allowed,
@@ -49,10 +49,10 @@ index 1cf95117e63cc..5807c713ce334 100644
          android:key="security_section"
        android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-index 8ef9688f973bb..a3664f5b53253 100644
+index 26ee84eff5ca4..7b7e259c3a56d 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-@@ -42,6 +42,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
+@@ -43,6 +43,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
  import org.chromium.chrome.browser.externalnav.ExternalNavigationDelegateImpl;
  import org.chromium.chrome.browser.flags.ActivityType;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -60,7 +60,7 @@ index 8ef9688f973bb..a3664f5b53253 100644
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.init.ChromeActivityNativeDelegate;
-@@ -171,6 +172,7 @@ public class CustomTabDelegateFactory implements TabDelegateFactory {
+@@ -172,6 +173,7 @@ public class CustomTabDelegateFactory implements TabDelegateFactory {
  
          @Override
          public boolean shouldDisableAllExternalIntents() {
@@ -69,7 +69,7 @@ index 8ef9688f973bb..a3664f5b53253 100644
                      && ChromeFeatureList.sCctAuthTabDisableAllExternalIntents.isEnabled();
          }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
-index 65640ecc0b5b8..135da9c7e3c19 100644
+index ca3657e4202b6..9021b20866fcb 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 @@ -27,6 +27,7 @@ import org.chromium.base.ResettersForTesting;
@@ -90,7 +90,7 @@ index 65640ecc0b5b8..135da9c7e3c19 100644
      }
  
      @Override
-@@ -335,7 +337,7 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
+@@ -334,7 +336,7 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
                  && params.isInitialNavigationInFrame()
                  // TODO(crbug.com/452537438): Figure out a better way to check whether we are in
                  // desktop windowing mode or if the device can enter desktop windowing mode.

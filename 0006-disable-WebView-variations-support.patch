@@ -1,4 +1,4 @@
-From 6db578cce46a6c458811a607143903afa0839eac Mon Sep 17 00:00:00 2001
+From 1b85152623c3771dd74b4d76f59d8b9632ef4820 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/14] disable WebView variations support
@@ -9,10 +9,10 @@ Subject: [PATCH 06/14] disable WebView variations support
  2 files changed, 11 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index ecc9e62dfbc94..a543dc4698c29 100644
+index c1a61283e2383..547d7c5d4e267 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -684,13 +684,6 @@ public class WebViewChromiumAwInit {
+@@ -757,13 +757,6 @@ public class WebViewChromiumAwInit {
                                      && delegate.isNativeWebViewZygoteEnabled(
                                              mFactory.getWebViewDelegate());
                      AwBrowserProcess.configureChildProcessLauncher(isNativeWebViewZygoteEnabled);
@@ -27,10 +27,10 @@ index ecc9e62dfbc94..a543dc4698c29 100644
  
          addBrowserProcessStartTasksToQueue(
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index 96506400e3ba5..d3737f9d4f3de 100644
+index ca7940c8edee5..c68c54cc06049 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -692,10 +692,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -675,10 +675,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
              // This must happen after pref value has been read and SafeMode setup has completed.
              setupStartupTaskExperiments(androidXConfig);
  
@@ -39,8 +39,8 @@ index 96506400e3ba5..d3737f9d4f3de 100644
 -            }
 -
              if (WebViewCachedFlags.get()
-                     .isCachedFeatureEnabled(AwFeatures.WEBVIEW_MOVE_WORK_TO_PROVIDER_INIT)) {
-                 mAwInit.runNonUiThreadCapableStartupTasks();
+                             .isCachedFeatureEnabled(AwFeatures.WEBVIEW_MOVE_WORK_TO_PROVIDER_INIT)
+                     && !WebViewCachedFlags.get()
 -- 
 2.53.0
 

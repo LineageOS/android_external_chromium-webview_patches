@@ -1,4 +1,4 @@
-From 0bc42e8c128d461106c1d3d27dd6b3ad0dfd936a Mon Sep 17 00:00:00 2001
+From 476f61dc9508dc86675503180223db6b2d1dcb1f Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Tue, 1 Dec 2020 00:56:57 -0500
 Subject: [PATCH 04/14] disable autofill server communication by default
@@ -8,10 +8,10 @@ Subject: [PATCH 04/14] disable autofill server communication by default
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/components/autofill/core/common/autofill_debug_features.cc b/components/autofill/core/common/autofill_debug_features.cc
-index 428e403f2cd4f..5eb048571c578 100644
+index 3eb584378836f..b1fa74c2d3714 100644
 --- a/components/autofill/core/common/autofill_debug_features.cc
 +++ b/components/autofill/core/common/autofill_debug_features.cc
-@@ -114,7 +114,7 @@ BASE_FEATURE_PARAM(std::string,
+@@ -123,7 +123,7 @@ BASE_FEATURE_PARAM(std::string,
  // autofill server API url up to the parent "directory" of the "query" and
  // "upload" resources.
  // i.e., https://other.autofill.server:port/tbproxy/af/

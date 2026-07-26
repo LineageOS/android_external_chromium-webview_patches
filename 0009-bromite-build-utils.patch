@@ -1,4 +1,4 @@
-From 4d8bdfa55249d4004593d44491e628c5d0a15ca2 Mon Sep 17 00:00:00 2001
+From caf8d34bad2c66fae3651915050d3976e477dd12 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/14] bromite build utils
@@ -431,20 +431,20 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 12595c1e36678..63afe9233a2f1 100644
+index f44478e5f9621..b41f67e680e64 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -864,3 +864,5 @@ if (is_component_build) {
+@@ -865,3 +865,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index cbe9d51a3d783..f81acc4d5b7ce 100644
+index e5187476c2a59..2151f64a77017 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -224,6 +224,10 @@ if (!is_robolectric && enable_java_templates) {
+@@ -229,6 +229,10 @@ if (!is_robolectric && enable_java_templates) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -455,7 +455,7 @@ index cbe9d51a3d783..f81acc4d5b7ce 100644
        outputs = [ _srcjar_path ]
      }
    }
-@@ -278,7 +282,7 @@ if (!is_robolectric && enable_java_templates) {
+@@ -283,7 +287,7 @@ if (!is_robolectric && enable_java_templates) {
    #   my.java.package.
    template("java_cpp_strings") {
      action_with_pydeps(target_name) {
@@ -481,7 +481,7 @@ index d3cbc86c92820..ca6420e095ab9 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index a3ef16fdb568d..c51e56137aa99 100644
+index 4bd056f1ce6f0..4e15a847764fb 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
@@ -686,7 +686,7 @@ index 0000000000000..e3ed27bc71054
 +    }
 +}
 diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/mojom_parser.py
-index 37f6a0d4af9e3..0d4f166ff65ee 100755
+index 80165184c3cb2..fef87fc0a05dc 100755
 --- a/mojo/public/tools/mojom/mojom_parser.py
 +++ b/mojo/public/tools/mojom/mojom_parser.py
 @@ -20,6 +20,7 @@ import os
@@ -697,7 +697,7 @@ index 37f6a0d4af9e3..0d4f166ff65ee 100755
  from collections import defaultdict
  
  from mojom.generate import module
-@@ -180,11 +181,26 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
+@@ -180,15 +181,30 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
    collect(build_metadata_filename)
    return allowed_imports
  
@@ -717,22 +717,26 @@ index 37f6a0d4af9e3..0d4f166ff65ee 100755
 +  return "\n".join(lines)
  
  # multiprocessing helper.
--def _ParseAstHelper(mojom_abspath, enabled_features):
-+def _ParseAstHelper(mojom_abspath, enabled_features, input_root_paths):
+-def _ParseAstHelper(mojom_abspath, mojom_path, enabled_features):
++def _ParseAstHelper(mojom_abspath, mojom_path, enabled_features, input_root_paths):
    with open(mojom_abspath, encoding='utf-8') as f:
--    ast = parser.Parse(f.read(), mojom_abspath)
-+    src = _ResolveInclude(mojom_abspath, input_root_paths)
-+    ast = parser.Parse(src, mojom_abspath)
+     # Label the AST with the relative mojom_path, not the absolute path. This
+     # filename is baked into the serialized .mojom-module (via source
+     # locations), so an abspath would make the module vary by build root and
+     # break remote-cache hits for downstream bindings actions.
+-    ast = parser.Parse(f.read(), mojom_path)
++    src = _ResolveInclude(mojom_path, input_root_paths)
++    ast = parser.Parse(src, mojom_path)
      conditional_features.RemoveDisabledDefinitions(ast, enabled_features)
      return mojom_abspath, ast
  
-@@ -304,7 +320,7 @@ def _ParseMojoms(mojom_files,
+@@ -308,7 +324,7 @@ def _ParseMojoms(mojom_files,
        (path, abs_path) for abs_path, path in mojom_files_to_parse.items())
  
    logging.info('Parsing %d .mojom into ASTs', len(mojom_files_to_parse))
--  map_args = ((mojom_abspath, enabled_features)
-+  map_args = ((mojom_abspath, enabled_features, input_root_paths)
-               for mojom_abspath in mojom_files_to_parse)
+-  map_args = ((mojom_abspath, mojom_path, enabled_features)
++  map_args = ((mojom_abspath, mojom_path, enabled_features, input_root_paths)
+               for mojom_abspath, mojom_path in mojom_files_to_parse.items())
    for mojom_abspath, ast in _Shard(_ParseAstHelper, map_args):
      loaded_mojom_asts[mojom_abspath] = ast
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py

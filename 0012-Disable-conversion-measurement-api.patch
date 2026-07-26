@@ -1,4 +1,4 @@
-From 020423ceea9c3266858cd52f3c7ab51cf8243e1a Mon Sep 17 00:00:00 2001
+From 5506f1b420f9865cee565ce80173e75ad0278fc9 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Mon, 15 Nov 2021 09:43:29 +0000
 Subject: [PATCH 12/14] Disable conversion measurement api
@@ -52,10 +52,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
-index 4c0014d077941..ccb8ffc9612e4 100644
+index 26268a63e4283..91be75fa1bf6f 100644
 --- a/android_webview/browser/aw_content_browser_client.cc
 +++ b/android_webview/browser/aw_content_browser_client.cc
-@@ -1389,6 +1389,7 @@ network::mojom::AttributionSupport
+@@ -1412,6 +1412,7 @@ network::mojom::AttributionSupport
  AwContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -63,7 +63,7 @@ index 4c0014d077941..ccb8ffc9612e4 100644
    // WebView only supports OS-level attribution and not web-attribution.
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
-@@ -1407,6 +1408,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -1430,6 +1431,8 @@ bool AwContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -73,19 +73,19 @@ index 4c0014d077941..ccb8ffc9612e4 100644
        static_cast<AwBrowserContext*>(browser_context);
    // WebView only supports OS-level attribution and not web-attribution.
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwSettings.java b/android_webview/java/src/org/chromium/android_webview/AwSettings.java
-index f45efcadadd8a..7edf37660f8a4 100644
+index 953a146058410..e5ca7fac030d8 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwSettings.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwSettings.java
-@@ -199,7 +199,7 @@ public class AwSettings {
-     private boolean mSpatialNavigationEnabled; // Default depends on device features.
+@@ -200,7 +200,7 @@ public class AwSettings {
+     private boolean mDownloadFaviconsEnabled = true;
      private boolean mEnableSupportedHardwareAcceleratedFeatures;
      private int mMixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW;
 -    private int mAttributionBehavior = AttributionBehavior.APP_SOURCE_AND_WEB_TRIGGER;
 +    private int mAttributionBehavior = AttributionBehavior.DISABLED;
-     private boolean mIgnoreDuplicateNavEnabled;
-     private long mIgnoreDuplicateNavThresholdMs = -1;
  
-@@ -1867,7 +1867,7 @@ public class AwSettings {
+     @SpeculativeLoadingAllowedFlags
+     private int mSpeculativeLoadingAllowedFlags =
+@@ -1851,7 +1851,7 @@ public class AwSettings {
      public void setAttributionBehavior(@AttributionBehavior int behavior) {
          synchronized (mAwSettingsLock) {
              if (mAttributionBehavior != behavior) {
@@ -95,10 +95,10 @@ index f45efcadadd8a..7edf37660f8a4 100644
              }
          }
 diff --git a/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml b/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml
-index 1be00d213f2c9..4eb40af255acd 100644
+index 4443ee4441011..0692e5cecd7df 100644
 --- a/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml
 +++ b/android_webview/tools/system_webview_shell/apk/AndroidManifest.xml
-@@ -192,9 +192,6 @@
+@@ -200,9 +200,6 @@
              android:exported="true">
          </activity>
  
@@ -131,10 +131,10 @@ index f8574cef5cb32..7366e6286a442 100644
          {% if enable_openxr == "true" %}
            <!-- launchMode is set to singleTask because there should never be multiple copies of the app running. -->
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
-index c8250e849de3c..0d0932ceef0be 100644
+index db587085f68c7..3e1ef4767271d 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/site_settings/ChromeSiteSettingsDelegate.java
-@@ -152,6 +152,8 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
+@@ -154,6 +154,8 @@ public class ChromeSiteSettingsDelegate implements SiteSettingsDelegate {
                  // not great to dynamically remove the preference in this way.
              case SiteSettingsCategory.Type.ADS:
                  return SiteSettingsCategory.adsCategoryEnabled();
@@ -144,7 +144,7 @@ index c8250e849de3c..0d0932ceef0be 100644
                  return ChromeFeatureList.isEnabled(
                          ChromeFeatureList.DARKEN_WEBSITES_CHECKBOX_IN_THEMES_SETTING);
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page_index.html b/chrome/browser/resources/settings/privacy_page/privacy_page_index.html
-index 0f29e4cd0a774..ec272353793b9 100644
+index 5dbe993236ac0..438db9233c8ba 100644
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page_index.html
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page_index.html
 @@ -179,15 +179,6 @@
@@ -164,7 +164,7 @@ index 0f29e4cd0a774..ec272353793b9 100644
        routes_.SITE_SETTINGS_AUTO_PICTURE_IN_PICTURE, currentRoute,
        inSearchMode)]]" update-when-false>
 diff --git a/chrome/browser/resources/settings/route.ts b/chrome/browser/resources/settings/route.ts
-index 51af5ee843a84..a04c9e8ad7076 100644
+index 7770eeb7d2406..0404aa9341122 100644
 --- a/chrome/browser/resources/settings/route.ts
 +++ b/chrome/browser/resources/settings/route.ts
 @@ -78,7 +78,7 @@ function addPrivacyChildRoutes(r: Partial<SettingsRoutes>) {
@@ -177,7 +177,7 @@ index 51af5ee843a84..a04c9e8ad7076 100644
        r.SITE_SETTINGS.createChild('backgroundSync');
    r.SITE_SETTINGS_CAMERA = r.SITE_SETTINGS.createChild('camera');
 diff --git a/chrome/browser/resources/settings/site_settings/site_settings_page.ts b/chrome/browser/resources/settings/site_settings/site_settings_page.ts
-index 8f165ca94a703..6cb38da58bad0 100644
+index 44b6a0f117ac9..59be061df3440 100644
 --- a/chrome/browser/resources/settings/site_settings/site_settings_page.ts
 +++ b/chrome/browser/resources/settings/site_settings/site_settings_page.ts
 @@ -67,6 +67,7 @@ function getCategoryItemMap(): Map<ContentSettingsTypes, CategoryListItem> {
@@ -212,7 +212,7 @@ index b199e7682ad33..a5929da4e4ba1 100644
 +SET_CROMITE_FEATURE_DISABLED(kConversionMeasurement);
  }  // namespace attribution_reporting::features
 diff --git a/components/content_settings/core/browser/content_settings_registry.cc b/components/content_settings/core/browser/content_settings_registry.cc
-index 950cfa5d881be..daaf7f6f59918 100644
+index fba7f48fed6b7..6f4b2058ca50f 100644
 --- a/components/content_settings/core/browser/content_settings_registry.cc
 +++ b/components/content_settings/core/browser/content_settings_registry.cc
 @@ -639,7 +639,7 @@ void ContentSettingsRegistry::Init() {
@@ -309,7 +309,7 @@ index bce6c63720add..92b704724ba33 100644
      case RegistrationEligibility::kSourceOrTrigger:
        break;
 diff --git a/content/browser/attribution_reporting/attribution_host.cc b/content/browser/attribution_reporting/attribution_host.cc
-index fa09cd0cd98e6..0a402f6f52ff6 100644
+index d380645cdd4ee..14668c40935cc 100644
 --- a/content/browser/attribution_reporting/attribution_host.cc
 +++ b/content/browser/attribution_reporting/attribution_host.cc
 @@ -135,8 +135,6 @@ AttributionHost::AttributionHost(WebContents* web_contents)
@@ -420,10 +420,10 @@ index 221b1f7243d05..2464661271557 100644
            /*tag=*/"Conversions"),
        delegate_(delegate),
 diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
-index 981c6062775d3..6320592ab4b20 100644
+index d1a4c29e3c114..506ca529a43bd 100644
 --- a/content/browser/renderer_host/render_frame_host_impl.cc
 +++ b/content/browser/renderer_host/render_frame_host_impl.cc
-@@ -10909,6 +10909,7 @@ bool RenderFrameHostImpl::IsFencedFrameReportingFromRendererAllowed(
+@@ -10948,6 +10948,7 @@ bool RenderFrameHostImpl::IsFencedFrameReportingFromRendererAllowed(
      return false;
    }
  
@@ -431,7 +431,7 @@ index 981c6062775d3..6320592ab4b20 100644
    if (!IsActive()) {
      // reportEvent is not allowed when this RenderFrameHost or one of its
      // ancestors is not active.
-@@ -15043,6 +15044,16 @@ void RenderFrameHostImpl::BindTrustTokenQueryAnswerer(
+@@ -15077,6 +15078,16 @@ void RenderFrameHostImpl::BindTrustTokenQueryAnswerer(
      return;
    }
  
@@ -449,10 +449,10 @@ index 981c6062775d3..6320592ab4b20 100644
    // secure contexts, so we could additionally add a check verifying that the
    // bind request "is coming from a secure context"---but there's currently no
 diff --git a/content/browser/storage_partition_impl.cc b/content/browser/storage_partition_impl.cc
-index 2a49d3a2e90b9..15f209f35273f 100644
+index ae61b2d3115cd..f32b013b26de1 100644
 --- a/content/browser/storage_partition_impl.cc
 +++ b/content/browser/storage_partition_impl.cc
-@@ -1468,15 +1468,6 @@ void StoragePartitionImpl::Initialize(
+@@ -1485,15 +1485,6 @@ void StoragePartitionImpl::Initialize(
  
    bucket_manager_ = std::make_unique<BucketManager>(this);
  
@@ -468,7 +468,7 @@ index 2a49d3a2e90b9..15f209f35273f 100644
    if (base::FeatureList::IsEnabled(network::features::kInterestGroupStorage)) {
      // Auction worklets on non-Android use dedicated processes; on Android due
      // to high cost of process launch they try to reuse renderers.
-@@ -1528,9 +1519,6 @@ void StoragePartitionImpl::Initialize(
+@@ -1545,9 +1536,6 @@ void StoragePartitionImpl::Initialize(
  
    font_access_manager_ = FontAccessManager::Create();
  
@@ -479,10 +479,10 @@ index 2a49d3a2e90b9..15f209f35273f 100644
    if (is_in_memory()) {
      // Pass an empty path if in_memory so that CdmStorage.db is not stored on
 diff --git a/content/public/android/BUILD.gn b/content/public/android/BUILD.gn
-index 3b25a543a8d40..5f91912e99281 100644
+index 944692a825b87..7ac6c0c432852 100644
 --- a/content/public/android/BUILD.gn
 +++ b/content/public/android/BUILD.gn
-@@ -209,8 +209,6 @@ android_library("content_full_java") {
+@@ -210,8 +210,6 @@ android_library("content_full_java") {
      "//third_party/androidx:androidx_appcompat_appcompat_resources_java",
      "//third_party/androidx:androidx_collection_collection_java",
      "//third_party/androidx:androidx_core_core_java",
@@ -955,10 +955,10 @@ index 85cabdbd730a0..4e2dc6dc1b3bd 100644
  
      @CalledByNative
 diff --git a/content/public/browser/content_browser_client.cc b/content/public/browser/content_browser_client.cc
-index f14f214d26bf8..ba0b9293b0a0f 100644
+index 5785aaf2b9bfb..e55e70f3b2b3b 100644
 --- a/content/public/browser/content_browser_client.cc
 +++ b/content/public/browser/content_browser_client.cc
-@@ -656,6 +656,7 @@ void ContentBrowserClient::OnAuctionComplete(
+@@ -664,6 +664,7 @@ void ContentBrowserClient::OnAuctionComplete(
  network::mojom::AttributionSupport ContentBrowserClient::GetAttributionSupport(
      AttributionReportingOsApiState state,
      bool client_os_disabled) {
@@ -966,7 +966,7 @@ index f14f214d26bf8..ba0b9293b0a0f 100644
    switch (state) {
      case AttributionReportingOsApiState::kDisabled:
        return network::mojom::AttributionSupport::kWeb;
-@@ -673,13 +674,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
+@@ -681,13 +682,13 @@ bool ContentBrowserClient::IsAttributionReportingOperationAllowed(
      const url::Origin* destination_origin,
      const url::Origin* reporting_origin,
      bool* can_bypass) {
@@ -982,7 +982,7 @@ index f14f214d26bf8..ba0b9293b0a0f 100644
  }
  
  bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
-@@ -687,7 +688,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
+@@ -695,7 +696,7 @@ bool ContentBrowserClient::IsAttributionReportingAllowedForContext(
      content::RenderFrameHost* rfh,
      const url::Origin& context_origin,
      const url::Origin& reporting_origin) {
@@ -992,10 +992,10 @@ index f14f214d26bf8..ba0b9293b0a0f 100644
  
  bool ContentBrowserClient::IsSharedStorageAllowed(
 diff --git a/content/public/browser/navigation_controller.cc b/content/public/browser/navigation_controller.cc
-index 8f19ef1d5bf86..0cec0fba779b8 100644
+index ecbd4ce9e522b..de5ffaab4724a 100644
 --- a/content/public/browser/navigation_controller.cc
 +++ b/content/public/browser/navigation_controller.cc
-@@ -40,7 +40,6 @@ NavigationController::LoadURLParams::LoadURLParams(const OpenURLParams& input)
+@@ -43,7 +43,6 @@ NavigationController::LoadURLParams::LoadURLParams(const OpenURLParams& input)
        blob_url_loader_factory(input.blob_url_loader_factory),
        href_translate(input.href_translate),
        reload_type(input.reload_type),
@@ -1038,10 +1038,10 @@ index c4f75aefbcb89..d5773ec6a993a 100644
  
    const char* grease1;
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
-index 45c0a1a8977ca..50cc77d59d931 100644
+index 0ff3ecaf6d977..93bfe720d824f 100644
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
-@@ -1369,6 +1369,10 @@ void NetworkContext::ClearTrustTokenData(mojom::ClearDataFilterPtr filter,
+@@ -1379,6 +1379,10 @@ void NetworkContext::ClearTrustTokenData(mojom::ClearDataFilterPtr filter,
  
  void NetworkContext::ClearTrustTokenSessionOnlyData(
      ClearTrustTokenSessionOnlyDataCallback callback) {
@@ -1052,7 +1052,7 @@ index 45c0a1a8977ca..50cc77d59d931 100644
    // Only called when Private State Tokens is enabled, i.e.,
    // `trust_token_store_` is non-null.
    DCHECK(trust_token_store_);
-@@ -2815,26 +2819,6 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
+@@ -2906,26 +2910,6 @@ URLRequestContextOwner NetworkContext::MakeURLRequestContext(
      builder.set_network_quality_estimator(
          network_service_->network_quality_estimator());
    }
@@ -1113,7 +1113,7 @@ index 6bbeb9aa27b1a..1f69f81320a2e 100644
          request_id(request_id) {}
  
 diff --git a/third_party/blink/renderer/core/page/page.cc b/third_party/blink/renderer/core/page/page.cc
-index 3b12e2235ded5..2c145f4cb39be 100644
+index ce2d8fba37640..70714660ec89a 100644
 --- a/third_party/blink/renderer/core/page/page.cc
 +++ b/third_party/blink/renderer/core/page/page.cc
 @@ -1573,7 +1573,7 @@ void Page::UpdateBrowsingContextGroup(
@@ -1126,7 +1126,7 @@ index 3b12e2235ded5..2c145f4cb39be 100644
  
  template class CORE_TEMPLATE_EXPORT Supplement<Page>;
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-index 826f6eb2025e2..67cfa50186f56 100644
+index 2a689dd0a8bf3..fd334f12c755c 100644
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 @@ -292,8 +292,8 @@
@@ -1140,7 +1140,7 @@ index 826f6eb2025e2..67cfa50186f56 100644
        origin_trial_feature_name: "AdInterestGroupAPI",
        implied_by: ["Fledge", "Parakeet"],
        public: true,
-@@ -707,8 +707,8 @@
+@@ -713,8 +713,8 @@
        status: "stable",
      },
      {
@@ -1151,7 +1151,7 @@ index 826f6eb2025e2..67cfa50186f56 100644
        base_feature: "none",
        public: true,
      },
-@@ -4635,8 +4635,8 @@
+@@ -4808,8 +4808,8 @@
        base_feature: "none",
      },
      {
@@ -1162,7 +1162,7 @@ index 826f6eb2025e2..67cfa50186f56 100644
        base_feature: "none",
        public: true,
      },
-@@ -6097,16 +6097,16 @@
+@@ -6320,16 +6320,16 @@
        status: "experimental",
      },
      {

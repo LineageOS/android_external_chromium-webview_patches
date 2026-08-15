@@ -1,4 +1,4 @@
-From 1b85152623c3771dd74b4d76f59d8b9632ef4820 Mon Sep 17 00:00:00 2001
+From 0a792ebe777ad9b57fdb885a28b505056334fa2d Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/14] disable WebView variations support
@@ -9,10 +9,10 @@ Subject: [PATCH 06/14] disable WebView variations support
  2 files changed, 11 deletions(-)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index c1a61283e2383..547d7c5d4e267 100644
+index 7474517604450..d3cb6f1fed5e1 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -757,13 +757,6 @@ public class WebViewChromiumAwInit {
+@@ -762,13 +762,6 @@ public class WebViewChromiumAwInit {
                                      && delegate.isNativeWebViewZygoteEnabled(
                                              mFactory.getWebViewDelegate());
                      AwBrowserProcess.configureChildProcessLauncher(isNativeWebViewZygoteEnabled);
@@ -27,10 +27,10 @@ index c1a61283e2383..547d7c5d4e267 100644
  
          addBrowserProcessStartTasksToQueue(
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index ca7940c8edee5..c68c54cc06049 100644
+index 10cc73e5e5621..9778414d2b203 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -675,10 +675,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+@@ -676,10 +676,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
              // This must happen after pref value has been read and SafeMode setup has completed.
              setupStartupTaskExperiments(androidXConfig);
  

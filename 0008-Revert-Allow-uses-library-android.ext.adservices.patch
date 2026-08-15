@@ -1,7 +1,7 @@
-From 65fc123d0218cc726089d465cfb00b3deb6efce8 Mon Sep 17 00:00:00 2001
+From cbb4e08095157589529262cfd02fa01a1be9c655 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 2 Mar 2024 08:55:45 -0700
-Subject: [PATCH 08/14] Revert "Allow uses-library android.ext.adservices"
+Subject: [PATCH 08/13] Revert "Allow uses-library android.ext.adservices"
 
 This reverts commit 0c3ae92dd16b763625a4d8c3f05012d9813dee2d.
 ---
@@ -16,8 +16,8 @@ This reverts commit 0c3ae92dd16b763625a4d8c3f05012d9813dee2d.
  ...webview_64_bundle.AndroidManifest.expected |  1 -
  ...me_webview_bundle.AndroidManifest.expected |  1 -
  .../0_privacysandbox_AndroidManifest.xml      | 19 +++++++++++++++++++
- third_party/androidx/customizations.gni       |  6 ++++++
- 12 files changed, 25 insertions(+), 10 deletions(-)
+ third_party/androidx/customizations.gni       |  3 +++
+ 12 files changed, 22 insertions(+), 10 deletions(-)
  create mode 100644 third_party/androidx/0_privacysandbox_AndroidManifest.xml
 
 diff --git a/android_webview/expectations/system_webview_32_64_bundle.AndroidManifest.expected b/android_webview/expectations/system_webview_32_64_bundle.AndroidManifest.expected
@@ -165,19 +165,16 @@ index 0000000000000..da6c78ff7b0cc
 +    </application>
 +</manifest>
 diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/customizations.gni
-index 7a5baf7618cd2..0922b72c4e5f9 100644
+index 7a5baf7618cd2..0b763a2699670 100644
 --- a/third_party/androidx/customizations.gni
 +++ b/third_party/androidx/customizations.gni
-@@ -118,6 +118,12 @@ template("_androidx_prebuilt") {
+@@ -118,6 +118,9 @@ template("_androidx_prebuilt") {
        # Replace broad library -keep rules with a more limited set in
        # chrome/android/java/proguard.flags instead.
        ignore_proguard_configs = true
 +    } else if (target_name ==
 +               "androidx_privacysandbox_ads_ads_adservices_java") {
-+      if (!is_high_end_android) {
-+        # https://crbug.com/1448095
-+        mergeable_android_manifests = [ "0_privacysandbox_AndroidManifest.xml" ]
-+      }
++      mergeable_android_manifests = [ "0_privacysandbox_AndroidManifest.xml" ]
      } else if (target_name == "androidx_startup_startup_runtime_java") {
        # Keeps emoji2 code. See http://crbug.com/1205141
        ignore_proguard_configs = true

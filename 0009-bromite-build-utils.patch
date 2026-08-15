@@ -1,7 +1,7 @@
-From caf8d34bad2c66fae3651915050d3976e477dd12 Mon Sep 17 00:00:00 2001
+From a0e854de373f5dce5e208b710b750c4fa391e2fe Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
-Subject: [PATCH 09/14] bromite build utils
+Subject: [PATCH 09/13] bromite build utils
 
 ---
  build/android/gyp/java_cpp_enum.py            |  37 +++++-
@@ -33,10 +33,10 @@ Subject: [PATCH 09/14] bromite build utils
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index b2eb26354318e..b3091d9beb45a 100755
+index 50bb059d49171..2bb96c3965f17 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
-@@ -208,6 +208,7 @@ class DirectiveSet:
+@@ -214,6 +214,7 @@ class DirectiveSet:
  
  
  class HeaderParser:
@@ -44,7 +44,7 @@ index b2eb26354318e..b3091d9beb45a 100755
    single_line_comment_re = re.compile(r'\s*//\s*([^\n]*)')
    multi_line_comment_start_re = re.compile(r'\s*/\*')
    enum_line_re = re.compile(r'^\s*(\w+)(\s*\=\s*([^,\n]+))?,?')
-@@ -230,7 +231,7 @@ class HeaderParser:
+@@ -236,7 +237,7 @@ class HeaderParser:
    enum_single_line_re = re.compile(
        r'^\s*(?:\[cpp.*\])?\s*enum.*{(?P<enum_entries>.*)}.*$')
  
@@ -53,7 +53,7 @@ index b2eb26354318e..b3091d9beb45a 100755
      self._lines = java_cpp_utils.PreprocessIfBlocks(lines)
      self._path = path
      self._enum_definitions = []
-@@ -240,6 +241,7 @@ class HeaderParser:
+@@ -246,6 +247,7 @@ class HeaderParser:
      self._generator_directives = DirectiveSet()
      self._multi_line_generator_directive = None
      self._current_enum_entry = ''
@@ -61,7 +61,7 @@ index b2eb26354318e..b3091d9beb45a 100755
  
    def _ApplyGeneratorDirectives(self):
      self._generator_directives.UpdateDefinition(self._current_definition)
-@@ -266,6 +268,24 @@ class HeaderParser:
+@@ -272,6 +274,24 @@ class HeaderParser:
        raise Exception('Multi-line comments in enums are not supported in ' +
                        self._path)
  
@@ -86,7 +86,7 @@ index b2eb26354318e..b3091d9beb45a 100755
      enum_comment = HeaderParser.single_line_comment_re.match(line)
      if enum_comment:
        comment = enum_comment.groups()[0]
-@@ -367,9 +387,9 @@ class HeaderParser:
+@@ -373,9 +393,9 @@ class HeaderParser:
          self._ParseSingleLineEnum(single_line_enum.group('enum_entries'))
  
  
@@ -98,19 +98,21 @@ index b2eb26354318e..b3091d9beb45a 100755
      if not enum_definitions:
        raise Exception('No enums found in %s\n'
                        'Did you forget prefixing enums with '
-@@ -382,9 +402,9 @@ def DoGenerate(source_paths):
+@@ -388,11 +408,11 @@ def DoGenerate(source_paths):
        yield output_path, output
  
  
 -def DoParseHeaderFile(path):
 +def DoParseHeaderFile(path, options):
    with open(path, encoding='utf-8') as f:
--    return HeaderParser(f.readlines(), path).ParseDefinitions()
-+    return HeaderParser(f.readlines(), options, path).ParseDefinitions()
+     lines = f.readlines()
+     preprocessed_lines = java_cpp_utils.ProcessListMacros(lines)
+-    return HeaderParser(preprocessed_lines, path).ParseDefinitions()
++    return HeaderParser(preprocessed_lines, options, path).ParseDefinitions()
  
  
  def GenerateOutput(source_path, enum_definition):
-@@ -470,11 +490,16 @@ def DoMain(argv):
+@@ -478,11 +498,16 @@ def DoMain(argv):
                        nargs='+',
                        help='Path to at least one input file.')
  
@@ -129,10 +131,10 @@ index b2eb26354318e..b3091d9beb45a 100755
  
  
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
-index f6f2fd6543bfa..5abb1c86cf3fb 100644
+index 3f0e9ff29214c..01e6c8bd1098d 100644
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
-@@ -404,4 +404,27 @@ def ReadSourcesList(sources_list_file_name):
+@@ -408,4 +408,27 @@ def ReadSourcesList(sources_list_file_name):
    Note that this function should not be used to parse response files.
    """
    with open(sources_list_file_name, encoding='utf-8') as f:
@@ -431,17 +433,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index f44478e5f9621..b41f67e680e64 100644
+index 2bd205bd7e85f..37b710cb9200c 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -865,3 +865,5 @@ if (is_component_build) {
+@@ -871,3 +871,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index e5187476c2a59..2151f64a77017 100644
+index 4e018fe6c5dd0..bd6ce1e0e1ab2 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -229,6 +229,10 @@ if (!is_robolectric && enable_java_templates) {
@@ -465,7 +467,7 @@ index e5187476c2a59..2151f64a77017 100644
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index d3cbc86c92820..ca6420e095ab9 100644
+index 80774dba5e3ba..cec824c96051d 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 @@ -16,6 +16,11 @@ import org.chromium.components.dom_distiller.core.DistilledPagePrefs;

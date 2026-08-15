@@ -1,7 +1,7 @@
-From 3484dbed68ae856d6af2ab304105f931857b9d9c Mon Sep 17 00:00:00 2001
+From b0a918b8f0b35612da7281efdd602275a3c90338 Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
-Subject: [PATCH 11/14] Add flag to disable external intent requests
+Subject: [PATCH 11/13] Add flag to disable external intent requests
 
 Adds a new flag that allows to control the switch with same name;
 when flag is disabled no external intent will ever be allowed,
@@ -49,7 +49,7 @@ index 1cf95117e63cc..5807c713ce334 100644
          android:key="security_section"
        android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-index b351a303c56c2..fea67b51647f2 100644
+index fff5096911d38..8972c6ac118ae 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 @@ -42,6 +42,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
@@ -65,9 +65,9 @@ index b351a303c56c2..fea67b51647f2 100644
          @Override
          public boolean shouldDisableAllExternalIntents() {
 +            if (!sAllowExternalIntentRequests.getInstance().isEnabled()) return true;
-             return mActivityType == ActivityType.AUTH_TAB
-                     && ChromeFeatureList.sCctAuthTabDisableAllExternalIntents.isEnabled();
+             return false;
          }
+ 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 index cfa270abe2a19..7b46713e38dc2 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
@@ -154,12 +154,12 @@ index 0000000000000..02a3d03423d8b
 +    </message>
 +</grit-part>
 diff --git a/components/external_intents/android/external_intents_features.cc b/components/external_intents/android/external_intents_features.cc
-index a39bc5527427d..c677e6a1d7c58 100644
+index e7da4a5038097..ec6cea0a28700 100644
 --- a/components/external_intents/android/external_intents_features.cc
 +++ b/components/external_intents/android/external_intents_features.cc
-@@ -29,8 +29,14 @@ const base::Feature* const kFeaturesExposedToJava[] = {
- 
+@@ -30,8 +30,14 @@ const base::Feature* const kFeaturesExposedToJava[] = {
  BASE_FEATURE(kExternalNavigationDebugLogs, base::FEATURE_DISABLED_BY_DEFAULT);
+ BASE_FEATURE(kDontClobberTabsWithChromeAppId, base::FEATURE_ENABLED_BY_DEFAULT);
  
 +CROMITE_FEATURE(kIntentBlockExternalFormRedirectsNoGesture,
 +                "IntentBlockExternalFormRedirectsNoGesture",
@@ -173,7 +173,7 @@ index a39bc5527427d..c677e6a1d7c58 100644
        UNSAFE_TODO(kFeaturesExposedToJava[ordinal]));
  }
 diff --git a/components/external_intents/android/external_intents_features.h b/components/external_intents/android/external_intents_features.h
-index 09cca8cde59ba..fc82628b1188d 100644
+index 0f68eba5388f8..fa24a23f9b209 100644
 --- a/components/external_intents/android/external_intents_features.h
 +++ b/components/external_intents/android/external_intents_features.h
 @@ -9,6 +9,7 @@
@@ -182,10 +182,10 @@ index 09cca8cde59ba..fc82628b1188d 100644
  
 +BASE_DECLARE_FEATURE(kIntentBlockExternalFormRedirectsNoGesture);
  BASE_DECLARE_FEATURE(kExternalNavigationDebugLogs);
- BASE_DECLARE_FEATURE(kBlockFrameRenavigations);
+ BASE_DECLARE_FEATURE(kDontClobberTabsWithChromeAppId);
  
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalIntentsFeatures.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalIntentsFeatures.java
-index 73c34121366c0..5f3a79f081e45 100644
+index 907b22137951e..02f61ef249266 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalIntentsFeatures.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalIntentsFeatures.java
 @@ -19,6 +19,12 @@ import org.chromium.build.annotations.NullMarked;
@@ -199,13 +199,13 @@ index 73c34121366c0..5f3a79f081e45 100644
 +            new ExternalIntentsFeature(-1, INTENT_BLOCK_EXTERNAL_FORM_REDIRECT_NO_GESTURE_NAME);
 +
      public static final String EXTERNAL_NAVIGATION_DEBUG_LOGS_NAME = "ExternalNavigationDebugLogs";
- 
-     public static final ExternalIntentsFeature EXTERNAL_NAVIGATION_DEBUG_LOGS =
+     public static final String DONT_CLOBBER_TABS_WITH_CHROME_APP_ID_NAME =
+             "DontClobberTabsWithChromeAppId";
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index 1af0547bd48bc..2898680550d33 100644
+index 703e636f1953f..b685128b592c2 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -1788,6 +1788,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
+@@ -1790,6 +1790,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
          return false;
      }
  
@@ -218,7 +218,7 @@ index 1af0547bd48bc..2898680550d33 100644
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params,
              Intent targetIntent,
-@@ -1875,6 +1881,21 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
+@@ -1877,6 +1883,21 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  

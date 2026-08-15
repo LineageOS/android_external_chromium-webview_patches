@@ -1,7 +1,7 @@
-From bbc0b426231bab36b74fd2b5be29c55ae8d85259 Mon Sep 17 00:00:00 2001
+From 7a581ffe1ad08827a6bea54beb0adad6e3ca4676 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 6 Jun 2026 10:22:21 -0600
-Subject: [PATCH 13/14] Basic py3.14 compat for jinja_template
+Subject: [PATCH 12/13] Basic py3.14 compat for jinja_template
 
 ---
  build/android/gyp/jinja_template.py | 7 +++----

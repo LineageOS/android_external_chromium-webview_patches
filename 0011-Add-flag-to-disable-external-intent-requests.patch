@@ -1,7 +1,7 @@
-From e2ecad9b1f7bf9cbdfce4579c4b189ae8db1c7af Mon Sep 17 00:00:00 2001
+From 5cab1b9ae1de3aa0f888e32350333cc1a9c7791c Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
-Subject: [PATCH 11/14] Add flag to disable external intent requests
+Subject: [PATCH 11/13] Add flag to disable external intent requests
 
 Adds a new flag that allows to control the switch with same name;
 when flag is disabled no external intent will ever be allowed,
@@ -31,10 +31,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-flag-to-disable-external-intent-requests.inc
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
-index 1cf95117e63cc..5807c713ce334 100644
+index 68be69cdbdc2d..0c698b9f924ea 100644
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -46,7 +46,12 @@ found in the LICENSE file.
+@@ -42,7 +42,12 @@ found in the LICENSE file.
          android:title="@string/settings_incognito_tab_lock_title"
          android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
          android:persistent="false" />
@@ -49,7 +49,7 @@ index 1cf95117e63cc..5807c713ce334 100644
          android:key="security_section"
        android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-index fff5096911d38..8972c6ac118ae 100644
+index 42b5fdc085369..73df41f29b3b3 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 @@ -42,6 +42,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
@@ -69,7 +69,7 @@ index fff5096911d38..8972c6ac118ae 100644
          }
  
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
-index cfa270abe2a19..7b46713e38dc2 100644
+index 5e2b27f2375dc..9061cc4659952 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 @@ -27,6 +27,7 @@ import org.chromium.base.ResettersForTesting;
@@ -202,7 +202,7 @@ index 907b22137951e..02f61ef249266 100644
      public static final String DONT_CLOBBER_TABS_WITH_CHROME_APP_ID_NAME =
              "DontClobberTabsWithChromeAppId";
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index 703e636f1953f..b685128b592c2 100644
+index 654a498e50bed..ec170e3d0ee05 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 @@ -1790,6 +1790,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {

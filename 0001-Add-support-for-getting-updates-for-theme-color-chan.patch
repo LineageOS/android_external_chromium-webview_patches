@@ -1,7 +1,7 @@
-From 887c770edd05cf6988ba4ba8c23e1fbdfc94b266 Mon Sep 17 00:00:00 2001
+From 06afa32a6e8149dbdd3238341cd0c5653ff65f8c Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
-Subject: [PATCH 01/14] Add support for getting updates for theme color
+Subject: [PATCH 01/13] Add support for getting updates for theme color
  changes.
 
 ---
@@ -14,10 +14,10 @@ Subject: [PATCH 01/14] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index cf7322c72e5be..357a16d614c21 100644
+index 64e72fac680bd..3f3542900663b 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-@@ -91,6 +91,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -94,6 +94,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -25,7 +25,7 @@ index cf7322c72e5be..357a16d614c21 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -2480,6 +2481,13 @@ class WebViewChromium
+@@ -1414,6 +1415,13 @@ class WebViewChromium
          }
      }
  
@@ -106,7 +106,7 @@ index d8fc5c353b1ea..81804ba3b1baf 100644
          private final AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index 82557f145909a..8852c7c57b098 100644
+index a7e8406938a33..c2402ece6e8ee 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 @@ -151,6 +151,8 @@ public abstract class AwContentsClient {
@@ -156,12 +156,12 @@ index 6ec0565b748a8..974b94a7b64f2 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index 30aec89c2e7b6..87ff5340aea09 100644
+index 214e3aafc6516..ac73da6ae931f 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-@@ -287,6 +287,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
-                     });
-         }
+@@ -275,6 +275,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
+                             0, new PageCommitVisibleCallback(navigation));
+                 });
  
 +        if (client != null) {
 +            AwContents awContents = mAwContents.get();
@@ -174,7 +174,7 @@ index 30aec89c2e7b6..87ff5340aea09 100644
          if (client != null && navigation.isPrimaryMainFrameFragmentNavigation()) {
              // Note fragment navigations do not have a matching onPageStarted.
              client.getCallbackHelper().postOnPageFinished(url);
-@@ -305,6 +313,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -293,6 +301,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
          }
      }
  

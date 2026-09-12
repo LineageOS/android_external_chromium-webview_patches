@@ -1,4 +1,4 @@
-From 51ac18f051fef86c692e927a48d6773e837b1865 Mon Sep 17 00:00:00 2001
+From e1087c3c234c26daf05c6ec28413a2fb2f1bb41f Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 27 Jun 2026 10:56:53 -0600
 Subject: [PATCH 13/13] android: Don't unconditionally include dev_ui in
@@ -9,10 +9,10 @@ Subject: [PATCH 13/13] android: Don't unconditionally include dev_ui in
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index eaa7929a31667..a5abc7d19b212 100644
+index f261c72029a98..34dac6bdf70a6 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1655,7 +1655,6 @@ source_set("core") {
+@@ -1669,7 +1669,6 @@ source_set("core") {
        "//chrome/browser/commerce",
        "//chrome/browser/commerce/android:shopping_service_jni",
        "//chrome/browser/composeplate/android:jni_headers",
@@ -20,7 +20,7 @@ index eaa7929a31667..a5abc7d19b212 100644
        "//chrome/browser/facilitated_payments",
        "//chrome/browser/feed",
        "//chrome/browser/flags:flags_android",
-@@ -1692,6 +1691,12 @@ source_set("core") {
+@@ -1707,6 +1706,12 @@ source_set("core") {
        "//services/webnn/public/mojom:features",
        "//ui/compositor",
      ]

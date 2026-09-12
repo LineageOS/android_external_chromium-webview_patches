@@ -1,10 +1,10 @@
-From d8d4ce5df475974d89420286ad25eba6b60cfcba Mon Sep 17 00:00:00 2001
+From e9fda2cff9e76920783db3cd048cdd192423566d Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/13] bromite build utils
 
 ---
- build/android/gyp/java_cpp_enum.py            |  41 ++++++-
+ build/android/gyp/java_cpp_enum.py            |  34 +++++-
  build/android/gyp/util/build_utils.py         |  25 +++-
  build/bromite/bromite_utils.gni               |  79 +++++++++++++
  build/bromite/gyp/cpp_bromite_include.py      |  35 ++++++
@@ -18,11 +18,11 @@ Subject: [PATCH 09/13] bromite build utils
  .../flags/android/cromite_native_utils.cc     |  94 +++++++++++++++
  .../flags/android/cromite_native_utils.h      |  14 +++
  .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
- mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
+ mojo/public/tools/mojom/mojom_parser.py       |  26 ++++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/grit_rule.gni                      |   2 +-
  tools/grit/preprocess_if_expr.py              |  32 +++++-
- 18 files changed, 543 insertions(+), 20 deletions(-)
+ 18 files changed, 540 insertions(+), 20 deletions(-)
  create mode 100644 build/bromite/bromite_utils.gni
  create mode 100644 build/bromite/gyp/cpp_bromite_include.py
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
@@ -33,10 +33,18 @@ Subject: [PATCH 09/13] bromite build utils
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index 6b8f5c89f173e..a8036d5e5bcd5 100755
+index 6b8f5c89f173e..9fc02be1da025 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
-@@ -244,6 +244,7 @@ class DirectiveSet:
+@@ -6,6 +6,7 @@
+ 
+ import argparse
+ import collections
++import os
+ from datetime import date
+ import re
+ from string import Template
+@@ -244,6 +245,7 @@ class DirectiveSet:
  
  
  class HeaderParser:
@@ -44,7 +52,7 @@ index 6b8f5c89f173e..a8036d5e5bcd5 100755
      single_line_comment_re = re.compile(r'\s*//\s*([^\n]*)')
      multi_line_comment_start_re = re.compile(r'\s*/\*')
      enum_line_re = re.compile(r'^\s*(\w+)(\s*\=\s*([^,\n]+))?,?')
-@@ -274,7 +275,7 @@ class HeaderParser:
+@@ -274,7 +276,7 @@ class HeaderParser:
          r'^\s*(?:\[cpp.*\])?\s*enum.*{(?P<enum_entries>.*)}.*$'
      )
  
@@ -53,7 +61,7 @@ index 6b8f5c89f173e..a8036d5e5bcd5 100755
          self._lines = java_cpp_utils.PreprocessIfBlocks(lines)
          self._path = path
          self._enum_definitions = []
-@@ -284,6 +285,7 @@ class HeaderParser:
+@@ -284,6 +286,7 @@ class HeaderParser:
          self._generator_directives = DirectiveSet()
          self._multi_line_generator_directive = None
          self._current_enum_entry = ''
@@ -61,32 +69,30 @@ index 6b8f5c89f173e..a8036d5e5bcd5 100755
  
      def _ApplyGeneratorDirectives(self):
          self._generator_directives.UpdateDefinition(self._current_definition)
-@@ -312,6 +314,24 @@ class HeaderParser:
+@@ -312,6 +315,22 @@ class HeaderParser:
                  + self._path
              )
  
-+        # handles the management of #include files
++        # Handles the management of #include files.
 +        include_line = HeaderParser.include_re.match(line)
 +        if include_line:
-+            include_file = include_line.groups()[0];
-+            if not include_file.endswith(".inc"):
-+                raise Exception('Include file \"' + include_file + '\" must ends with .inc')
++            include_file = include_line.groups()[0]
++            if not include_file.endswith('.inc'):
++                raise Exception(
++                    'Include file "' + include_file + '" must end with .inc'
++                )
 +
 +            file_to_include = os.path.join(self._options.gen_dir, include_file)
 +            if not os.path.exists(file_to_include):
 +                file_to_include = os.path.join(self._options.root_dir, include_file)
-+            lines = []
-+            with open(file_to_include) as include_file_handle:
-+                lines = include_file_handle.readlines()
-+
-+            for new_line in lines:
-+                self._ParseEnumLine(new_line)
++            with open(file_to_include, encoding='utf-8') as include_file_handle:
++                for new_line in include_file_handle:
++                    self._ParseEnumLine(new_line)
 +            return
-+
          enum_comment = HeaderParser.single_line_comment_re.match(line)
          if enum_comment:
              comment = enum_comment.groups()[0]
-@@ -429,9 +449,9 @@ class HeaderParser:
+@@ -429,9 +448,9 @@ class HeaderParser:
                  )
  
  
@@ -98,7 +104,7 @@ index 6b8f5c89f173e..a8036d5e5bcd5 100755
          if not enum_definitions:
              raise Exception(
                  'No enums found in %s\n'
-@@ -446,11 +466,11 @@ def DoGenerate(source_paths):
+@@ -446,11 +465,11 @@ def DoGenerate(source_paths):
              yield output_path, output
  
  
@@ -112,18 +118,12 @@ index 6b8f5c89f173e..a8036d5e5bcd5 100755
  
  
  def GenerateOutput(source_path, enum_definition):
-@@ -542,11 +562,20 @@ def DoMain(argv):
+@@ -542,11 +561,14 @@ def DoMain(argv):
          'input_paths', nargs='+', help='Path to at least one input file.'
      )
  
-+    parser.add_argument(
-+        '--gen_dir',
-+        help='Indicates the path to the generated file'
-+    )
-+    parser.add_argument(
-+        '--root_dir',
-+        help='Indicates the path to the build root'
-+    )
++    parser.add_argument('--gen_dir', help='Indicates the path to the generated file')
++    parser.add_argument('--root_dir', help='Indicates the path to the build root')
 +
      options = parser.parse_args(argv)
  
@@ -135,16 +135,16 @@ index 6b8f5c89f173e..a8036d5e5bcd5 100755
  
  
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
-index 7fff72d3a08a9..100e5e98c3f78 100644
+index 776f1aebf6fa8..652befdd86253 100644
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
-@@ -438,4 +438,27 @@ def ReadSourcesList(sources_list_file_name):
+@@ -441,4 +441,27 @@ def ReadSourcesList(sources_list_file_name):
      Note that this function should not be used to parse response files.
      """
      with open(sources_list_file_name, encoding='utf-8') as f:
 -        return [file_name.strip() for file_name in f]
 +        files = [file_name.strip() for file_name in f]
-+        # allows inclusion of all files in the indicated folder
++        # Allows inclusion of all files in the indicated folder
 +        # in the sources of java-related gn targets.
 +        # "include_all_directory.java" is a special name and must exist in the
 +        # folder since gn checks for its existence, but it will not be
@@ -164,9 +164,10 @@ index 7fff72d3a08a9..100e5e98c3f78 100644
 +                for directory_file in directory_files:
 +                    files.append(os.path.join(directory, directory_file))
 +            files = [f for f in files if not f.endswith('include_all_directory.java')
-+                                     and not f.endswith('.java.tmpl')]
++                     and not f.endswith('.java.tmpl')]
 +
 +        return files
+\ No newline at end of file
 diff --git a/build/bromite/bromite_utils.gni b/build/bromite/bromite_utils.gni
 new file mode 100644
 index 0000000000000..114b812e4c4be
@@ -437,10 +438,10 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 2bd205bd7e85f..37b710cb9200c 100644
+index 538bb3d72967d..75640d7737798 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -871,3 +871,5 @@ if (is_component_build) {
+@@ -878,3 +878,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
@@ -487,7 +488,7 @@ index 80774dba5e3ba..cec824c96051d 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 3d980909ef3fb..8db73f0085e19 100644
+index 98d30c3aa53c4..0040599acf0a4 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
@@ -692,7 +693,7 @@ index 0000000000000..e3ed27bc71054
 +    }
 +}
 diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/mojom_parser.py
-index 557da1bcb141b..0c23a0f669a3d 100755
+index 557da1bcb141b..07ab9ab461dec 100755
 --- a/mojo/public/tools/mojom/mojom_parser.py
 +++ b/mojo/public/tools/mojom/mojom_parser.py
 @@ -20,6 +20,7 @@ import os
@@ -703,16 +704,17 @@ index 557da1bcb141b..0c23a0f669a3d 100755
  from collections import defaultdict
  
  from mojom.generate import module
-@@ -202,15 +203,30 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
-   collect(build_metadata_filename)
+@@ -203,14 +204,33 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
    return allowed_imports
  
+ 
 +def _ResolveInclude(mojom_abspath, input_root_paths):
-+  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, mojom_abspath, input_root_paths)
++  mojom_abspath = _ResolveRelativeImportPath(mojom_abspath, mojom_abspath,
++                                             input_root_paths)
 +  with open(mojom_abspath, encoding='utf-8') as f:
 +    src = f.read()
 +
-+    lines = src.splitlines();
++    lines = src.splitlines()
 +    for idx, i in enumerate(lines):
 +      if i.startswith("#include"):
 +        include_file = re.findall(r'"([^"]*)"', i)[0]
@@ -721,22 +723,24 @@ index 557da1bcb141b..0c23a0f669a3d 100755
 +        lines[idx] = _ResolveInclude(include_file, input_root_paths)
 +
 +  return "\n".join(lines)
- 
++
++
  # multiprocessing helper.
 -def _ParseAstHelper(mojom_abspath, mojom_path, enabled_features):
-+def _ParseAstHelper(mojom_abspath, mojom_path, enabled_features, input_root_paths):
++def _ParseAstHelper(mojom_abspath, mojom_path, enabled_features,
++                    input_root_paths):
    with open(mojom_abspath, encoding='utf-8') as f:
++    src = _ResolveInclude(mojom_abspath, input_root_paths)
      # Label the AST with the relative mojom_path, not the absolute path. This
      # filename is baked into the serialized .mojom-module (via source
      # locations), so an abspath would make the module vary by build root and
      # break remote-cache hits for downstream bindings actions.
 -    ast = parser.Parse(f.read(), mojom_path)
-+    src = _ResolveInclude(mojom_path, input_root_paths)
 +    ast = parser.Parse(src, mojom_path)
      conditional_features.RemoveDisabledDefinitions(ast, enabled_features)
      return mojom_abspath, ast
  
-@@ -336,7 +352,7 @@ def _ParseMojoms(
+@@ -336,7 +356,7 @@ def _ParseMojoms(
  
    logging.info('Parsing %d .mojom into ASTs', len(mojom_files_to_parse))
    map_args = (
@@ -784,7 +788,7 @@ index 6a9f69e8c14f8..03d16ada29366 100755
      if self.debug:
        print("End parsing of element %s" % name)
 diff --git a/tools/grit/grit_rule.gni b/tools/grit/grit_rule.gni
-index 50a68716e60bf..b0bad928006fa 100644
+index d2b8dbe1a214b..2afdb6838ad52 100644
 --- a/tools/grit/grit_rule.gni
 +++ b/tools/grit/grit_rule.gni
 @@ -360,7 +360,7 @@ template("grit") {

@@ -1,21 +1,34 @@
-From 20e328bc75c929325669ba82ce8874ee22eb56a8 Mon Sep 17 00:00:00 2001
+From 5e9201f96649974ec13e7bdd3d2e910ef9f29668 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/13] disable WebView variations support
 
 ---
- .../com/android/webview/chromium/WebViewChromiumAwInit.java  | 5 -----
  .../webview/chromium/WebViewChromiumFactoryProvider.java     | 2 --
+ .../src/org/chromium/android_webview/StartupController.java  | 5 -----
  2 files changed, 7 deletions(-)
 
-diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-index 144719cb1a5d8..d77d95921ec55 100644
---- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-+++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumAwInit.java
-@@ -367,11 +367,6 @@ public class WebViewChromiumAwInit {
+diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
+index f7c2134c78b20..0b6ccbf88f66d 100644
+--- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
++++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
+@@ -661,8 +661,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
+             // This must happen after pref value has been read and SafeMode setup has completed.
+             setupStartupTasksRunMode(androidXConfig);
+ 
+-            AwBrowserProcess.startVariationsInit();
+-
+             if (WebViewCachedFlags.get()
+                             .isCachedFeatureEnabled(AwFeatures.WEBVIEW_MOVE_WORK_TO_PROVIDER_INIT)
+                     && !WebViewCachedFlags.get()
+diff --git a/android_webview/java/src/org/chromium/android_webview/StartupController.java b/android_webview/java/src/org/chromium/android_webview/StartupController.java
+index b8aa103dd6246..10e435fe302a9 100644
+--- a/android_webview/java/src/org/chromium/android_webview/StartupController.java
++++ b/android_webview/java/src/org/chromium/android_webview/StartupController.java
+@@ -364,11 +364,6 @@ public class StartupController {
  
          AwBrowserProcess.configureChildProcessLauncher(
-                 mStartupDelegate.shouldForceNativeSandboxedServices());
+                 mDelegate.shouldForceNativeSandboxedServices());
 -
 -        // finishVariationsInit() must precede native initialization so
 -        // the seed is available when AwFeatureListCreator::SetUpFieldTrials()
@@ -23,20 +36,7 @@ index 144719cb1a5d8..d77d95921ec55 100644
 -        AwBrowserProcess.finishVariationsInit();
      }
  
-     private void postBrowserProcessStartTask() {
-diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index 72d9410073214..a47ab8d2487ad 100644
---- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-+++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -670,8 +670,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
-             // This must happen after pref value has been read and SafeMode setup has completed.
-             setupStartupTaskExperiments(androidXConfig);
- 
--            AwBrowserProcess.startVariationsInit();
--
-             if (WebViewCachedFlags.get()
-                             .isCachedFeatureEnabled(AwFeatures.WEBVIEW_MOVE_WORK_TO_PROVIDER_INIT)
-                     && !WebViewCachedFlags.get()
+     /** Runs immediate post-browser startup tasks following BrowserProcess init. */
 -- 
 2.53.0
 

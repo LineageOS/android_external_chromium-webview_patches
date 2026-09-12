@@ -1,4 +1,4 @@
-From 5cab1b9ae1de3aa0f888e32350333cc1a9c7791c Mon Sep 17 00:00:00 2001
+From 00a888ef1c0b68588285ccb58a217162dd75eedf Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/13] Add flag to disable external intent requests
@@ -11,7 +11,7 @@ enables IntentBlockExternalFormRedirectsNoGesture.
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- .../java/res/xml/privacy_preferences.xml      |  7 +++-
+ .../java/res/xml/privacy_preferences.xml      |  6 ++++
  .../customtabs/CustomTabDelegateFactory.java  |  2 ++
  .../ExternalNavigationDelegateImpl.java       |  6 ++--
  .../cromite/sAllowExternalIntentRequests.java | 33 +++++++++++++++++++
@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...ag-to-disable-external-intent-requests.inc | 13 ++++++++
  ...t-Delete-block-external-form-redirects.inc | 15 +++++++++
  ...ag-to-disable-external-intent-requests.inc |  3 ++
- 12 files changed, 119 insertions(+), 3 deletions(-)
+ 12 files changed, 119 insertions(+), 2 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAllowExternalIntentRequests.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-flag-to-disable-external-intent-requests.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-flag-to-disable-external-intent-requests.inc
@@ -31,28 +31,27 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-flag-to-disable-external-intent-requests.inc
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
-index 68be69cdbdc2d..0c698b9f924ea 100644
+index dc88c05641bbf..5a7474917e199 100644
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -42,7 +42,12 @@ found in the LICENSE file.
-         android:title="@string/settings_incognito_tab_lock_title"
+@@ -47,6 +47,12 @@ found in the LICENSE file.
          android:summary="@string/settings_incognito_tab_lock_summary_android_setting_off"
          android:persistent="false" />
--
+ 
 +    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="allow_external_intent_requests"
 +        android:title="@string/allow_external_intent_requests_title"
 +        android:summary="@string/allow_external_intent_requests_summary"
 +        app:featureName="AllowExternalIntentRequests"
 +        app:needRestart="false" />
-     <PreferenceCategory
+     <org.chromium.components.browser_ui.settings.ChromeBasePreferenceCategory
          android:key="security_section"
        android:title="@string/security_section_title" />
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-index 42b5fdc085369..73df41f29b3b3 100644
+index 8485e6197d78a..5674b074e911e 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/CustomTabDelegateFactory.java
-@@ -42,6 +42,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
+@@ -44,6 +44,7 @@ import org.chromium.chrome.browser.ephemeraltab.EphemeralTabCoordinator;
  import org.chromium.chrome.browser.externalnav.ExternalNavigationDelegateImpl;
  import org.chromium.chrome.browser.flags.ActivityType;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
@@ -60,7 +59,7 @@ index 42b5fdc085369..73df41f29b3b3 100644
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.init.ChromeActivityNativeDelegate;
-@@ -171,6 +172,7 @@ public class CustomTabDelegateFactory implements TabDelegateFactory {
+@@ -174,6 +175,7 @@ public class CustomTabDelegateFactory implements TabDelegateFactory {
  
          @Override
          public boolean shouldDisableAllExternalIntents() {
@@ -69,7 +68,7 @@ index 42b5fdc085369..73df41f29b3b3 100644
          }
  
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
-index 5e2b27f2375dc..9061cc4659952 100644
+index 58ee12cbbc97a..2b642a936a962 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 @@ -27,6 +27,7 @@ import org.chromium.base.ResettersForTesting;
@@ -80,7 +79,7 @@ index 5e2b27f2375dc..9061cc4659952 100644
  import org.chromium.chrome.browser.IntentHandler;
  import org.chromium.chrome.browser.actor.ActorKeyedServiceFactory;
  import org.chromium.chrome.browser.browserservices.intents.WebappConstants;
-@@ -142,7 +143,8 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
+@@ -141,7 +142,8 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
      @Override
      public boolean shouldDisableExternalIntentRequestsForUrl(
              ExternalNavigationParams params, Intent intent) {
@@ -90,7 +89,7 @@ index 5e2b27f2375dc..9061cc4659952 100644
      }
  
      @Override
-@@ -331,7 +333,7 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
+@@ -330,7 +332,7 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
                  && params.isInitialNavigationInFrame()
                  // TODO(crbug.com/452537438): Figure out a better way to check whether we are in
                  // desktop windowing mode or if the device can enter desktop windowing mode.
@@ -202,10 +201,10 @@ index 907b22137951e..02f61ef249266 100644
      public static final String DONT_CLOBBER_TABS_WITH_CHROME_APP_ID_NAME =
              "DontClobberTabsWithChromeAppId";
 diff --git a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-index 654a498e50bed..ec170e3d0ee05 100644
+index 41acb0962a72e..a591ee1621aab 100644
 --- a/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
 +++ b/components/external_intents/android/java/src/org/chromium/components/external_intents/ExternalNavigationHandler.java
-@@ -1790,6 +1790,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
+@@ -1810,6 +1810,12 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
          return false;
      }
  
@@ -218,7 +217,7 @@ index 654a498e50bed..ec170e3d0ee05 100644
      private OverrideUrlLoadingResult shouldOverrideUrlLoadingInternal(
              ExternalNavigationParams params,
              Intent targetIntent,
-@@ -1877,6 +1883,21 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
+@@ -1904,6 +1910,21 @@ public class ExternalNavigationHandler implements ExternalNavigationHelper {
              return OverrideUrlLoadingResult.forNoOverride();
          }
  

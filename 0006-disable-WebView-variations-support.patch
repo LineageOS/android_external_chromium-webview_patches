@@ -1,42 +1,32 @@
-From 5e9201f96649974ec13e7bdd3d2e910ef9f29668 Mon Sep 17 00:00:00 2001
+From ebc7b18509698a1c2896ede5dfd6d14c05371db7 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Thu, 10 Dec 2020 10:09:18 -0500
 Subject: [PATCH 06/13] disable WebView variations support
 
 ---
- .../webview/chromium/WebViewChromiumFactoryProvider.java     | 2 --
- .../src/org/chromium/android_webview/StartupController.java  | 5 -----
- 2 files changed, 7 deletions(-)
+ .../android_webview/variations/VariationsSeedLoader.java        | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-index f7c2134c78b20..0b6ccbf88f66d 100644
---- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-+++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromiumFactoryProvider.java
-@@ -661,8 +661,6 @@ public class WebViewChromiumFactoryProvider implements WebViewFactoryProvider {
-             // This must happen after pref value has been read and SafeMode setup has completed.
-             setupStartupTasksRunMode(androidXConfig);
- 
--            AwBrowserProcess.startVariationsInit();
--
-             if (WebViewCachedFlags.get()
-                             .isCachedFeatureEnabled(AwFeatures.WEBVIEW_MOVE_WORK_TO_PROVIDER_INIT)
-                     && !WebViewCachedFlags.get()
-diff --git a/android_webview/java/src/org/chromium/android_webview/StartupController.java b/android_webview/java/src/org/chromium/android_webview/StartupController.java
-index b8aa103dd6246..10e435fe302a9 100644
---- a/android_webview/java/src/org/chromium/android_webview/StartupController.java
-+++ b/android_webview/java/src/org/chromium/android_webview/StartupController.java
-@@ -364,11 +364,6 @@ public class StartupController {
- 
-         AwBrowserProcess.configureChildProcessLauncher(
-                 mDelegate.shouldForceNativeSandboxedServices());
--
--        // finishVariationsInit() must precede native initialization so
--        // the seed is available when AwFeatureListCreator::SetUpFieldTrials()
--        // runs.
--        AwBrowserProcess.finishVariationsInit();
+diff --git a/android_webview/java/src/org/chromium/android_webview/variations/VariationsSeedLoader.java b/android_webview/java/src/org/chromium/android_webview/variations/VariationsSeedLoader.java
+index c38b7d343a051..427b9d0763f42 100644
+--- a/android_webview/java/src/org/chromium/android_webview/variations/VariationsSeedLoader.java
++++ b/android_webview/java/src/org/chromium/android_webview/variations/VariationsSeedLoader.java
+@@ -99,7 +99,6 @@ public class VariationsSeedLoader {
+         synchronized (sSeedLoaderLock) {
+             if (sSeedLoader == null) {
+                 sSeedLoader = new VariationsSeedLoader();
+-                sSeedLoader.startVariationsInit();
+             }
+         }
      }
- 
-     /** Runs immediate post-browser startup tasks following BrowserProcess init. */
+@@ -116,7 +115,6 @@ public class VariationsSeedLoader {
+                     startInit();
+                 }
+                 assert sSeedLoader != null;
+-                sSeedLoader.finishVariationsInit();
+                 sSeedLoader = null; // Allow this to be GC'd after its background thread finishes.
+             }
+         }
 -- 
 2.53.0
 

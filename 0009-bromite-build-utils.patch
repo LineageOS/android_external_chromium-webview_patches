@@ -1,4 +1,4 @@
-From c2f209aeeda65041b53277d40c2bb48dadb2228b Mon Sep 17 00:00:00 2001
+From 84167f1433f2417213cfee419ea4886487619e49 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/13] bromite build utils
@@ -438,20 +438,20 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index 538bb3d72967d..75640d7737798 100644
+index bc4236a4e7080..9510cab5ccd0e 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -878,3 +878,5 @@ if (is_component_build) {
+@@ -901,3 +901,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 757bcaaf69864..08567ba73f2b6 100644
+index e2c65b898e377..604ba1b7ea235 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -234,6 +234,10 @@ if (!is_robolectric && enable_java_templates) {
+@@ -235,6 +235,10 @@ if (!is_robolectric && enable_java_templates) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -462,7 +462,7 @@ index 757bcaaf69864..08567ba73f2b6 100644
        outputs = [ _srcjar_path ]
      }
    }
-@@ -288,7 +292,7 @@ if (!is_robolectric && enable_java_templates) {
+@@ -289,7 +293,7 @@ if (!is_robolectric && enable_java_templates) {
    #   my.java.package.
    template("java_cpp_strings") {
      action_with_pydeps(target_name) {
@@ -472,10 +472,10 @@ index 757bcaaf69864..08567ba73f2b6 100644
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index 80774dba5e3ba..cec824c96051d 100644
+index 4a87ffa65b01e..46ae0ea920109 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-@@ -16,6 +16,11 @@ import org.chromium.components.dom_distiller.core.DistilledPagePrefs;
+@@ -19,6 +19,11 @@ import org.chromium.components.dom_distiller.core.DistilledPagePrefs;
  import org.chromium.components.user_prefs.UserPrefs;
  import org.chromium.content_public.browser.BrowserContextHandle;
  
@@ -788,10 +788,10 @@ index 6a9f69e8c14f8..03d16ada29366 100755
      if self.debug:
        print("End parsing of element %s" % name)
 diff --git a/tools/grit/grit_rule.gni b/tools/grit/grit_rule.gni
-index d2b8dbe1a214b..2afdb6838ad52 100644
+index c490a48e2ad8d..9c8bf3a5a63d2 100644
 --- a/tools/grit/grit_rule.gni
 +++ b/tools/grit/grit_rule.gni
-@@ -360,7 +360,7 @@ template("grit") {
+@@ -362,7 +362,7 @@ template("grit") {
        _gritdeps_lines = read_file(invoker.gritdeps, "list lines")
        _gritdeps_entries = filter_exclude(_gritdeps_lines, [ "#*" ])
        inputs += rebase_path(_gritdeps_entries, ".", "//")

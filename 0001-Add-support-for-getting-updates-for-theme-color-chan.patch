@@ -1,4 +1,4 @@
-From 2447eff28e2d56c4294721da62539c35a9f81f59 Mon Sep 17 00:00:00 2001
+From ef977170c77e19322d8bd633d0e1d677bd0a011a Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/13] Add support for getting updates for theme color
@@ -14,10 +14,10 @@ Subject: [PATCH 01/13] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 230ae2afb9bae..6419dce8ce6e4 100644
+index d7a36731c9def..ec2a6c894b10b 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-@@ -94,6 +94,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -95,6 +95,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
@@ -25,7 +25,7 @@ index 230ae2afb9bae..6419dce8ce6e4 100644
  import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1414,6 +1415,13 @@ class WebViewChromium
+@@ -1491,6 +1492,13 @@ class WebViewChromium
          }
      }
  
@@ -37,8 +37,8 @@ index 230ae2afb9bae..6419dce8ce6e4 100644
 +    }
 +
      @Override
+     @UiThread
      public int getContentHeight() {
-         // This is an inspectable property and a ViewDebug exported property - don't forbid builder.
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java
 index d8fc5c353b1ea..81804ba3b1baf 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewContentsClientAdapter.java

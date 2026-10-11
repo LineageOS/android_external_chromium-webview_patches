@@ -1,4 +1,4 @@
-From 9c8130d46963da18e2bb69bcaa347d2628a24c3d Mon Sep 17 00:00:00 2001
+From 8007d2eea6664787ef0e67fd1a92f2c896cdf354 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/13] bromite build utils
@@ -448,7 +448,7 @@ index bc4236a4e7080..9510cab5ccd0e 100644
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index e2c65b898e377..604ba1b7ea235 100644
+index bba7c3685292e..c8d0db179f12a 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -235,6 +235,10 @@ if (!is_robolectric && enable_java_templates) {
@@ -788,10 +788,10 @@ index 6a9f69e8c14f8..03d16ada29366 100755
      if self.debug:
        print("End parsing of element %s" % name)
 diff --git a/tools/grit/grit_rule.gni b/tools/grit/grit_rule.gni
-index c490a48e2ad8d..9c8bf3a5a63d2 100644
+index f64e51895202b..4a06cc0de175a 100644
 --- a/tools/grit/grit_rule.gni
 +++ b/tools/grit/grit_rule.gni
-@@ -362,7 +362,7 @@ template("grit") {
+@@ -365,7 +365,7 @@ template("grit") {
        _gritdeps_lines = read_file(invoker.gritdeps, "list lines")
        _gritdeps_entries = filter_exclude(_gritdeps_lines, [ "#*" ])
        inputs += rebase_path(_gritdeps_entries, ".", "//")

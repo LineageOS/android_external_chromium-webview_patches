@@ -1,4 +1,4 @@
-From c11a0a60413036d7c61b69ebd76761f8985fb8ba Mon Sep 17 00:00:00 2001
+From ac2b4d15dfe56a15bbf10c8f645d7010a241114b Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/13] Add support for getting updates for theme color
@@ -106,7 +106,7 @@ index d8fc5c353b1ea..81804ba3b1baf 100644
          private final AwHttpAuthHandler mAwHandler;
  
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
-index 140897716048c..7ed8b52c1eb30 100644
+index 861931c9f2f93..6d6f44099ee1d 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwContentsClient.java
 @@ -151,6 +151,8 @@ public abstract class AwContentsClient {
@@ -156,10 +156,10 @@ index 6ec0565b748a8..974b94a7b64f2 100644
          DoUpdateVisitedHistoryInfo info = new DoUpdateVisitedHistoryInfo(url, isReload);
          mHandler.sendMessage(mHandler.obtainMessage(MSG_DO_UPDATE_VISITED_HISTORY, info));
 diff --git a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-index 214e3aafc6516..ac73da6ae931f 100644
+index 77c1e91256b00..4f4b83ee020f8 100644
 --- a/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
 +++ b/android_webview/java/src/org/chromium/android_webview/AwWebContentsObserver.java
-@@ -275,6 +275,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -227,6 +227,14 @@ public class AwWebContentsObserver extends WebContentsObserver {
                              0, new PageCommitVisibleCallback(navigation));
                  });
  
@@ -174,7 +174,7 @@ index 214e3aafc6516..ac73da6ae931f 100644
          if (client != null && navigation.isPrimaryMainFrameFragmentNavigation()) {
              // Note fragment navigations do not have a matching onPageStarted.
              client.getCallbackHelper().postOnPageFinished(url);
-@@ -293,6 +301,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
+@@ -245,6 +253,13 @@ public class AwWebContentsObserver extends WebContentsObserver {
          }
      }
  

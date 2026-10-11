@@ -1,4 +1,4 @@
-From 9ab419f28d11009ea465136a94e572927f3da08a Mon Sep 17 00:00:00 2001
+From a12568255b115baea1f0f617be7f71c9316e68a3 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 18 Nov 2023 09:41:28 +0000
 Subject: [PATCH 10/13] Add cromite flags support
@@ -148,7 +148,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100755 cromite_flags/ui/base/features_h/placeholder.txt
 
 diff --git a/base/BUILD.gn b/base/BUILD.gn
-index 44ffb6ee338ca..0d83c83e85614 100644
+index 9569528f10db0..24b7083b00943 100644
 --- a/base/BUILD.gn
 +++ b/base/BUILD.gn
 @@ -243,6 +243,8 @@ source_set("asan_raw_ptr_service") {
@@ -169,7 +169,7 @@ index 44ffb6ee338ca..0d83c83e85614 100644
      ":check_version_internal",
      ":simdutf_shim",
      "//base/allocator:buildflags",
-@@ -5354,6 +5356,7 @@ if (is_android) {
+@@ -5370,6 +5372,7 @@ if (is_android) {
        "android/java/src/org/chromium/base/Flag.java",
        "android/java/src/org/chromium/base/MutableBooleanParamWithSafeDefault.java",
        "android/java/src/org/chromium/base/MutableFlagWithSafeDefault.java",
@@ -254,7 +254,7 @@ index ef23e1a8092eb..cfe3423d80968 100644
      @GuardedBy("sStringValues")
      private static final Map<String, String> sStringValues = new HashMap<>();
 diff --git a/base/feature.h b/base/feature.h
-index be01a04d8d7f8..ca9a1c9001560 100644
+index 9053669fa6366..95b6d9748a93a 100644
 --- a/base/feature.h
 +++ b/base/feature.h
 @@ -7,7 +7,9 @@
@@ -267,7 +267,7 @@ index be01a04d8d7f8..ca9a1c9001560 100644
  
  #include "base/base_export.h"
  #include "base/compiler_specific.h"
-@@ -226,12 +228,16 @@ struct BASE_EXPORT LOGICALLY_CONST Feature {
+@@ -227,12 +229,16 @@ struct BASE_EXPORT LOGICALLY_CONST Feature {
    constexpr Feature(const char* name,
                      FeatureState default_state,
                      bool is_runtime_mutable,
@@ -286,7 +286,7 @@ index be01a04d8d7f8..ca9a1c9001560 100644
  
    // Non-copyable since:
    // - there should be only one `Feature` instance per unique name.
-@@ -260,6 +266,9 @@ struct BASE_EXPORT LOGICALLY_CONST Feature {
+@@ -261,6 +267,9 @@ struct BASE_EXPORT LOGICALLY_CONST Feature {
    // command line switch.
    const FeatureState default_state;
  
@@ -296,7 +296,7 @@ index be01a04d8d7f8..ca9a1c9001560 100644
   protected:
    // Base constructor that performs initialization and checks, with an option to
    // bypass the country-specific state check for subclasses.
-@@ -267,9 +276,13 @@ struct BASE_EXPORT LOGICALLY_CONST Feature {
+@@ -268,9 +277,13 @@ struct BASE_EXPORT LOGICALLY_CONST Feature {
                      FeatureState default_state,
                      bool is_runtime_mutable,
                      internal::FeatureMacroHandshake handshake,
@@ -311,7 +311,7 @@ index be01a04d8d7f8..ca9a1c9001560 100644
          cached_value(is_runtime_mutable ? kRuntimeMutabilityMask : 0) {
      if (is_country_specific != IsCountrySpecificFeatureState(default_state)) {
        LOG(FATAL) << "Pass a country-specific default state if and only if you "
-@@ -355,7 +368,9 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
+@@ -356,7 +369,9 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
                  feature_default_state,
                  /*is_runtime_mutable=*/false,
                  handshake,
@@ -322,7 +322,7 @@ index be01a04d8d7f8..ca9a1c9001560 100644
          countries(countries_list) {}
  
    FeatureWithCountryRestriction(const FeatureWithCountryRestriction&) = delete;
-@@ -370,4 +385,88 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
+@@ -371,4 +386,88 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
  
  }  // namespace base
  
@@ -412,10 +412,10 @@ index be01a04d8d7f8..ca9a1c9001560 100644
 +
  #endif  // BASE_FEATURE_H_
 diff --git a/base/feature_list.cc b/base/feature_list.cc
-index bba1fd091685b..e5885f9c43576 100644
+index e8f9091d2a1c1..f60cf103fabfc 100644
 --- a/base/feature_list.cc
 +++ b/base/feature_list.cc
-@@ -43,6 +43,31 @@
+@@ -46,6 +46,31 @@
  
  namespace base {
  
@@ -447,7 +447,7 @@ index bba1fd091685b..e5885f9c43576 100644
  namespace {
  
  // Pointer to the FeatureList instance singleton that was set via
-@@ -840,6 +865,46 @@ bool FeatureList::IsEnabled(const Feature& feature) {
+@@ -863,6 +888,46 @@ bool FeatureList::IsEnabled(const Feature& feature) {
    return g_feature_list_instance->IsFeatureEnabled(feature);
  }
  
@@ -494,7 +494,7 @@ index bba1fd091685b..e5885f9c43576 100644
  // static
  bool FeatureList::IsValidFeatureOrFieldTrialName(std::string_view name) {
    return IsStringASCII(name) && name.find_first_of(",<*") == std::string::npos;
-@@ -1151,6 +1216,17 @@ void FeatureList::RegisterFeatureAccess(
+@@ -1174,6 +1239,17 @@ void FeatureList::RegisterFeatureAccess(
  
  void FeatureList::FinalizeInitialization() {
    DCHECK(!initialized_);
@@ -511,12 +511,12 @@ index bba1fd091685b..e5885f9c43576 100644
 +  }
    // Store the field trial list pointer for DCHECKing.
    field_trial_list_ = FieldTrialList::GetInstance();
-   initialized_ = true;
+   BuildTrialToFeaturesIndex();
 diff --git a/base/feature_list.h b/base/feature_list.h
-index a69a6c4e265ea..a5042b7114a41 100644
+index 8966308c0a7f2..93f90b755a1cd 100644
 --- a/base/feature_list.h
 +++ b/base/feature_list.h
-@@ -477,6 +477,11 @@ class BASE_EXPORT FeatureList {
+@@ -501,6 +501,11 @@ class BASE_EXPORT FeatureList {
    // are effectively constants, and can be queried from any thread.
    static bool IsEnabled(const Feature& feature);
  
@@ -604,7 +604,7 @@ index d6524eb726dc9..e026c0435a313 100644
  
          mPageTitle.set(getString(R.string.options_homepage_title));
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
-index 1b5d10dbf1aa0..3c805a378de24 100644
+index 512f512a828d6..a6e902f77d5b2 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 @@ -138,7 +138,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
@@ -617,7 +617,7 @@ index 1b5d10dbf1aa0..3c805a378de24 100644
  
          SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
-index b1cccc27b9b82..d2e03dd27cb5e 100644
+index bf1c7e6d05529..0d9ee8fb706cd 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/FragmentDependencyProvider.java
 @@ -11,6 +11,7 @@ import android.os.Bundle;
@@ -628,15 +628,15 @@ index b1cccc27b9b82..d2e03dd27cb5e 100644
  import org.chromium.base.supplier.MonotonicObservableSupplier;
  import org.chromium.base.supplier.OneshotSupplier;
  import org.chromium.build.annotations.NullMarked;
-@@ -79,6 +80,7 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -80,6 +81,7 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
      // TODO(crbug.com/469772349): Simplify to Supplier<@Nullable ModalDialogManagerSupplier>
      private final MonotonicObservableSupplier<ModalDialogManager> mModalDialogManagerSupplier;
      private final Supplier<@Nullable SettingsSearchCoordinator> mSearchCoordinatorSupplier;
 +    private final Supplier<ChromeBaseSettingsFragment.RequireRestartDelegate> mRequireRestartDelegateSupplier;
  
-     public FragmentDependencyProvider(
-             Activity activity,
-@@ -88,7 +90,8 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+     /**
+      * Whether settings is being shown in a tab. Injected by the host so that the value stays
+@@ -97,7 +99,8 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
              OneshotSupplier<SnackbarManager> snackbarManagerSupplier,
              OneshotSupplier<BottomSheetController> bottomSheetControllerSupplier,
              MonotonicObservableSupplier<ModalDialogManager> modalDialogManagerSupplier,
@@ -644,9 +644,9 @@ index b1cccc27b9b82..d2e03dd27cb5e 100644
 +            Supplier<@Nullable SettingsSearchCoordinator> searchCoordinatorSupplier,
 +            Supplier<ChromeBaseSettingsFragment.RequireRestartDelegate> requireRestartDelegateSupplier) {
          mActivity = activity;
+         mShownInTab = shownInTab;
          mProfile = profile;
-         mWindowAndroidSupplier = windowAndroidSupplier;
-@@ -97,6 +100,7 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -107,6 +110,7 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
          mBottomSheetControllerSupplier = bottomSheetControllerSupplier;
          mModalDialogManagerSupplier = modalDialogManagerSupplier;
          mSearchCoordinatorSupplier = searchCoordinatorSupplier;
@@ -654,7 +654,7 @@ index b1cccc27b9b82..d2e03dd27cb5e 100644
      }
  
      @Override
-@@ -108,6 +112,10 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
+@@ -118,6 +122,10 @@ public class FragmentDependencyProvider extends FragmentManager.FragmentLifecycl
      /** Attaches dependencies to a fragment. */
      public void attachDependencies(FragmentManager fragmentManager, Fragment fragment) {
          // Common dependencies attachments.
@@ -666,7 +666,7 @@ index b1cccc27b9b82..d2e03dd27cb5e 100644
              ((ProfileDependentSetting) fragment).setProfile(mProfile);
          }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
-index 3b122d77bea21..b4fc5fb0935cc 100644
+index c8ad42fa1d113..ddbf0df3b05e4 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsActivity.java
 @@ -11,6 +11,7 @@ import static org.chromium.chrome.browser.settings.SettingsIntentUtil.EXTRA_SHOW
@@ -700,7 +700,7 @@ index 3b122d77bea21..b4fc5fb0935cc 100644
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager;
  import org.chromium.chrome.browser.ui.messages.snackbar.SnackbarManager.SnackbarManageable;
  import org.chromium.chrome.browser.util.DefaultBrowserInfo;
-@@ -132,6 +136,42 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -133,6 +137,42 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
      // Key used to store activity start time in the Bundle to have it survive activity re-creation.
      private static final String KEY_START_TIME = "start_time";
  
@@ -743,7 +743,7 @@ index 3b122d77bea21..b4fc5fb0935cc 100644
      /** The current instance of SettingsActivity in the resumed state, if any. */
      private static @Nullable SettingsActivity sResumedInstance;
  
-@@ -252,7 +292,8 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
+@@ -254,7 +294,8 @@ public class SettingsActivity extends ChromeBaseAppCompatActivity
                          mSnackbarManagerSupplier,
                          mBottomSheetControllerSupplier,
                          getModalDialogManagerSupplier(),
@@ -754,10 +754,10 @@ index 3b122d77bea21..b4fc5fb0935cc 100644
          fragmentManager.registerFragmentLifecycleCallbacks(
                  new WideDisplayPaddingApplier(
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java
-index 40f80d10b3ec5..c42eb026271d0 100644
+index 1ca4030ecea09..b754b7c01c938 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java
-@@ -237,7 +237,7 @@ public class SettingsHostFragment extends Fragment
+@@ -272,7 +272,7 @@ public class SettingsHostFragment extends Fragment
                  snackbarSupplier,
                  bottomSheetSupplier,
                  modalDialogSupplier,
@@ -767,10 +767,10 @@ index 40f80d10b3ec5..c42eb026271d0 100644
  
      @Override
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java
-index 3b21c254dd503..6d87c573fdf47 100644
+index af740849c9c72..4d6bff5cc4e59 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java
-@@ -244,7 +244,8 @@ public class SettingsPageFragmentDelegateImpl
+@@ -269,7 +269,8 @@ public class SettingsPageFragmentDelegateImpl
                          snackbarSupplier,
                          bottomSheetSupplier,
                          mModalDialogSupplier,
@@ -778,8 +778,8 @@ index 3b21c254dd503..6d87c573fdf47 100644
 +                        () -> mSearchCoordinator,
 +                        () -> null);
  
-         mSettingsHostFragment =
-                 (SettingsHostFragment) fragmentManager.findFragmentByTag(mFragmentTag);
+         if (ChromeFeatureList.sSettingsInTabUrlNav.isEnabled()) {
+             mSettingsNavigationDelegate = new SettingsInTabNavigationDelegate(mTab);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java
 index fc8ecbcf1ce8d..30cfb27a70210 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tracing/settings/DeveloperSettings.java
@@ -804,10 +804,10 @@ index fc8ecbcf1ce8d..30cfb27a70210 100644
  
          if (shouldRemoveBetaStableHint()) {
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
-index 9029a80c8d43f..94575e50b21f0 100644
+index 3bd06fa95993f..11e7c7a431385 100644
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -429,6 +429,10 @@ using flags_ui::kOsLinux;
+@@ -428,6 +428,10 @@ using flags_ui::kOsLinux;
  using flags_ui::kOsMac;
  using flags_ui::kOsWin;
  
@@ -818,7 +818,7 @@ index 9029a80c8d43f..94575e50b21f0 100644
  namespace about_flags {
  
  namespace {
-@@ -4915,6 +4919,10 @@ const FeatureEntry::FeatureVariation kToolbarGlowUpVariations[] = {
+@@ -5059,6 +5063,10 @@ const FeatureEntry::FeatureVariation kToolbarGlowUpVariations[] = {
      {"no reload, back, or forward animations",
       kToolbarGlowUpNoReloadBackForward, nullptr}};
  
@@ -829,7 +829,7 @@ index 9029a80c8d43f..94575e50b21f0 100644
  #if !BUILDFLAG(IS_ANDROID)
  const FeatureEntry::FeatureParam kDictationEvalModeParam[] = {
      {"eval_mode", "true"}};
-@@ -5040,6 +5048,9 @@ constexpr char kEnterpriseIsolatedModeInternalName[] =
+@@ -5206,6 +5214,9 @@ constexpr char kEnterpriseIsolatedModeInternalName[] =
  const FeatureEntry kFeatureEntries[] = {
  // Include generated flags for flag unexpiry; see //docs/flag_expiry.md and
  // //tools/flags/generate_unexpire_flags.py.
@@ -840,20 +840,20 @@ index 9029a80c8d43f..94575e50b21f0 100644
  #include "chrome/browser/unexpire_flags_gen.inc"
      {switches::kEnableBenchmarking, flag_descriptions::kEnableBenchmarkingName,
 diff --git a/chrome/browser/browser_features.cc b/chrome/browser/browser_features.cc
-index c502836b808fb..d7df5f820abd3 100644
+index cbc2f4280a2fa..ac7afb722ef48 100644
 --- a/chrome/browser/browser_features.cc
 +++ b/chrome/browser/browser_features.cc
-@@ -231,4 +231,5 @@ BASE_FEATURE(kAutoDeElevate, base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -223,4 +223,5 @@ const base::FeatureParam<base::TimeDelta>
  // show both in Chrome Tabs and Windows.
  BASE_FEATURE(kRemovalOfIWAsFromTabCapture, base::FEATURE_ENABLED_BY_DEFAULT);
  
 +#include "cromite_flags/chrome_browser_browser_features_cc.inc"
  }  // namespace features
 diff --git a/chrome/browser/browser_features.h b/chrome/browser/browser_features.h
-index f6ba98b4b5902..90b818515f74a 100644
+index ee4f110e30019..87b68b2ef05f5 100644
 --- a/chrome/browser/browser_features.h
 +++ b/chrome/browser/browser_features.h
-@@ -111,6 +111,7 @@ BASE_DECLARE_FEATURE(kRemovalOfIWAsFromTabCapture);
+@@ -108,6 +108,7 @@ BASE_DECLARE_FEATURE(kRemovalOfIWAsFromTabCapture);
  // module, e.g.
  // //chrome/browser/<foo_module>/features.h
  //
@@ -902,10 +902,10 @@ index 0040599acf0a4..3a1a99b770ba2 100644
    sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
    sources += [
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
-index d3effc88a27f2..a850415c59bf7 100644
+index 78ab7920db9ac..bab870e9a3176 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
 +++ b/chrome/browser/flags/android/chrome_feature_list.cc
-@@ -1000,6 +1000,7 @@ BASE_FEATURE(kYourSavedInfoSettingsPageAndroid, base::FEATURE_DISABLED_BY_DEFAUL
+@@ -1026,6 +1026,7 @@ BASE_FEATURE(kYourSavedInfoSettingsPageAndroid, base::FEATURE_DISABLED_BY_DEFAUL
  
  // clang-format on
  
@@ -914,10 +914,10 @@ index d3effc88a27f2..a850415c59bf7 100644
  }  // namespace chrome
  
 diff --git a/chrome/browser/flags/android/chrome_feature_list.h b/chrome/browser/flags/android/chrome_feature_list.h
-index a1ffbc07814bf..74640721e6816 100644
+index 83aa674932268..c4e64456d1305 100644
 --- a/chrome/browser/flags/android/chrome_feature_list.h
 +++ b/chrome/browser/flags/android/chrome_feature_list.h
-@@ -490,6 +490,7 @@ inline constexpr base::FeatureParam<bool>
+@@ -531,6 +531,7 @@ inline constexpr base::FeatureParam<bool>
                                             "observation_only",
                                             /*default_value=*/false);
  
@@ -926,7 +926,7 @@ index a1ffbc07814bf..74640721e6816 100644
  
  #endif  // CHROME_BROWSER_FLAGS_ANDROID_CHROME_FEATURE_LIST_H_
 diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
-index 398ee8adeb7d2..e61bac98ff7a3 100644
+index 5704075c2302e..78117fa72fb75 100644
 --- a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 +++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java
 @@ -22,6 +22,10 @@ import org.chromium.components.cached_flags.DoubleCachedFeatureParam;
@@ -940,7 +940,7 @@ index 398ee8adeb7d2..e61bac98ff7a3 100644
  import java.util.List;
  import java.util.Map;
  
-@@ -1505,7 +1509,7 @@ public abstract class ChromeFeatureList {
+@@ -1518,7 +1522,7 @@ public abstract class ChromeFeatureList {
              newCachedFlag(WEB_UI_ANDROID_THEMING, BuildConfig.IS_DESKTOP_ANDROID);
      // keep-sorted end
  
@@ -949,7 +949,7 @@ index 398ee8adeb7d2..e61bac98ff7a3 100644
              List.of(
                      // keep-sorted start
                      sAccountPickerDialog,
-@@ -1720,6 +1724,14 @@ public abstract class ChromeFeatureList {
+@@ -1733,6 +1737,14 @@ public abstract class ChromeFeatureList {
                      // keep-sorted end
                      );
  
@@ -1025,7 +1025,7 @@ index 0000000000000..3355066539d9f
 +
 +}}
 diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java b/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java
-index 2854c72245be4..6adf1525eaf1f 100644
+index 6635173432a83..d8030d409291b 100644
 --- a/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java
 +++ b/chrome/browser/settings/android/java/src/org/chromium/chrome/browser/settings/ChromeBaseSettingsFragment.java
 @@ -25,6 +25,14 @@ import org.chromium.components.browser_ui.settings.EmbeddableSettingsPage;
@@ -1094,7 +1094,7 @@ index 2854c72245be4..6adf1525eaf1f 100644
  
      @Override
 diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chrome/browser/ui/android/strings/android_chrome_strings.grd
-index 6fcf7f35b7d9b..2602eb3e238ce 100644
+index 3cddab43196fb..ccaf18def0bb4 100644
 --- a/chrome/browser/ui/android/strings/android_chrome_strings.grd
 +++ b/chrome/browser/ui/android/strings/android_chrome_strings.grd
 @@ -202,6 +202,7 @@ CHAR_LIMIT guidelines:
@@ -1128,10 +1128,10 @@ index 0000000000000..5174b09c2273b
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/chrome/browser/ui/ui_features.cc b/chrome/browser/ui/ui_features.cc
-index 7a0e331dedf45..d68e5bbffd860 100644
+index 562d8529586fa..8f2499ce84ec3 100644
 --- a/chrome/browser/ui/ui_features.cc
 +++ b/chrome/browser/ui/ui_features.cc
-@@ -591,4 +591,5 @@ BASE_FEATURE(kOSCryptAsyncAvailabilityInfoBar,
+@@ -593,4 +593,5 @@ BASE_FEATURE(kOSCryptAsyncAvailabilityInfoBar,
  BASE_FEATURE(kDeferLayoutDuringBrowserStartup,
               base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1171,17 +1171,17 @@ index 47f3f1e95f870..6ec71706e9759 100644
  
  namespace testing {
 diff --git a/chrome/common/chrome_features.cc b/chrome/common/chrome_features.cc
-index 30f478458a7e5..8c2d665022424 100644
+index daa26a72e5419..6a596b45a1f72 100644
 --- a/chrome/common/chrome_features.cc
 +++ b/chrome/common/chrome_features.cc
-@@ -2106,4 +2106,5 @@ BASE_FEATURE(kRelaunchWaitForParentProcess, base::FEATURE_DISABLED_BY_DEFAULT);
+@@ -2134,4 +2134,5 @@ BASE_FEATURE(kRelaunchWaitForParentProcess, base::FEATURE_DISABLED_BY_DEFAULT);
  BASE_FEATURE(kRecordTabWindowDiffOnRestart, base::FEATURE_ENABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_ANDROID)
  
 +#include "cromite_flags/chrome_common_chrome_features_cc.inc"
  }  // namespace features
 diff --git a/components/browser_ui/accessibility/android/BUILD.gn b/components/browser_ui/accessibility/android/BUILD.gn
-index bddebe42efa89..f36dbea5ae235 100644
+index 4c9b5438c4edc..279bfe5eef3bb 100644
 --- a/components/browser_ui/accessibility/android/BUILD.gn
 +++ b/components/browser_ui/accessibility/android/BUILD.gn
 @@ -67,6 +67,7 @@ android_library("lib_java") {
@@ -1318,7 +1318,7 @@ index 78965d6c63bb2..55247fbde0150 100644
      public static Map<String, CachedFlag> createCachedFlagMap(
              List<List<CachedFlag>> allCachedFlagsLists) {
 diff --git a/components/components_strings.grd b/components/components_strings.grd
-index 1aafaf3a3e4e1..a8cd195b62422 100644
+index 20e017ea86d0b..a1a35c53077b0 100644
 --- a/components/components_strings.grd
 +++ b/components/components_strings.grd
 @@ -282,6 +282,7 @@
@@ -1348,32 +1348,32 @@ index 0000000000000..5174b09c2273b
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/components/offline_pages/core/offline_page_feature.cc b/components/offline_pages/core/offline_page_feature.cc
-index 16c29147cf818..223eea04a1db0 100644
+index 620d597c9df26..cd26de83fa7f8 100644
 --- a/components/offline_pages/core/offline_page_feature.cc
 +++ b/components/offline_pages/core/offline_page_feature.cc
-@@ -47,4 +47,5 @@ bool IsOfflinePagesNetworkStateLikelyUnknown() {
-   return base::FeatureList::IsEnabled(kOfflinePagesNetworkStateLikelyUnknown);
+@@ -41,4 +41,5 @@ bool IsOnTheFlyMhtmlHashComputationEnabled() {
  }
+ 
  
 +#include "cromite_flags/components_offline_pages_core_offline_page_feature_cc.inc"
  }  // namespace offline_pages
 diff --git a/components/offline_pages/core/offline_page_feature.h b/components/offline_pages/core/offline_page_feature.h
-index 4ba9bc80778ab..8d5198dea6d79 100644
+index e97c7728d2b99..152eb7c75c16d 100644
 --- a/components/offline_pages/core/offline_page_feature.h
 +++ b/components/offline_pages/core/offline_page_feature.h
-@@ -42,6 +42,7 @@ bool IsOnTheFlyMhtmlHashComputationEnabled();
- // offline pages to avoid showing them even when the device is online.
- bool IsOfflinePagesNetworkStateLikelyUnknown();
+@@ -37,6 +37,7 @@ std::string GetPrefetchingOfflinePagesExperimentTag();
+ bool IsOnTheFlyMhtmlHashComputationEnabled();
+ 
  
 +#include "cromite_flags/components_offline_pages_core_offline_page_feature_h.inc"
  }  // namespace offline_pages
  
  #endif  // COMPONENTS_OFFLINE_PAGES_CORE_OFFLINE_PAGE_FEATURE_H_
 diff --git a/components/password_manager/core/browser/features/password_features.cc b/components/password_manager/core/browser/features/password_features.cc
-index 8e7fe094410bb..63bab51d128ad 100644
+index 05023dc1cb6cc..b2cd08a6a7de8 100644
 --- a/components/password_manager/core/browser/features/password_features.cc
 +++ b/components/password_manager/core/browser/features/password_features.cc
-@@ -228,4 +228,5 @@ BASE_FEATURE(kUseDetachedWidget, base::FEATURE_ENABLED_BY_DEFAULT);
+@@ -224,4 +224,5 @@ BASE_FEATURE(kUseDetachedWidget, base::FEATURE_ENABLED_BY_DEFAULT);
  
  BASE_FEATURE(kUseProcessBoundPasswordString, base::FEATURE_DISABLED_BY_DEFAULT);
  
@@ -1534,12 +1534,12 @@ index 1d89b275465b8..2adb43faa7593 100644
  
      if (entry->type == FeatureEntry::FEATURE_VALUE ||
 diff --git a/components/webui/flags/resources/app.css b/components/webui/flags/resources/app.css
-index 9e7cfc8d38a49..8c11f739ee93f 100644
+index 1e42b9bb58eff..051b32f425932 100644
 --- a/components/webui/flags/resources/app.css
 +++ b/components/webui/flags/resources/app.css
-@@ -408,3 +408,35 @@ cr-tabs {
- .actions-container cr-icon-button {
-   margin-inline-start: 8px;
+@@ -417,3 +417,35 @@ cr-toast {
+ .dropdown-item:hover {
+   background-color: var(--cr-hover-background-color);
  }
 +
 +#appcontainer {
@@ -1574,7 +1574,7 @@ index 9e7cfc8d38a49..8c11f739ee93f 100644
 +  display: none;
 +}
 diff --git a/components/webui/flags/resources/app.html.ts b/components/webui/flags/resources/app.html.ts
-index bbf3b825cac13..90a8c3ec40dea 100644
+index 9e16b140a9b1a..ac126f250519d 100644
 --- a/components/webui/flags/resources/app.html.ts
 +++ b/components/webui/flags/resources/app.html.ts
 @@ -9,6 +9,7 @@ import type {AppElement} from './app.js';
@@ -1585,7 +1585,7 @@ index bbf3b825cac13..90a8c3ec40dea 100644
  <div id="header">
    <div class="flex-container">
      <div class="flex search-container">
-@@ -141,6 +142,32 @@ export function getHtml(this: AppElement) {
+@@ -149,6 +150,32 @@ export function getHtml(this: AppElement) {
          <div class="no-match" role="alert" hidden>$i18n{no-results}</div>
        </div>
  </if>
@@ -1618,7 +1618,7 @@ index bbf3b825cac13..90a8c3ec40dea 100644
      </div>
      <div id="needs-restart" ?show="${this.needsRestart}"
          role="${this.getNeedsRestartRole_()}">
-@@ -161,6 +188,7 @@ export function getHtml(this: AppElement) {
+@@ -169,6 +196,7 @@ export function getHtml(this: AppElement) {
      </div>
    </div>
  </div>
@@ -1627,10 +1627,10 @@ index bbf3b825cac13..90a8c3ec40dea 100644
    // clang-format on
  }
 diff --git a/components/webui/flags/resources/app.ts b/components/webui/flags/resources/app.ts
-index e4ddc108198db..0f47ebda9cdcb 100644
+index 0cb2ee44a7af7..a2f0bd88e8016 100644
 --- a/components/webui/flags/resources/app.ts
 +++ b/components/webui/flags/resources/app.ts
-@@ -175,6 +175,7 @@ export class FlagsAppElement extends CrLitElement {
+@@ -163,6 +163,7 @@ export class FlagsAppElement extends CrLitElement {
      // <if expr="not is_ios">
      loadTimeData.getString('unavailable'),
      // </if>
@@ -1638,7 +1638,7 @@ index e4ddc108198db..0f47ebda9cdcb 100644
    ];
    protected accessor selectedTabIndex_: number = 0;
  
-@@ -196,9 +197,12 @@ export class FlagsAppElement extends CrLitElement {
+@@ -182,10 +183,13 @@ export class FlagsAppElement extends CrLitElement {
  
    protected accessor defaultFeatures: Feature[] = [];
    protected accessor nonDefaultFeatures: Feature[] = [];
@@ -1647,11 +1647,12 @@ index e4ddc108198db..0f47ebda9cdcb 100644
    protected accessor searching: boolean = false;
    protected accessor needsRestart: boolean = false;
    protected accessor importError: string = '';
+   protected accessor toastMessage_: string = '';
 +  private onlyCromiteFlags: boolean = false;
    protected accessor webuiRoundedIconsEnabled_: boolean =
        loadTimeData.getBoolean('webuiRoundedIconsEnabled');
  
-@@ -230,6 +234,11 @@ export class FlagsAppElement extends CrLitElement {
+@@ -217,6 +221,11 @@ export class FlagsAppElement extends CrLitElement {
    override connectedCallback() {
      super.connectedCallback();
  
@@ -1663,7 +1664,7 @@ index e4ddc108198db..0f47ebda9cdcb 100644
      // <if expr="not is_ios">
      const pathname = new URL(window.location.href).pathname;
      this.isFlagsDeprecatedUrl_ =
-@@ -302,10 +311,25 @@ export class FlagsAppElement extends CrLitElement {
+@@ -289,10 +298,25 @@ export class FlagsAppElement extends CrLitElement {
      if (changedPrivateProperties.has('data')) {
        const defaultFeatures: Feature[] = [];
        const nonDefaultFeatures: Feature[] = [];
@@ -1794,7 +1795,7 @@ index 3d5db77737297..c0c56a573939d 100644
  
      return '';
 diff --git a/components/webui/flags/resources/flags_browser_proxy.ts b/components/webui/flags/resources/flags_browser_proxy.ts
-index d30afbd28f115..49cf16b388248 100644
+index e2d2e87b43951..eab8f461f2932 100644
 --- a/components/webui/flags/resources/flags_browser_proxy.ts
 +++ b/components/webui/flags/resources/flags_browser_proxy.ts
 @@ -16,6 +16,11 @@ export interface Feature {
@@ -1832,7 +1833,7 @@ index 7a02c7dde3434..944342b9db37f 100644
      variations.push_back(GetActiveGroupNameAsString(group));
    }
 diff --git a/content/common/features.cc b/content/common/features.cc
-index 7ac35b5a84b62..f6e51f9137024 100644
+index 27f7314ba2503..c7d02f6bdfb6f 100644
 --- a/content/common/features.cc
 +++ b/content/common/features.cc
 @@ -904,4 +904,5 @@ bool IsEnforceSameDocumentOriginInvariantsEnabled() {
@@ -1842,20 +1843,20 @@ index 7ac35b5a84b62..f6e51f9137024 100644
 +#include "cromite_flags/content_common_features_cc.inc"
  }  // namespace features
 diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
-index a30c4921ab0d5..adc5b3fcd12bd 100644
+index 499ba9f14a50e..8f65f85182dd7 100644
 --- a/content/public/common/content_features.cc
 +++ b/content/public/common/content_features.cc
-@@ -1635,4 +1635,5 @@ bool IsFluidResizeEnabled() {
+@@ -1641,4 +1641,5 @@ bool IsFluidResizeEnabled() {
  }
  #endif
  
 +#include "cromite_flags/content_public_common_content_features_cc.inc"
  }  // namespace features
 diff --git a/content/public/common/content_features.h b/content/public/common/content_features.h
-index 173d74f1ec777..ea656f1d852c1 100644
+index dbf055eaae539..971b34669a210 100644
 --- a/content/public/common/content_features.h
 +++ b/content/public/common/content_features.h
-@@ -472,6 +472,7 @@ CONTENT_EXPORT bool IsPushSubscriptionChangeEventEnabled();
+@@ -477,6 +477,7 @@ CONTENT_EXPORT bool IsPushSubscriptionChangeEventEnabled();
  CONTENT_EXPORT bool IsFluidResizeEnabled();
  #endif
  
@@ -2226,20 +2227,20 @@ index 0000000000000..5174b09c2273b
 @@ -0,0 +1 @@
 +this file is intentionally empty
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
-index 3f75c218a35f4..1c7966f5100e9 100644
+index 9e219d53cad36..f3c63a2318a88 100644
 --- a/media/base/media_switches.cc
 +++ b/media/base/media_switches.cc
-@@ -2007,4 +2007,5 @@ int GetAecDelayNumFilters() {
+@@ -2033,4 +2033,5 @@ int GetAecDelayNumFilters() {
  }
  
  #endif  // BUILDFLAG(SYSTEM_LOOPBACK_AS_AEC_REFERENCE)
 +#include "cromite_flags/media_base_media_switches_cc.inc"
  }  // namespace media
 diff --git a/media/base/media_switches.h b/media/base/media_switches.h
-index db9da2dd2c050..d4d065f5ac99a 100644
+index 5f3c3bdb4725c..df39f6e29917f 100644
 --- a/media/base/media_switches.h
 +++ b/media/base/media_switches.h
-@@ -618,5 +618,6 @@ MEDIA_EXPORT base::TimeDelta GetAecAddedDelay();
+@@ -626,5 +626,6 @@ MEDIA_EXPORT base::TimeDelta GetAecAddedDelay();
  MEDIA_EXPORT int GetAecDelayNumFilters();
  #endif  // BUILDFLAG(SYSTEM_LOOPBACK_AS_AEC_REFERENCE)
  }  // namespace media
@@ -2247,10 +2248,10 @@ index db9da2dd2c050..d4d065f5ac99a 100644
  
  #endif  // MEDIA_BASE_MEDIA_SWITCHES_H_
 diff --git a/net/base/features.cc b/net/base/features.cc
-index 91baaef2c5b4d..10998bd9bd6dd 100644
+index 2876df4285aa6..9d9cd0f7c131a 100644
 --- a/net/base/features.cc
 +++ b/net/base/features.cc
-@@ -1082,5 +1082,6 @@ BASE_FEATURE_PARAM(int,
+@@ -1076,5 +1076,6 @@ BASE_FEATURE_PARAM(int,
                     &kQuicSocketSendBufferSize,
                     -1);
  
@@ -2258,10 +2259,10 @@ index 91baaef2c5b4d..10998bd9bd6dd 100644
  }  // namespace net::features
  
 diff --git a/net/base/features.h b/net/base/features.h
-index 58a2623a745e3..732104cebec09 100644
+index 96c005fd5295c..9d9060b28bd6a 100644
 --- a/net/base/features.h
 +++ b/net/base/features.h
-@@ -1066,6 +1066,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kEnableWindowsTcpLoopbackFastFail);
+@@ -1064,6 +1064,7 @@ NET_EXPORT BASE_DECLARE_FEATURE(kEnableWindowsTcpLoopbackFastFail);
  NET_EXPORT BASE_DECLARE_FEATURE(kQuicSocketSendBufferSize);
  NET_EXPORT BASE_DECLARE_FEATURE_PARAM(int, kQuicSocketSendBufferSizeParam);
  
@@ -2270,20 +2271,20 @@ index 58a2623a745e3..732104cebec09 100644
  
  #endif  // NET_BASE_FEATURES_H_
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
-index e1717709247a8..60455de2e9f42 100644
+index fbdd973c66d6a..58618c339f70d 100644
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc
-@@ -574,4 +574,5 @@ BASE_FEATURE(kBindURLLoaderFactoryToHighPriorityTaskRunner,
+@@ -550,4 +550,5 @@ BASE_FEATURE(kBindURLLoaderFactoryToHighPriorityTaskRunner,
  
  BASE_FEATURE(kEnforceIsolatedWorldOriginLock, base::FEATURE_ENABLED_BY_DEFAULT);
  
 +#include "cromite_flags/services_network_public_cpp_features_cc.inc"
  }  // namespace network::features
 diff --git a/services/network/public/cpp/features.h b/services/network/public/cpp/features.h
-index a6ff4a6e91ec4..b59bdfa3a8298 100644
+index 05b9e418a6d6f..c31fcb0a1f32b 100644
 --- a/services/network/public/cpp/features.h
 +++ b/services/network/public/cpp/features.h
-@@ -395,6 +395,7 @@ BASE_DECLARE_FEATURE(kBindURLLoaderFactoryToHighPriorityTaskRunner);
+@@ -379,6 +379,7 @@ BASE_DECLARE_FEATURE(kBindURLLoaderFactoryToHighPriorityTaskRunner);
  COMPONENT_EXPORT(NETWORK_CPP_FLAGS_AND_SWITCHES)
  BASE_DECLARE_FEATURE(kEnforceIsolatedWorldOriginLock);
  
@@ -2292,20 +2293,20 @@ index a6ff4a6e91ec4..b59bdfa3a8298 100644
  
  #endif  // SERVICES_NETWORK_PUBLIC_CPP_FEATURES_H_
 diff --git a/third_party/blink/common/features.cc b/third_party/blink/common/features.cc
-index 7caf6102fbb68..6f20ca99a0ca7 100644
+index b4d62dbec52ee..4734aaeece917 100644
 --- a/third_party/blink/common/features.cc
 +++ b/third_party/blink/common/features.cc
-@@ -2576,4 +2576,5 @@ bool IsXrDevice() {
+@@ -2591,4 +2591,5 @@ bool IsXrDevice() {
  //
  // DO NOT ADD NEW FEATURES HERE.
  
 +#include "cromite_flags/third_party_blink_common_features_cc.inc"
  }  // namespace blink::features
 diff --git a/third_party/blink/public/common/features.h b/third_party/blink/public/common/features.h
-index d2b9b5aee25d3..f873ec4ab7421 100644
+index 8c7ae2a27b0ec..b63693853f4d4 100644
 --- a/third_party/blink/public/common/features.h
 +++ b/third_party/blink/public/common/features.h
-@@ -1920,6 +1920,7 @@ BLINK_COMMON_EXPORT bool IsXrDevice();
+@@ -1917,6 +1917,7 @@ BLINK_COMMON_EXPORT bool IsXrDevice();
  //
  // DO NOT ADD NEW FEATURES HERE.
  
@@ -2314,20 +2315,20 @@ index d2b9b5aee25d3..f873ec4ab7421 100644
  }  // namespace blink
  
 diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
-index 6b9944fb71094..fafefb87c5416 100644
+index 75d95b11bbc67..cfb198748fa6b 100644
 --- a/ui/base/ui_base_features.cc
 +++ b/ui/base/ui_base_features.cc
-@@ -544,4 +544,5 @@ bool IsColorIdCssStyleSheetOptimizationEnabled() {
+@@ -547,4 +547,5 @@ bool IsColorIdCssStyleSheetOptimizationEnabled() {
    return base::FeatureList::IsEnabled(kColorIdCssStyleSheetOptimization);
  }
  
 +#include "cromite_flags/ui_base_features_cc.inc"
  }  // namespace features
 diff --git a/ui/base/ui_base_features.h b/ui/base/ui_base_features.h
-index 9f16656d2302f..5a7e5987806c5 100644
+index a3a92c4c4ee9e..2c5cf3c65b26c 100644
 --- a/ui/base/ui_base_features.h
 +++ b/ui/base/ui_base_features.h
-@@ -372,6 +372,7 @@ bool IsWebUIRoundedIconsEnabled();
+@@ -380,6 +380,7 @@ bool IsWebUIRoundedIconsEnabled();
  COMPONENT_EXPORT(UI_BASE_FEATURES)
  bool IsColorIdCssStyleSheetOptimizationEnabled();
  

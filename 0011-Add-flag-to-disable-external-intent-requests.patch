@@ -1,4 +1,4 @@
-From 4f5d6dc6ceb81228ea3f64c991eed52d2b403d1f Mon Sep 17 00:00:00 2001
+From ae0b4892a0c9a350848b99089c436b12921768ea Mon Sep 17 00:00:00 2001
 From: csagan5 <32685696+csagan5@users.noreply.github.com>
 Date: Tue, 25 May 2021 19:46:14 +0200
 Subject: [PATCH 11/13] Add flag to disable external intent requests
@@ -68,7 +68,7 @@ index d4ade69829edc..77e3494b49ef9 100644
          }
  
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
-index d91baa136e0e5..f27d3be32d4ce 100644
+index f29b0825640b0..b566f08c7894c 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/externalnav/ExternalNavigationDelegateImpl.java
 @@ -26,6 +26,7 @@ import org.chromium.base.ResettersForTesting;
@@ -89,7 +89,7 @@ index d91baa136e0e5..f27d3be32d4ce 100644
      }
  
      @Override
-@@ -327,7 +329,7 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
+@@ -328,7 +330,7 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
                  && params.isInitialNavigationInFrame()
                  // TODO(crbug.com/452537438): Figure out a better way to check whether we are in
                  // desktop windowing mode or if the device can enter desktop windowing mode.

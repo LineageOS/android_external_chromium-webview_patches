@@ -1,4 +1,4 @@
-From d2d9aafce81df1cab0081564b75cee33973dd1c5 Mon Sep 17 00:00:00 2001
+From d66238b435593d35bc79c206cd9a8c53b41c7c43 Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/13] bromite build utils
@@ -33,7 +33,7 @@ Subject: [PATCH 09/13] bromite build utils
  create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
-index 6b8f5c89f173e..9fc02be1da025 100755
+index b5ea2b81e9856..3f915fa66e556 100755
 --- a/build/android/gyp/java_cpp_enum.py
 +++ b/build/android/gyp/java_cpp_enum.py
 @@ -6,6 +6,7 @@
@@ -135,7 +135,7 @@ index 6b8f5c89f173e..9fc02be1da025 100755
  
  
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
-index 776f1aebf6fa8..652befdd86253 100644
+index 53b4e8b277c07..8513ee73b0004 100644
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
 @@ -441,4 +441,27 @@ def ReadSourcesList(sources_list_file_name):
@@ -438,17 +438,17 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index bc4236a4e7080..9510cab5ccd0e 100644
+index a8dcb4d467550..9193673b4ebff 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -901,3 +901,5 @@ if (is_component_build) {
+@@ -903,3 +903,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index bba7c3685292e..c8d0db179f12a 100644
+index 27523619df263..7d2f21a2b3372 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
 @@ -235,6 +235,10 @@ if (!is_robolectric && enable_java_templates) {
@@ -472,7 +472,7 @@ index bba7c3685292e..c8d0db179f12a 100644
        # The sources aren't compiled so don't check their dependencies.
        check_includes = false
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
-index 4a87ffa65b01e..46ae0ea920109 100644
+index c4830a9275e1d..10d26c102b44f 100644
 --- a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/accessibility/settings/ChromeAccessibilitySettingsDelegate.java
 @@ -19,6 +19,11 @@ import org.chromium.components.dom_distiller.core.DistilledPagePrefs;
@@ -488,10 +488,10 @@ index 4a87ffa65b01e..46ae0ea920109 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 98d30c3aa53c4..0040599acf0a4 100644
+index 8829f31808e8f..e31335f8be8a6 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
-@@ -7,7 +7,8 @@ import("//extensions/buildflags/buildflags.gni")
+@@ -8,7 +8,8 @@ import("//extensions/buildflags/buildflags.gni")
  import("//third_party/jni_zero/jni_zero.gni")
  
  android_library("java") {
@@ -501,7 +501,7 @@ index 98d30c3aa53c4..0040599acf0a4 100644
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
-@@ -33,7 +34,8 @@ android_library("java") {
+@@ -43,7 +44,8 @@ java_flag_generator("java_flags") {
  }
  
  generate_jni("jni_headers") {
@@ -511,7 +511,7 @@ index 98d30c3aa53c4..0040599acf0a4 100644
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
    ]
-@@ -41,6 +43,8 @@ generate_jni("jni_headers") {
+@@ -51,6 +53,8 @@ generate_jni("jni_headers") {
  
  static_library("flags_android") {
    sources = [
@@ -693,10 +693,10 @@ index 0000000000000..e3ed27bc71054
 +    }
 +}
 diff --git a/mojo/public/tools/mojom/mojom_parser.py b/mojo/public/tools/mojom/mojom_parser.py
-index 557da1bcb141b..07ab9ab461dec 100755
+index a6cf62db60b76..b54da93cd445f 100755
 --- a/mojo/public/tools/mojom/mojom_parser.py
 +++ b/mojo/public/tools/mojom/mojom_parser.py
-@@ -20,6 +20,7 @@ import os
+@@ -19,6 +19,7 @@ import os
  import os.path
  import sys
  import traceback
@@ -704,7 +704,7 @@ index 557da1bcb141b..07ab9ab461dec 100755
  from collections import defaultdict
  
  from mojom.generate import module
-@@ -203,14 +204,33 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
+@@ -202,14 +203,33 @@ def _CollectAllowedImportsFromBuildMetadata(build_metadata_filename):
    return allowed_imports
  
  
@@ -740,7 +740,7 @@ index 557da1bcb141b..07ab9ab461dec 100755
      conditional_features.RemoveDisabledDefinitions(ast, enabled_features)
      return mojom_abspath, ast
  
-@@ -336,7 +356,7 @@ def _ParseMojoms(
+@@ -335,7 +355,7 @@ def _ParseMojoms(
  
    logging.info('Parsing %d .mojom into ASTs', len(mojom_files_to_parse))
    map_args = (

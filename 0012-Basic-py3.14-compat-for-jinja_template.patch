@@ -1,4 +1,4 @@
-From c66c3c82cb2a4ecece3d640c0083ea24cc90ed15 Mon Sep 17 00:00:00 2001
+From 753b07d8c071bf9cf1e57e82cc70fe34e382b869 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 6 Jun 2026 10:22:21 -0600
 Subject: [PATCH 12/13] Basic py3.14 compat for jinja_template

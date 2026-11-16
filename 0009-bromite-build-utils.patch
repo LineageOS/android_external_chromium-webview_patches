@@ -1,4 +1,4 @@
-From 546da2c826a2769925a9bd8384b50de191d05a35 Mon Sep 17 00:00:00 2001
+From 472d345e0e87b47e3642d37683e03e44da23030a Mon Sep 17 00:00:00 2001
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 9 Jun 2023 15:11:46 +0000
 Subject: [PATCH 09/13] bromite build utils
@@ -135,10 +135,10 @@ index b5ea2b81e9856..3f915fa66e556 100755
  
  
 diff --git a/build/android/gyp/util/build_utils.py b/build/android/gyp/util/build_utils.py
-index 53b4e8b277c07..8513ee73b0004 100644
+index 86fded42dd21f..81b5aae5fd9ac 100644
 --- a/build/android/gyp/util/build_utils.py
 +++ b/build/android/gyp/util/build_utils.py
-@@ -441,4 +441,27 @@ def ReadSourcesList(sources_list_file_name):
+@@ -444,4 +444,27 @@ def ReadSourcesList(sources_list_file_name):
      Note that this function should not be used to parse response files.
      """
      with open(sources_list_file_name, encoding='utf-8') as f:
@@ -438,20 +438,20 @@ index 0000000000000..cfaccd9373e45
 +../../zip_helpers.py
 +java_bromite_impl.py
 diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
-index a8dcb4d467550..9193673b4ebff 100644
+index 179b9b729ed45..c3c43a67f44c7 100644
 --- a/build/config/BUILDCONFIG.gn
 +++ b/build/config/BUILDCONFIG.gn
-@@ -903,3 +903,5 @@ if (is_component_build) {
+@@ -891,3 +891,5 @@ if (is_component_build) {
  set_defaults("component") {
    configs = default_component_configs
  }
 +
 +import("//build/bromite/bromite_utils.gni")
 diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
-index 27523619df263..7d2f21a2b3372 100644
+index a3829f7f3af10..3067c5cf82a35 100644
 --- a/build/config/android/rules.gni
 +++ b/build/config/android/rules.gni
-@@ -235,6 +235,10 @@ if (!is_robolectric && enable_java_templates) {
+@@ -236,6 +236,10 @@ if (!is_robolectric && enable_java_templates) {
        _rebased_sources = rebase_path(invoker.sources, root_build_dir)
  
        args = [ "--srcjar=$_rebased_srcjar_path" ] + _rebased_sources
@@ -462,7 +462,7 @@ index 27523619df263..7d2f21a2b3372 100644
        outputs = [ _srcjar_path ]
      }
    }
-@@ -289,7 +293,7 @@ if (!is_robolectric && enable_java_templates) {
+@@ -290,7 +294,7 @@ if (!is_robolectric && enable_java_templates) {
    #   my.java.package.
    template("java_cpp_strings") {
      action_with_pydeps(target_name) {
@@ -488,7 +488,7 @@ index c4830a9275e1d..10d26c102b44f 100644
  @NullMarked
  public class ChromeAccessibilitySettingsDelegate implements AccessibilitySettingsDelegate {
 diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
-index 8829f31808e8f..e31335f8be8a6 100644
+index 4cc5ebbe59021..061b68b42974b 100644
 --- a/chrome/browser/flags/BUILD.gn
 +++ b/chrome/browser/flags/BUILD.gn
 @@ -8,7 +8,8 @@ import("//extensions/buildflags/buildflags.gni")
@@ -788,7 +788,7 @@ index 6a9f69e8c14f8..03d16ada29366 100755
      if self.debug:
        print("End parsing of element %s" % name)
 diff --git a/tools/grit/grit_rule.gni b/tools/grit/grit_rule.gni
-index f64e51895202b..4a06cc0de175a 100644
+index 419bd3e56bddb..188aa40d8c67e 100644
 --- a/tools/grit/grit_rule.gni
 +++ b/tools/grit/grit_rule.gni
 @@ -365,7 +365,7 @@ template("grit") {

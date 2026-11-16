@@ -1,4 +1,4 @@
-From 8dd23a1221bde3c863769dc261d6d9f1288c3579 Mon Sep 17 00:00:00 2001
+From acd91f394feec99332581f51540823b46e1d9d66 Mon Sep 17 00:00:00 2001
 From: Danny Baumann <dannybaumann@web.de>
 Date: Thu, 18 May 2017 11:04:40 +0200
 Subject: [PATCH 01/13] Add support for getting updates for theme color
@@ -14,18 +14,18 @@ Subject: [PATCH 01/13] Add support for getting updates for theme color
  6 files changed, 75 insertions(+)
 
 diff --git a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-index 6b451fb8379d7..2371c0087f045 100644
+index 1f6c72a19ce66..72cbde5ee478e 100644
 --- a/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
 +++ b/android_webview/glue/java/src/com/android/webview/chromium/WebViewChromium.java
-@@ -96,6 +96,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
+@@ -95,6 +95,7 @@ import org.chromium.components.embedder_support.application.ClassLoaderContextWr
  import org.chromium.content_public.browser.MessagePayload;
  import org.chromium.content_public.browser.NavigationHistory;
  import org.chromium.content_public.browser.SmartClipProvider;
 +import org.chromium.content_public.browser.WebContents;
- import org.chromium.url.GURL;
  
  import java.io.BufferedWriter;
-@@ -1307,6 +1308,13 @@ class WebViewChromium
+ import java.io.File;
+@@ -1076,6 +1077,13 @@ class WebViewChromium
          }
      }
  

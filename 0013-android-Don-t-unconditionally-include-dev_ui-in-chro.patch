@@ -1,4 +1,4 @@
-From 9781ac7ca2a8f5aaac4257ea0c57c8ffb4dc72c6 Mon Sep 17 00:00:00 2001
+From e9df9404da14ba07643102e7d2c7019cc8623846 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 27 Jun 2026 10:56:53 -0600
 Subject: [PATCH 13/13] android: Don't unconditionally include dev_ui in
@@ -9,10 +9,10 @@ Subject: [PATCH 13/13] android: Don't unconditionally include dev_ui in
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index 814b9d649a316..2cf1bb7457db0 100644
+index f0f529901a3fc..e0166c11d69d1 100644
 --- a/chrome/browser/BUILD.gn
 +++ b/chrome/browser/BUILD.gn
-@@ -1859,7 +1859,6 @@ source_set("core") {
+@@ -1495,7 +1495,6 @@ source_set("core") {
        "//chrome/browser/commerce",
        "//chrome/browser/commerce/android:shopping_service_jni",
        "//chrome/browser/composeplate/android:jni_headers",
@@ -20,19 +20,19 @@ index 814b9d649a316..2cf1bb7457db0 100644
        "//chrome/browser/feed",
        "//chrome/browser/finds/core",
        "//chrome/browser/flags:flags_android",
-@@ -1899,6 +1898,12 @@ source_set("core") {
-       "//services/webnn/public/mojom:features",
-       "//ui/compositor",
-     ]
+@@ -1543,6 +1542,12 @@ source_set("core") {
+         "//ui/webui/resources/cr_components/history:mojo_bindings",
+       ]
+     }
 +
 +    if (dfmify_dev_ui) {
 +      deps += [
 +        "//chrome/browser/dev_ui",
 +      ]
 +    }
-   }
- 
-   if (enable_offline_pages) {
+   } else {
+     public_deps = [
+       "//chrome/browser/ui/omnibox/omnibox_everywhere:impl",
 -- 
 2.53.0
 
